@@ -12,5 +12,4 @@ async-std = { version = "1.9.0", features = ["attributes"] }
 async-trait = "0.1.48"
 juniper = "0.15.3"
 tide = "0.16.0"
-unhtml = { version = "0.8.0", features = ["derive"] }
 
