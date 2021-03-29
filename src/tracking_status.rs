@@ -1,3 +1,4 @@
+#[derive(Debug)]
 pub struct TrackingStatus {
     pub time: String,
     pub location: String,
