@@ -40,7 +40,7 @@ impl Courier for EPost {
             tracks.push(
                 TrackingStatus {
                     time: format!("{} {}", get_html_string!(element, "td:nth-child(1)"), get_html_string!(element, "td:nth-child(2)")),
-                    location: get_html_string!(element, "td > a > span"),
+                    location: get_html_string!(element, "td:nth-child(3)"),
                     status: get_html_string!(element, "td:nth-child(4)"),
                     message: None,
                     
