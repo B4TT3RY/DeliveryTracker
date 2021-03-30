@@ -13,10 +13,9 @@ pub async fn start_api_server() -> Result<()> {
             Ok("kr.epost") => EPost::track(tracking_number),
             _ => CJLogistics::track(tracking_number),
         }
-        .await
-        .unwrap();
+        .await?;
         
-        Ok(serde_json::to_string(&delivery_status).unwrap())
+        Ok(serde_json::to_string(&delivery_status)?)
     });
 
     app.listen("0.0.0.0:8083").await?;
