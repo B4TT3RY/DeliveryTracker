@@ -17,5 +17,5 @@ async fn main() {
     }
     .await
     .unwrap();
-    println!("{:?}", &delivery_status);
+    println!("{:#?}", &delivery_status);
 }
