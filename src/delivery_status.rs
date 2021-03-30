@@ -1,6 +1,8 @@
+use serde::{Deserialize, Serialize};
+
 use crate::tracking_status::TrackingStatus;
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct DeliveryStatus {
     pub id: String,
     pub name: String,
