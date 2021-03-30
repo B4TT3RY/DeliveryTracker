@@ -28,7 +28,7 @@ impl Courier for CJLogistics {
             .body(format!("fsp_action=PARC_ACT_002&fsp_cmd=retrieveInvNoACT2&invc_no={}", tracking_number))
             .header("Content-Type", "application/x-www-form-urlencoded")
             .header("Referer", "https://www.doortodoor.co.kr/parcel/pa_004.jsp")
-            .header("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Safari/605.1.15")
+            .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36")
             .recv_string()
             .await
             .unwrap();
