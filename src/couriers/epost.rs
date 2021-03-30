@@ -41,7 +41,7 @@ impl Courier for EPost {
                     time: format!("{} {}", get_html_string!(element, "td:nth-child(1)"), get_html_string!(element, "td:nth-child(2)")),
                     location: get_html_string!(element, "td > a > span"),
                     status: get_html_string!(element, "td:nth-child(4)"),
-                    message: "".to_string(),
+                    message: None,
                     
                 }
             );
