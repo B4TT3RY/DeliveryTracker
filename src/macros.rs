@@ -7,7 +7,8 @@ macro_rules! get_html_string {
             .next()
             .unwrap()
             .text()
-            .fold("".to_string(), |l, r| format!("{} {}", l, r))
+            .collect::<Vec<_>>()
+            .join(" ")
             .trim()
             .to_string()
     }};
