@@ -15,7 +15,7 @@ pub async fn start_api_server() -> Result<()> {
         }
         .await?;
         
-        Ok(serde_json::to_string(&delivery_status).map_err(|err| tide::Error::new(500, err))?)
+        serde_json::to_string(&delivery_status).map_err(|err| tide::Error::new(500, err))
     });
 
     app.listen("0.0.0.0:8083").await?;
