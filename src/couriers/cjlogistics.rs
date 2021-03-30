@@ -48,7 +48,7 @@ impl Courier for CJLogistics {
             if element.inner_html().contains("th") {
                 continue
             }
-            // br 띄어쓰기 처리
+            
             tracks.push(
                 TrackingStatus {
                     time: get_html_string!(element, "td:nth-child(2)"),

@@ -7,7 +7,7 @@ macro_rules! get_html_string {
             .next()
             .unwrap()
             .text()
-            .collect::<String>()
+            .fold("".to_string(), |l, r| format!("{} {}", l, r))
             .trim()
             .to_string()
     }};
