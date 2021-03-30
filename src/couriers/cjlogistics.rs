@@ -7,7 +7,7 @@ use crate::{
     tracking_status::TrackingStatus,
 };
 
-pub struct CJLogistics {}
+pub struct CJLogistics;
 
 #[async_trait]
 impl Courier for CJLogistics {

@@ -4,7 +4,7 @@ use scraper::{Html, Selector};
 
 use crate::{couriers::courier::Courier, delivery_status::DeliveryStatus, tracking_status::TrackingStatus, get_html_string};
 
-pub struct EPost {}
+pub struct EPost;
 
 #[async_trait]
 impl Courier for EPost {
