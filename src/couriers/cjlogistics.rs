@@ -35,23 +35,32 @@ impl Courier for CJLogistics {
         let receiver = get_html_string!(document, ".last_b:nth-child(3)");
         let product = get_html_string!(document, ".last_b:nth-child(4)");
 
-        let last_track = {
-            let selector = Selector::parse("#tabContents > ul > li.first.focus > div > div:nth-child(2) > div > table > tbody > tr:last-child").unwrap();
-            let parent = document.select(&selector).next().unwrap();
-            TrackingStatus {
-                time: get_html_string!(parent, ".last_b:nth-child(2)"),
-                location: get_html_string!(parent, ".last_b:nth-child(4)"),
-                status: get_html_string!(parent, ".last_b:nth-child(1)"),
-                message: get_html_string!(parent, ".last_b:nth-child(3)"),
+        let mut tracks:Vec<TrackingStatus> = Vec::new();
+        let selector = Selector::parse("#tabContents > ul > li.first.focus > div > div:nth-child(2) > div > table > tbody").unwrap();
+        let tr_selector = Selector::parse("tr").unwrap();
+        let parent = document.select(&selector).next().unwrap();
+
+        for element in parent.select(&tr_selector) {
+            if element.inner_html().contains("th") {
+                continue
             }
-        };
+            // br 띄어쓰기 처리
+            tracks.push(
+                TrackingStatus {
+                    time: get_html_string!(element, "td:nth-child(2)"),
+                    location: get_html_string!(element, "td > a"),
+                    status: get_html_string!(element, "td:nth-child(1)"),
+                    message: get_html_string!(element, "td:nth-child(3)"),
+                }
+            );
+        }
 
         Ok(DeliveryStatus {
             tracking_number,
             sender,
             receiver,
             product,
-            last_track,
+            tracks,
         })
     }
 }

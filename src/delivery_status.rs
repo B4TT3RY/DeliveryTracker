@@ -6,5 +6,5 @@ pub struct DeliveryStatus {
     pub sender: String,
     pub receiver: String,
     pub product: String,
-    pub last_track: TrackingStatus,
+    pub tracks: Vec<TrackingStatus>,
 }
