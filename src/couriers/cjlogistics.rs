@@ -15,6 +15,10 @@ impl Courier for CJLogistics {
         "https://www.doortodoor.co.kr/parcel/doortodoor.do"
     }
 
+    fn get_id() -> &'static str {
+        "kr.cjlogistics"
+    }
+
     fn get_name() -> &'static str {
         "CJ대한통운"
     }
@@ -56,10 +60,12 @@ impl Courier for CJLogistics {
         }
 
         Ok(DeliveryStatus {
+            id: CJLogistics::get_id().to_string(),
+            name: CJLogistics::get_name().to_string(),
             tracking_number,
             sender,
             receiver,
-            product,
+            product: Some(product),
             tracks,
         })
     }
