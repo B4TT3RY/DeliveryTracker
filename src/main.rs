@@ -3,6 +3,7 @@ use couriers::{cjlogistics::CJLogistics, courier::Courier, epost::EPost};
 mod couriers;
 mod delivery_status;
 mod tracking_status;
+mod macros;
 
 #[async_std::main]
 async fn main() {

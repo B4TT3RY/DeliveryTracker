@@ -2,7 +2,7 @@ use anyhow::Result;
 use async_trait::async_trait;
 use scraper::{Html, Selector};
 
-use crate::{couriers::courier::Courier, delivery_status::DeliveryStatus, tracking_status::TrackingStatus};
+use crate::{couriers::courier::Courier, delivery_status::DeliveryStatus, tracking_status::TrackingStatus, get_html_string};
 
 pub struct CJLogistics {}
 
@@ -27,49 +27,10 @@ impl Courier for CJLogistics {
             .unwrap();
         let document = Html::parse_document(&response);
 
-        let tracking_number = {
-            let selector = Selector::parse(".last_b:nth-child(1)").unwrap();
-            document.select(&selector)
-                .next()
-                .unwrap()
-                .text()
-                .collect::<String>()
-                .trim()
-                .to_string()
-        };
-
-        let sender = {
-            let selector = Selector::parse(".last_b:nth-child(2)").unwrap();
-            document.select(&selector)
-                .next()
-                .unwrap()
-                .text()
-                .collect::<String>()
-                .trim()
-                .to_string()
-        };
-
-        let receiver = {
-            let selector = Selector::parse(".last_b:nth-child(3)").unwrap();
-            document.select(&selector)
-                .next()
-                .unwrap()
-                .text()
-                .collect::<String>()
-                .trim()
-                .to_string()
-        };
-
-        let product = {
-            let selector = Selector::parse(".last_b:nth-child(4)").unwrap();
-            document.select(&selector)
-                .next()
-                .unwrap()
-                .text()
-                .collect::<String>()
-                .trim()
-                .to_string()
-        };
+        let tracking_number = get_html_string!(document, ".last_b:nth-child(1)");
+        let sender = get_html_string!(document, ".last_b:nth-child(2)");
+        let receiver = get_html_string!(document, ".last_b:nth-child(3)");
+        let product = get_html_string!(document, ".last_b:nth-child(4)");
 
         let last_track = {
             let selector = Selector::parse("#tabContents > ul > li.first.focus > div > div:nth-child(2) > div > table > tbody > tr:last-child").unwrap();
@@ -77,46 +38,10 @@ impl Courier for CJLogistics {
                 .next()
                 .unwrap();
             TrackingStatus {
-                time: {
-                    let selector = Selector::parse(".last_b:nth-child(2)").unwrap();
-                    parent.select(&selector)
-                        .next()
-                        .unwrap()
-                        .text()
-                        .collect::<String>()
-                        .trim()
-                        .to_string()
-                },
-                location: {
-                    let selector = Selector::parse(".last_b:nth-child(4)").unwrap();
-                    parent.select(&selector)
-                        .next()
-                        .unwrap()
-                        .text()
-                        .collect::<String>()
-                        .trim()
-                        .to_string()
-                },
-                status: {
-                    let selector = Selector::parse(".last_b:nth-child(1)").unwrap();
-                    parent.select(&selector)
-                        .next()
-                        .unwrap()
-                        .text()
-                        .collect::<String>()
-                        .trim()
-                        .to_string()
-                },
-                message: {
-                    let selector = Selector::parse(".last_b:nth-child(3)").unwrap();
-                    parent.select(&selector)
-                        .next()
-                        .unwrap()
-                        .text()
-                        .collect::<String>()
-                        .trim()
-                        .to_string()
-                },
+                time: get_html_string!(parent, ".last_b:nth-child(2)"),
+                location: get_html_string!(parent, ".last_b:nth-child(4)"),
+                status: get_html_string!(parent, ".last_b:nth-child(1)"),
+                message: get_html_string!(parent, ".last_b:nth-child(3)"),
             }
         };
         
