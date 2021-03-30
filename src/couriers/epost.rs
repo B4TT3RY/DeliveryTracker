@@ -17,10 +17,7 @@ impl Courier for EPost {
 
     async fn track(tracking_number: String) -> Result<DeliveryStatus> {
         let request_url = format!("{}{}", EPost::get_url(), tracking_number);
-        let response = surf::get(request_url)
-            .recv_string()
-            .await
-            .unwrap();
+        let response = surf::get(request_url).recv_string().await.unwrap();
         println!("{}", response);
         todo!()
     }

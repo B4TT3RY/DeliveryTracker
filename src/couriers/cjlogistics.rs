@@ -2,7 +2,10 @@ use anyhow::Result;
 use async_trait::async_trait;
 use scraper::{Html, Selector};
 
-use crate::{couriers::courier::Courier, delivery_status::DeliveryStatus, tracking_status::TrackingStatus, get_html_string};
+use crate::{
+    couriers::courier::Courier, delivery_status::DeliveryStatus, get_html_string,
+    tracking_status::TrackingStatus,
+};
 
 pub struct CJLogistics {}
 
@@ -34,9 +37,7 @@ impl Courier for CJLogistics {
 
         let last_track = {
             let selector = Selector::parse("#tabContents > ul > li.first.focus > div > div:nth-child(2) > div > table > tbody > tr:last-child").unwrap();
-            let parent = document.select(&selector)
-                .next()
-                .unwrap();
+            let parent = document.select(&selector).next().unwrap();
             TrackingStatus {
                 time: get_html_string!(parent, ".last_b:nth-child(2)"),
                 location: get_html_string!(parent, ".last_b:nth-child(4)"),
@@ -44,7 +45,7 @@ impl Courier for CJLogistics {
                 message: get_html_string!(parent, ".last_b:nth-child(3)"),
             }
         };
-        
+
         Ok(DeliveryStatus {
             tracking_number,
             sender,
