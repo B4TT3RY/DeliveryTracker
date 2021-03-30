@@ -1425,6 +1425,8 @@ dependencies = [
  "async-std",
  "async-trait",
  "scraper",
+ "serde",
+ "serde_json",
  "surf",
  "tide",
 ]
