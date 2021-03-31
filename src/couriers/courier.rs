@@ -3,6 +3,11 @@ use async_trait::async_trait;
 
 use crate::delivery_status::DeliveryStatus;
 
+enum CourierType {
+    CJlogistics,
+    EPost,
+}
+
 #[async_trait]
 pub trait Courier {
     fn get_url() -> &'static str;
