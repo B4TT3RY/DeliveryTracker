@@ -7,7 +7,9 @@ use crate::{
     tracking_status::TrackingStatus,
 };
 
-pub struct CJLogistics;
+pub struct CJLogistics {
+    pub tracking_number: String,
+}
 
 #[async_trait]
 impl Courier for CJLogistics {
@@ -23,16 +25,16 @@ impl Courier for CJLogistics {
         "CJ대한통운"
     }
 
-    async fn validate(&self, tracking_number: &str) -> Result<()> {
-        if tracking_number.is_empty() {
+    async fn validate(&self) -> Result<&Self> {
+        if self.tracking_number.is_empty() {
             return Err(anyhow!("송장번호가 입력되지 않았습니다."));
         }
-        Ok(())
+        Ok(self)
     }
 
-    async fn track(&self, tracking_number: String) -> Result<DeliveryStatus> {
+    async fn track(&self) -> Result<DeliveryStatus> {
         let response = surf::post(CJLogistics::get_url())
-            .body(format!("fsp_action=PARC_ACT_002&fsp_cmd=retrieveInvNoACT2&invc_no={}", tracking_number))
+            .body(format!("fsp_action=PARC_ACT_002&fsp_cmd=retrieveInvNoACT2&invc_no={}", self.tracking_number))
             .header("Content-Type", "application/x-www-form-urlencoded")
             .header("Referer", "https://www.doortodoor.co.kr/parcel/pa_004.jsp")
             .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36")

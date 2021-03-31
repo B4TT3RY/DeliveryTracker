@@ -4,7 +4,9 @@ use scraper::{Html, Selector};
 
 use crate::{couriers::courier::Courier, delivery_status::DeliveryStatus, tracking_status::TrackingStatus, get_html_string};
 
-pub struct EPost;
+pub struct EPost {
+    pub tracking_number: String,
+}
 
 #[async_trait]
 impl Courier for EPost {
@@ -20,16 +22,16 @@ impl Courier for EPost {
         "우체국"
     }
 
-    async fn validate(&self, tracking_number: &str) -> Result<()> {
-        if tracking_number.is_empty() {
+    async fn validate(&self) -> Result<&Self> {
+        if self.tracking_number.is_empty() {
             return Err(anyhow!("송장번호가 입력되지 않았습니다."));
         }
-        Ok(())
+        Ok(self)
     }
 
-    async fn track(&self, tracking_number: String) -> Result<DeliveryStatus> {
+    async fn track(&self) -> Result<DeliveryStatus> {
         let response = surf::post(EPost::get_url())
-            .body(format!("sid1={}&displayHeader=N", tracking_number))
+            .body(format!("sid1={}&displayHeader=N", self.tracking_number))
             .header("Content-Type", "application/x-www-form-urlencoded")
             .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36")
             .recv_string()
