@@ -1,5 +1,6 @@
 use anyhow::{anyhow, Result};
 use async_trait::async_trait;
+use regex::Regex;
 use scraper::{Html, Selector};
 
 use crate::{
@@ -26,8 +27,8 @@ impl Courier for CJLogistics {
     }
 
     async fn validate(&self) -> Result<&Self> {
-        if self.tracking_number.is_empty() {
-            return Err(anyhow!("송장번호가 입력되지 않았습니다."));
+        if !Regex::new(r#"^(\d{10}|\d{12})$"#)?.is_match(&self.tracking_number) {
+            return Err(anyhow!("운송장번호 10자리 또는 12자리를 입력해주세요."));
         }
         Ok(self)
     }

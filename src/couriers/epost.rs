@@ -1,5 +1,6 @@
 use anyhow::{anyhow, Result};
 use async_trait::async_trait;
+use regex::Regex;
 use scraper::{Html, Selector};
 
 use crate::{couriers::courier::Courier, delivery_status::DeliveryStatus, tracking_status::TrackingStatus, get_html_string};
@@ -23,8 +24,8 @@ impl Courier for EPost {
     }
 
     async fn validate(&self) -> Result<&Self> {
-        if self.tracking_number.is_empty() {
-            return Err(anyhow!("송장번호가 입력되지 않았습니다."));
+        if !Regex::new(r#"^(\d{13})$"#)?.is_match(&self.tracking_number) {
+            return Err(anyhow!("운송장번호 13자리를 입력해주세요."));
         }
         Ok(self)
     }
