@@ -20,6 +20,10 @@ impl Courier for EPost {
         "우체국"
     }
 
+    async fn validate(&self, tracking_number: &str) -> Result<()> {
+        Ok(())
+    }
+
     async fn track(&self, tracking_number: String) -> Result<DeliveryStatus> {
         let response = surf::post(EPost::get_url())
             .body(format!("sid1={}&displayHeader=N", tracking_number))

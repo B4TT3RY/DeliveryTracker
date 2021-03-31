@@ -32,5 +32,6 @@ pub trait Courier {
     fn get_url() -> &'static str;
     fn get_id() -> &'static str;
     fn get_name() -> &'static str;
+    async fn validate(&self, tracking_number: &str) -> Result<()>;
     async fn track(&self, tracking_number: String) -> Result<DeliveryStatus>;
 }
