@@ -1,7 +1,7 @@
 use anyhow::Result;
 use tide::Request;
 
-use crate::couriers::{cjlogistics::CJLogistics, courier::{Courier, CourierType}, epost::EPost};
+use crate::couriers::courier::CourierType;
 
 pub async fn start_api_server() -> Result<()> {
     let mut app = tide::new();
