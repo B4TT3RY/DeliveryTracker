@@ -38,19 +38,20 @@ impl Courier for EPost {
             .unwrap();
         let document = Html::parse_document(&response);
 
-        let tracking_number = get_html_string!(document, "#print > table > tbody > tr > th");
         
         if document.select(&Selector::parse("#print > table > tbody > tr:nth-child(2) > td").unwrap()).next().is_some() {
             return Ok(DeliveryStatus {
                 id: Self::get_id().to_string(),
                 name: Self::get_name().to_string(),
-                tracking_number,
+                tracking_number: self.tracking_number.clone(),
                 sender: None,
                 receiver: None,
                 product: None,
                 tracks: None,
             });
         }
+        
+        let tracking_number = get_html_string!(document, "#print > table > tbody > tr > th");
         let sender = get_html_string!(document, "#print > table > tbody > tr > td:nth-child(2)");
         let receiver = get_html_string!(document, "#print > table > tbody > tr > td:nth-child(3)");
         
