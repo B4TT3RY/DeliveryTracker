@@ -5,6 +5,15 @@ use crate::delivery_status::DeliveryStatus;
 
 use super::{cjlogistics::CJLogistics, epost::EPost};
 
+#[async_trait]
+pub trait Courier {
+    fn get_url() -> &'static str;
+    fn get_id() -> &'static str;
+    fn get_name() -> &'static str;
+    async fn validate(&self) -> Result<&Self>;
+    async fn track(&self) -> Result<DeliveryStatus>;
+}
+
 pub enum CourierType {
     CJLogistics(CJLogistics),
     EPost(EPost),
@@ -25,13 +34,4 @@ impl CourierType {
             CourierType::EPost(courier) => courier.validate().await?.track().await,
         }
     }
-}
-
-#[async_trait]
-pub trait Courier {
-    fn get_url() -> &'static str;
-    fn get_id() -> &'static str;
-    fn get_name() -> &'static str;
-    async fn validate(&self) -> Result<&Self>;
-    async fn track(&self) -> Result<DeliveryStatus>;
 }
