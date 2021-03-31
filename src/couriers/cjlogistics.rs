@@ -72,10 +72,10 @@ impl Courier for CJLogistics {
             id: Self::get_id().to_string(),
             name: Self::get_name().to_string(),
             tracking_number,
-            sender,
-            receiver,
+            sender: Some(sender),
+            receiver: Some(receiver),
             product: Some(product),
-            tracks,
+            tracks: Some(tracks),
         })
     }
 }

@@ -7,8 +7,8 @@ pub struct DeliveryStatus {
     pub id: String,
     pub name: String,
     pub tracking_number: String,
-    pub sender: String,
-    pub receiver: String,
+    pub sender: Option<String>,
+    pub receiver: Option<String>,
     pub product: Option<String>,
-    pub tracks: Vec<TrackingStatus>,
+    pub tracks: Option<Vec<TrackingStatus>>,
 }

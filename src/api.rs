@@ -21,7 +21,7 @@ pub async fn start_api_server() -> Result<()> {
             return Ok(response);
         }
         
-        let body = serde_json::to_string(&delivery_status.unwrap());
+        let body = serde_json::to_string_pretty(&delivery_status.unwrap());
         if let Err(err) = body {
             response.set_status(500);
             response.set_body(json!({
