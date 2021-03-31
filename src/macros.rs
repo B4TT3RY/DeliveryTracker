@@ -7,9 +7,10 @@ macro_rules! get_html_string {
             .next()
             .unwrap()
             .text()
+            .map(|str| str.trim())
+            .filter(|str| !str.is_empty())
             .collect::<Vec<_>>()
             .join(" ")
-            .trim()
             .to_string()
     }};
 }
