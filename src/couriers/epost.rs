@@ -1,4 +1,4 @@
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 use async_trait::async_trait;
 use scraper::{Html, Selector};
 
@@ -21,6 +21,9 @@ impl Courier for EPost {
     }
 
     async fn validate(&self, tracking_number: &str) -> Result<()> {
+        if tracking_number.is_empty() {
+            return Err(anyhow!("송장번호가 입력되지 않았습니다."));
+        }
         Ok(())
     }
 
