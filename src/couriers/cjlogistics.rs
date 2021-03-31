@@ -23,7 +23,7 @@ impl Courier for CJLogistics {
         "CJ대한통운"
     }
 
-    async fn track(tracking_number: String) -> Result<DeliveryStatus> {
+    async fn track(&self, tracking_number: String) -> Result<DeliveryStatus> {
         let response = surf::post(CJLogistics::get_url())
             .body(format!("fsp_action=PARC_ACT_002&fsp_cmd=retrieveInvNoACT2&invc_no={}", tracking_number))
             .header("Content-Type", "application/x-www-form-urlencoded")
