@@ -31,7 +31,7 @@ impl Courier for EPost {
     }
 
     async fn track(&self) -> Result<DeliveryStatus> {
-        let response = surf::post(EPost::get_url())
+        let response = surf::post(Self::get_url())
             .body(format!("sid1={}&displayHeader=N", self.tracking_number))
             .header("Content-Type", "application/x-www-form-urlencoded")
             .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36")

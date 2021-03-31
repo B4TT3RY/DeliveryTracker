@@ -34,7 +34,7 @@ impl Courier for CJLogistics {
     }
 
     async fn track(&self) -> Result<DeliveryStatus> {
-        let response = surf::post(CJLogistics::get_url())
+        let response = surf::post(Self::get_url())
             .body(format!("fsp_action=PARC_ACT_002&fsp_cmd=retrieveInvNoACT2&invc_no={}", self.tracking_number))
             .header("Content-Type", "application/x-www-form-urlencoded")
             .header("Referer", "https://www.doortodoor.co.kr/parcel/pa_004.jsp")
