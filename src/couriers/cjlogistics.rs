@@ -69,8 +69,8 @@ impl Courier for CJLogistics {
         }
 
         Ok(DeliveryStatus {
-            id: CJLogistics::get_id().to_string(),
-            name: CJLogistics::get_name().to_string(),
+            id: Self::get_id().to_string(),
+            name: Self::get_name().to_string(),
             tracking_number,
             sender,
             receiver,

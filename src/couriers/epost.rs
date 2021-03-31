@@ -58,8 +58,8 @@ impl Courier for EPost {
         };
 
         Ok(DeliveryStatus {
-            id: EPost::get_id().to_string(),
-            name: EPost::get_name().to_string(),
+            id: Self::get_id().to_string(),
+            name: Self::get_name().to_string(),
             tracking_number,
             sender,
             receiver,
