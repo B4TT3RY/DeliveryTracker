@@ -44,6 +44,18 @@ impl Courier for CUPost {
             .recv_string()
             .await
             .unwrap();
+
+        if response.contains("<iframe") {
+            let cj = CourierType::track("kr.cjlogistics".to_string(), self.tracking_number.clone()).await;
+            if let Err(err) = cj {
+                return Err(err);
+            }
+            let mut cj = cj?;
+            cj.id = Self::get_id().to_string();
+            cj.name = format!("{} (국내택배 CJ대한통운)", Self::get_name()).to_string();
+            return Ok(cj);
+        }
+
         let document: Html = Html::parse_document(&response);
 
         if document
@@ -60,21 +72,6 @@ impl Courier for CUPost {
                 product: None,
                 tracks: None,
             });
-        }
-
-        if document
-            .select(&Selector::parse("iframe").unwrap())
-            .next()
-            .is_some()
-        {
-            let cj = CourierType::track("kr.cjlogistics".to_string(), self.tracking_number.clone()).await;
-            if let Err(err) = cj {
-                return Err(err);
-            }
-            let mut cj = cj?;
-            cj.id = Self::get_id().to_string();
-            cj.name = format!("{} (국내택배 CJ대한통운)", Self::get_name()).to_string();
-            return Ok(cj);
         }
 
         let tracking_number = get_html_string!(document, "#gotoMainContents > table:nth-child(5) > tbody > tr:nth-child(1) > td:nth-child(2)");
