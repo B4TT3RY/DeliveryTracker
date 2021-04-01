@@ -4,7 +4,7 @@ use regex::Regex;
 use serde_json::Value;
 
 use crate::{
-    couriers::courier::Courier, couriers::courier::CourierType, delivery_status::DeliveryStatus, tracking_status::TrackingStatus,
+    couriers::courier::{Courier, CourierType}, delivery_status::DeliveryStatus, tracking_status::TrackingStatus,
 };
 
 pub struct GSPostbox {
