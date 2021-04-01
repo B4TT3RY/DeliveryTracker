@@ -40,7 +40,6 @@ impl Courier for EPost {
             .unwrap();
         let document = Html::parse_document(&response);
 
-        
         if document.select(&Selector::parse("#print > table > tbody > tr:nth-child(2) > td").unwrap()).next().is_some() {
             return Ok(DeliveryStatus {
                 id: Self::get_id().to_string(),
