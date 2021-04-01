@@ -38,7 +38,6 @@ impl Courier for Lotte {
             .recv_string()
             .await
             .unwrap();
-        println!("{}", response);
         let document = Html::parse_document(&response);
 
         if document.select(&Selector::parse(".empty").unwrap()).next().is_some() {
