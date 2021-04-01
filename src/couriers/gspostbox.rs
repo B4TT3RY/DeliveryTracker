@@ -39,8 +39,12 @@ impl Courier for GSPostbox {
             .await
             .unwrap();
         let regex = Regex::new("(var trackingInfo = )(.+)(;)")?;
-        let capture = regex.captures(&response);
-        if capture.is_none() {
+        let capture = regex.captures(&response).unwrap();
+        let json = capture.get(2).map_or("", |m| m.as_str());
+        
+        let json = serde_json::from_str::<Value>(json)?;
+
+        if json["code"].as_i64().unwrap() != 200 {
             return Ok(DeliveryStatus {
                 id: Self::get_id().to_string(),
                 name: Self::get_name().to_string(),
@@ -51,8 +55,6 @@ impl Courier for GSPostbox {
                 tracks: None,
             });
         }
-        let json = capture.unwrap().get(2).map_or("", |m| m.as_str());
-        let json = serde_json::from_str::<Value>(json)?;
 
         let name = format!(
             "GS Postbox {} ({})",
