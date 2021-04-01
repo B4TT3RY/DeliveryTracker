@@ -8,3 +8,4 @@
 |로젠택배|`kr.ilogen`|
 |롯데택배|`kr.lotte`|
 |한진택배|`kr.hanjin`|
+|GS Postbox 택배|`kr.gspostbox`|

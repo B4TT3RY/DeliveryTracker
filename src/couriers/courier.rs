@@ -3,7 +3,10 @@ use async_trait::async_trait;
 
 use crate::delivery_status::DeliveryStatus;
 
-use super::{cjlogistics::CJLogistics, epost::EPost, hanjin::Hanjin, ilogen::ILogen, lotte::Lotte};
+use super::{
+    cjlogistics::CJLogistics, epost::EPost, gspostbox::GSPostbox, hanjin::Hanjin, ilogen::ILogen,
+    lotte::Lotte,
+};
 
 #[async_trait]
 pub trait Courier {
@@ -20,6 +23,7 @@ pub enum CourierType {
     ILogen(ILogen),
     Lotte(Lotte),
     Hanjin(Hanjin),
+    GSPostbox(GSPostbox),
 }
 
 impl CourierType {
@@ -30,6 +34,7 @@ impl CourierType {
             "kr.ilogen" => Ok(CourierType::ILogen(ILogen { tracking_number })),
             "kr.lotte" => Ok(CourierType::Lotte(Lotte { tracking_number })),
             "kr.hanjin" => Ok(CourierType::Hanjin(Hanjin { tracking_number })),
+            "kr.gspostbox" => Ok(CourierType::GSPostbox(GSPostbox { tracking_number })),
             _ => Err(anyhow!("해당 택배사가 존재하지 않습니다.")),
         }
     }
@@ -41,6 +46,7 @@ impl CourierType {
             CourierType::ILogen(courier) => courier.validate().await?.track().await,
             CourierType::Lotte(courier) => courier.validate().await?.track().await,
             CourierType::Hanjin(courier) => courier.validate().await?.track().await,
+            CourierType::GSPostbox(courier) => courier.validate().await?.track().await,
         }
     }
 }
