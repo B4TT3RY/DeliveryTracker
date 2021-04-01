@@ -73,7 +73,11 @@ impl Courier for GSPostbox {
                     .replace("T", " ")
                     .to_string(),
                 location: value["transWhere"].as_str().unwrap_or("").to_string(),
-                status: value["transKind"].as_str().unwrap_or("").to_string(),
+                status: value["transKind"]
+                    .as_str()
+                    .unwrap_or("")
+                    .replace("  ", " ")
+                    .to_string(),
                 message: None,
             });
         }
