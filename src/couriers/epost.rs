@@ -3,7 +3,10 @@ use async_trait::async_trait;
 use regex::Regex;
 use scraper::{Html, Selector};
 
-use crate::{couriers::courier::Courier, delivery_status::DeliveryStatus, tracking_status::TrackingStatus, get_html_string};
+use crate::{
+    couriers::courier::Courier, delivery_status::DeliveryStatus, get_html_string,
+    tracking_status::TrackingStatus,
+};
 
 pub struct EPost {
     pub tracking_number: String,
@@ -40,7 +43,11 @@ impl Courier for EPost {
             .unwrap();
         let document = Html::parse_document(&response);
 
-        if document.select(&Selector::parse("#print > table > tbody > tr:nth-child(2) > td").unwrap()).next().is_some() {
+        if document
+            .select(&Selector::parse("#print > table > tbody > tr:nth-child(2) > td").unwrap())
+            .next()
+            .is_some()
+        {
             return Ok(DeliveryStatus {
                 id: Self::get_id().to_string(),
                 name: Self::get_name().to_string(),
@@ -51,24 +58,25 @@ impl Courier for EPost {
                 tracks: None,
             });
         }
-        
+
         let tracking_number = get_html_string!(document, "#print > table > tbody > tr > th");
         let sender = get_html_string!(document, "#print > table > tbody > tr > td:nth-child(2)");
         let receiver = get_html_string!(document, "#print > table > tbody > tr > td:nth-child(3)");
-        
-        let mut tracks:Vec<TrackingStatus> = Vec::new();
+
+        let mut tracks: Vec<TrackingStatus> = Vec::new();
         let selector = Selector::parse("#processTable > tbody > tr").unwrap();
         for element in document.select(&selector) {
-            tracks.push(
-                TrackingStatus {
-                    time: format!("{} {}", get_html_string!(element, "td:nth-child(1)"), get_html_string!(element, "td:nth-child(2)")),
-                    location: get_html_string!(element, "td:nth-child(3)"),
-                    status: get_html_string!(element, "td:nth-child(4)"),
-                    message: None,
-                    
-                }
-            );
-        };
+            tracks.push(TrackingStatus {
+                time: format!(
+                    "{} {}",
+                    get_html_string!(element, "td:nth-child(1)"),
+                    get_html_string!(element, "td:nth-child(2)")
+                ),
+                location: get_html_string!(element, "td:nth-child(3)"),
+                status: get_html_string!(element, "td:nth-child(4)"),
+                message: None,
+            });
+        }
 
         Ok(DeliveryStatus {
             id: Self::get_id().to_string(),

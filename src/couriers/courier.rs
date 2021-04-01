@@ -3,7 +3,7 @@ use async_trait::async_trait;
 
 use crate::delivery_status::DeliveryStatus;
 
-use super::{cjlogistics::CJLogistics, epost::EPost, ilogen::ILogen, lotte::Lotte, hanjin::Hanjin};
+use super::{cjlogistics::CJLogistics, epost::EPost, hanjin::Hanjin, ilogen::ILogen, lotte::Lotte};
 
 #[async_trait]
 pub trait Courier {
@@ -30,10 +30,10 @@ impl CourierType {
             "kr.ilogen" => Ok(CourierType::ILogen(ILogen { tracking_number })),
             "kr.lotte" => Ok(CourierType::Lotte(Lotte { tracking_number })),
             "kr.hanjin" => Ok(CourierType::Hanjin(Hanjin { tracking_number })),
-            _ => Err(anyhow!("해당 택배사가 존재하지 않습니다."))
+            _ => Err(anyhow!("해당 택배사가 존재하지 않습니다.")),
         }
     }
-    
+
     pub async fn track(id: String, tracking_number: String) -> Result<DeliveryStatus> {
         match CourierType::get_courier(id, tracking_number)? {
             CourierType::CJLogistics(courier) => courier.validate().await?.track().await,

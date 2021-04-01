@@ -3,7 +3,10 @@ use async_trait::async_trait;
 use regex::Regex;
 use scraper::{Html, Selector};
 
-use crate::{couriers::courier::Courier, delivery_status::DeliveryStatus, tracking_status::TrackingStatus, get_html_string};
+use crate::{
+    couriers::courier::Courier, delivery_status::DeliveryStatus, get_html_string,
+    tracking_status::TrackingStatus,
+};
 
 pub struct Hanjin {
     pub tracking_number: String,
@@ -38,7 +41,11 @@ impl Courier for Hanjin {
             .unwrap();
         let document = Html::parse_document(&response);
 
-        if document.select(&Selector::parse(".delivery-tbl").unwrap()).next().is_none() {
+        if document
+            .select(&Selector::parse(".delivery-tbl").unwrap())
+            .next()
+            .is_none()
+        {
             return Ok(DeliveryStatus {
                 id: Self::get_id().to_string(),
                 name: Self::get_name().to_string(),
@@ -49,24 +56,26 @@ impl Courier for Hanjin {
                 tracks: None,
             });
         }
-        
+
         let tracking_number = get_html_string!(document, "div.songjang-num > span.num");
         let sender = get_html_string!(document, r#"td[data-label="보내는 분"]"#);
         let receiver = get_html_string!(document, r#"td[data-label="받는 분"]"#);
         let product = get_html_string!(document, r#"td[data-label="상품명"]"#);
 
-        let mut tracks:Vec<TrackingStatus> = Vec::new();
+        let mut tracks: Vec<TrackingStatus> = Vec::new();
         let selector = Selector::parse("div.waybill-tbl > table > tbody > tr").unwrap();
         for element in document.select(&selector) {
-            tracks.push(
-                TrackingStatus {
-                    time: format!("{} {}", get_html_string!(element, ".w-date"), get_html_string!(element, ".w-time")),
-                    location: get_html_string!(element, ".w-org"),
-                    status: get_html_string!(element, ".stateDesc > strong"),
-                    message: Some(get_html_string!(element, ".stateDesc")),
-                }
-            );
-        };
+            tracks.push(TrackingStatus {
+                time: format!(
+                    "{} {}",
+                    get_html_string!(element, ".w-date"),
+                    get_html_string!(element, ".w-time")
+                ),
+                location: get_html_string!(element, ".w-org"),
+                status: get_html_string!(element, ".stateDesc > strong"),
+                message: Some(get_html_string!(element, ".stateDesc")),
+            });
+        }
 
         Ok(DeliveryStatus {
             id: Self::get_id().to_string(),

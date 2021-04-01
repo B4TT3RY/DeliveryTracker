@@ -3,7 +3,10 @@ use async_trait::async_trait;
 use regex::Regex;
 use scraper::{Html, Selector};
 
-use crate::{couriers::courier::Courier, delivery_status::DeliveryStatus, tracking_status::TrackingStatus, get_html_string};
+use crate::{
+    couriers::courier::Courier, delivery_status::DeliveryStatus, get_html_string,
+    tracking_status::TrackingStatus,
+};
 
 pub struct ILogen {
     pub tracking_number: String,
@@ -38,7 +41,11 @@ impl Courier for ILogen {
             .unwrap();
         let document = Html::parse_document(&response);
 
-        if document.select(&Selector::parse(".empty").unwrap()).next().is_some() {
+        if document
+            .select(&Selector::parse(".empty").unwrap())
+            .next()
+            .is_some()
+        {
             return Ok(DeliveryStatus {
                 id: Self::get_id().to_string(),
                 name: Self::get_name().to_string(),
@@ -50,23 +57,29 @@ impl Courier for ILogen {
             });
         }
 
-        let product = get_html_string!(document, "table.horizon.pdInfo > tbody > tr:nth-child(1) > td:nth-child(4)");
-        let sender = get_html_string!(document, "table.horizon.pdInfo > tbody > tr:nth-child(4) > td:nth-child(2)");
-        let receiver = get_html_string!(document, "table.horizon.pdInfo > tbody > tr:nth-child(4) > td:nth-child(4)");
-        
-        let mut tracks:Vec<TrackingStatus> = Vec::new();
+        let product = get_html_string!(
+            document,
+            "table.horizon.pdInfo > tbody > tr:nth-child(1) > td:nth-child(4)"
+        );
+        let sender = get_html_string!(
+            document,
+            "table.horizon.pdInfo > tbody > tr:nth-child(4) > td:nth-child(2)"
+        );
+        let receiver = get_html_string!(
+            document,
+            "table.horizon.pdInfo > tbody > tr:nth-child(4) > td:nth-child(4)"
+        );
+
+        let mut tracks: Vec<TrackingStatus> = Vec::new();
         let selector = Selector::parse("table.data.tkInfo > tbody > tr").unwrap();
         for element in document.select(&selector) {
-            tracks.push(
-                TrackingStatus {
-                    time: get_html_string!(element, "td:nth-child(1)"),
-                    location: get_html_string!(element, "td:nth-child(2)"),
-                    status: get_html_string!(element, "td:nth-child(3)"),
-                    message: Some(get_html_string!(element, "td:nth-child(4)")),
-                    
-                }
-            );
-        };
+            tracks.push(TrackingStatus {
+                time: get_html_string!(element, "td:nth-child(1)"),
+                location: get_html_string!(element, "td:nth-child(2)"),
+                status: get_html_string!(element, "td:nth-child(3)"),
+                message: Some(get_html_string!(element, "td:nth-child(4)")),
+            });
+        }
 
         Ok(DeliveryStatus {
             id: Self::get_id().to_string(),
