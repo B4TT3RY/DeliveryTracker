@@ -1,8 +1,9 @@
 use serde::{Deserialize, Serialize};
+use juniper::GraphQLObject;
 
 use crate::tracking_status::TrackingStatus;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, GraphQLObject)]
 pub struct DeliveryStatus {
     pub id: String,
     pub name: String,

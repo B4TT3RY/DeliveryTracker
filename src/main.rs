@@ -5,6 +5,7 @@ mod couriers;
 mod delivery_status;
 mod macros;
 mod tracking_status;
+mod graphql;
 
 #[async_std::main]
 async fn main() -> Result<()> {
