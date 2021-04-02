@@ -43,7 +43,7 @@ impl Courier for CUPost {
             .header("Referer", "https://www.cupost.co.kr/postbox/delivery/localResult.cupost")
             .recv_string()
             .await
-            .unwrap();
+            .map_err(|err| anyhow!(err))?;;
 
         if response.contains("<iframe") {
             let cj = CourierType::track("kr.cjlogistics".to_string(), self.tracking_number.clone()).await;

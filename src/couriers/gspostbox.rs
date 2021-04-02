@@ -37,7 +37,7 @@ impl Courier for GSPostbox {
             .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36")
             .recv_string()
             .await
-            .unwrap();
+            .map_err(|err| anyhow!(err))?;
         let regex = Regex::new("(var trackingInfo = )(.+)(;)")?;
         let capture = regex.captures(&response).unwrap();
         let json = capture.get(2).map_or("", |m| m.as_str());

@@ -41,7 +41,7 @@ impl Courier for CJLogistics {
             .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36")
             .recv_string()
             .await
-            .unwrap();
+            .map_err(|err| anyhow!(err))?;
         let document = Html::parse_document(&response);
 
         if get_html_string!(document, "#tabContents > ul > li.first.focus > div > div:nth-child(1) > div > table > tbody > tr:nth-child(2) > td")
