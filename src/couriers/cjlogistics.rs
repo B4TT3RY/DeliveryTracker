@@ -44,6 +44,20 @@ impl Courier for CJLogistics {
             .unwrap();
         let document = Html::parse_document(&response);
 
+        if get_html_string!(document, "#tabContents > ul > li.first.focus > div > div:nth-child(1) > div > table > tbody > tr:nth-child(2) > td")
+            .contains("조회된 데이터가 없습니다")
+        {
+            return Ok(DeliveryStatus {
+                id: Self::get_id().to_string(),
+                name: Self::get_name().to_string(),
+                tracking_number: self.tracking_number.clone(),
+                sender: None,
+                receiver: None,
+                product: None,
+                tracks: None,
+            });
+        }
+
         let tracking_number = get_html_string!(document, ".last_b:nth-child(1)");
         let sender = get_html_string!(document, ".last_b:nth-child(2)");
         let receiver = get_html_string!(document, ".last_b:nth-child(3)");
