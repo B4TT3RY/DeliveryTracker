@@ -5,7 +5,7 @@ macro_rules! get_html_string {
         $document
             .select(&selector)
             .next()
-            .unwrap()
+            .context("Element not found")?
             .text()
             .map(|str| str.trim())
             .collect::<Vec<_>>()
