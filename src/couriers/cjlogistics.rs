@@ -44,7 +44,7 @@ impl Courier for CJLogistics {
             .map_err(|err| anyhow!(err))?;
         let document = Html::parse_document(&response);
 
-        if get_html_string!(document, "#tabContents > ul > li.first.focus > div > div:nth-child(1) > div > table > tbody > tr:nth-child(2) > td")
+        if get_html_string!(document, "#tabContents div:nth-child(1) table tr:nth-child(2) td")
             .contains("조회된 데이터가 없습니다")
         {
             return Err(anyhow!("{} {} 운송장 번호로 조회된 결과가 없습니다.", Self::get_name(), &self.tracking_number));
@@ -57,13 +57,11 @@ impl Courier for CJLogistics {
 
         let mut tracks: Vec<TrackingStatus> = Vec::new();
         let selector = Selector::parse(
-            "#tabContents > ul > li.first.focus > div > div:nth-child(2) > div > table > tbody",
+            "#tabContents > ul > li.first.focus > div > div:nth-child(2) > div > table > tbody >tr",
         )
         .unwrap();
-        let tr_selector = Selector::parse("tr").unwrap();
-        let parent = document.select(&selector).next().unwrap();
 
-        for element in parent.select(&tr_selector) {
+        for element in document.select(&selector) {
             if element.inner_html().contains("th") {
                 continue;
             }
