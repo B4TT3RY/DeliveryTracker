@@ -73,11 +73,20 @@ impl Courier for ILogen {
         let mut tracks: Vec<TrackingStatus> = Vec::new();
         let selector = Selector::parse("table.data.tkInfo > tbody > tr").unwrap();
         for element in document.select(&selector) {
+            let status = get_html_string!(element, "td:nth-child(3)");
             tracks.push(TrackingStatus {
                 time: get_html_string!(element, "td:nth-child(1)"),
                 location: get_html_string!(element, "td:nth-child(2)"),
-                status: get_html_string!(element, "td:nth-child(3)"),
-                message: Some(get_html_string!(element, "td:nth-child(4)")),
+                status: status.clone(),
+                message: if status == "배송출고" {
+                    Some(format!(
+                        "{} (배송 예정 시간: {})",
+                        get_html_string!(element, "td:nth-child(4)"),
+                        get_html_string!(element, "td:nth-child(6)"),
+                    ).to_string())
+                } else {
+                    Some(get_html_string!(element, "td:nth-child(4)"))
+                },
             });
         }
 
