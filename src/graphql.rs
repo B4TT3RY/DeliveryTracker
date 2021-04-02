@@ -5,12 +5,6 @@ use lazy_static::lazy_static;
 
 use crate::{couriers::courier::CourierType, delivery_status::DeliveryStatus};
 
-struct Delivery;
-
-impl Delivery {
-    
-}
-
 struct QueryRoot;
 
 #[graphql_object]
