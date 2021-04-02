@@ -53,7 +53,7 @@ impl Courier for CUPost {
             }
             let mut cj = cj?;
             cj.id = Self::get_id().to_string();
-            cj.name = format!("{} (국내택배 CJ대한통운)", Self::get_name()).to_string();
+            cj.name = format!("{} (CJ대한통운 국내택배)", Self::get_name()).to_string();
             return Ok(cj);
         }
 
