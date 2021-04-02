@@ -45,10 +45,8 @@ impl Courier for Lotte {
             .unwrap();
         let document = Html::parse_document(&response);
 
-        if document
-            .select(&Selector::parse(".empty").unwrap())
-            .next()
-            .is_some()
+        if get_html_string!(document, "#contents > div > div.contArea > table.tblH.mt60 > tbody > tr > td")
+            .contains("배송정보가 없습니다")
         {
             return Ok(DeliveryStatus {
                 id: Self::get_id().to_string(),
