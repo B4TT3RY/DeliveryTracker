@@ -4,7 +4,9 @@ use regex::Regex;
 use scraper::{Html, Selector};
 
 use crate::{
-    couriers::courier::{Courier, CourierType}, delivery_status::DeliveryStatus, get_html_string,
+    couriers::courier::{Courier, CourierType},
+    delivery_status::DeliveryStatus,
+    get_html_string,
     tracking_status::TrackingStatus,
 };
 
@@ -28,9 +30,7 @@ impl Courier for CUPost {
 
     async fn validate(&self) -> Result<&Self> {
         if !Regex::new(r#"^(\d{1,12})$"#)?.is_match(&self.tracking_number) {
-            return Err(anyhow!(
-                "운송장번호를 최대 12자리까지 입력해주세요."
-            ));
+            return Err(anyhow!("운송장번호를 최대 12자리까지 입력해주세요."));
         }
         Ok(self)
     }
@@ -43,10 +43,11 @@ impl Courier for CUPost {
             .header("Referer", "https://www.cupost.co.kr/postbox/delivery/localResult.cupost")
             .recv_string()
             .await
-            .map_err(|err| anyhow!(err))?;;
+            .map_err(|err| anyhow!(err))?;
 
         if response.contains("<iframe") {
-            let cj = CourierType::track("kr.cjlogistics".to_string(), self.tracking_number.clone()).await;
+            let cj = CourierType::track("kr.cjlogistics".to_string(), self.tracking_number.clone())
+                .await;
             if let Err(err) = cj {
                 return Err(err);
             }
@@ -74,8 +75,14 @@ impl Courier for CUPost {
             });
         }
 
-        let tracking_number = get_html_string!(document, "#gotoMainContents > table:nth-child(5) > tbody > tr:nth-child(1) > td:nth-child(2)");
-        let product = get_html_string!(document, "#gotoMainContents > table:nth-child(5) > tbody > tr:nth-child(1) > td:nth-child(4)");
+        let tracking_number = get_html_string!(
+            document,
+            "#gotoMainContents > table:nth-child(5) > tbody > tr:nth-child(1) > td:nth-child(2)"
+        );
+        let product = get_html_string!(
+            document,
+            "#gotoMainContents > table:nth-child(5) > tbody > tr:nth-child(1) > td:nth-child(4)"
+        );
         let sender = format!(
             "{} ({})",
             get_html_string!(document, "#gotoMainContents > table:nth-child(5) > tbody > tr:nth-child(3) > td:nth-child(2)"),
@@ -89,7 +96,8 @@ impl Courier for CUPost {
 
         let regex = Regex::new(r#"^(\d{4}.\d{2}.\d{2})(.|\n)*(\d{2}:\d{2})$"#)?;
         let mut tracks: Vec<TrackingStatus> = Vec::new();
-        let selector = Selector::parse("#gotoMainContents > table:nth-child(10) > tbody > tr").unwrap();
+        let selector =
+            Selector::parse("#gotoMainContents > table:nth-child(10) > tbody > tr").unwrap();
         for element in document.select(&selector) {
             let time = get_html_string!(element, "td:nth-child(1)");
             let cap = regex.captures(&time).unwrap();

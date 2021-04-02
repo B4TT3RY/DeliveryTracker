@@ -4,8 +4,8 @@ use async_trait::async_trait;
 use crate::delivery_status::DeliveryStatus;
 
 use super::{
-    cjlogistics::CJLogistics, epost::EPost, gspostbox::GSPostbox, hanjin::Hanjin, ilogen::ILogen,
-    lotte::Lotte, cupost::CUPost
+    cjlogistics::CJLogistics, cupost::CUPost, epost::EPost, gspostbox::GSPostbox, hanjin::Hanjin,
+    ilogen::ILogen, lotte::Lotte,
 };
 
 #[async_trait]

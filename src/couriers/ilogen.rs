@@ -79,11 +79,14 @@ impl Courier for ILogen {
                 location: get_html_string!(element, "td:nth-child(2)"),
                 status: status.clone(),
                 message: if status == "배송출고" {
-                    Some(format!(
-                        "{} (배송 예정 시간: {})",
-                        get_html_string!(element, "td:nth-child(4)"),
-                        get_html_string!(element, "td:nth-child(6)"),
-                    ).to_string())
+                    Some(
+                        format!(
+                            "{} (배송 예정 시간: {})",
+                            get_html_string!(element, "td:nth-child(4)"),
+                            get_html_string!(element, "td:nth-child(6)"),
+                        )
+                        .to_string(),
+                    )
                 } else {
                     Some(get_html_string!(element, "td:nth-child(4)"))
                 },

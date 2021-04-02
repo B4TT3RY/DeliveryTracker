@@ -4,7 +4,9 @@ use regex::Regex;
 use serde_json::Value;
 
 use crate::{
-    couriers::courier::{Courier, CourierType}, delivery_status::DeliveryStatus, tracking_status::TrackingStatus,
+    couriers::courier::{Courier, CourierType},
+    delivery_status::DeliveryStatus,
+    tracking_status::TrackingStatus,
 };
 
 pub struct GSPostbox {
@@ -41,7 +43,7 @@ impl Courier for GSPostbox {
         let regex = Regex::new("(var trackingInfo = )(.+)(;)")?;
         let capture = regex.captures(&response).unwrap();
         let json = capture.get(2).map_or("", |m| m.as_str());
-        
+
         let json = serde_json::from_str::<Value>(json)?;
 
         if json["code"].as_i64().unwrap() != 200 {
@@ -63,7 +65,8 @@ impl Courier for GSPostbox {
         );
 
         if json["carrierName"].as_str().unwrap_or("") == "CJ대한통운" {
-            let cj = CourierType::track("kr.cjlogistics".to_string(), self.tracking_number.clone()).await;
+            let cj = CourierType::track("kr.cjlogistics".to_string(), self.tracking_number.clone())
+                .await;
             if let Err(err) = cj {
                 return Err(err);
             }
