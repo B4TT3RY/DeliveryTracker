@@ -81,9 +81,9 @@ impl Courier for ILogen {
                 message: if status == "배송출고" {
                     Some(
                         format!(
-                            "{} (배송 예정 시간: {})",
+                            "{} ({} 배송 예정)",
                             get_html_string!(element, "td:nth-child(4)"),
-                            get_html_string!(element, "td:nth-child(6)"),
+                            get_html_string!(element, "td:nth-child(6)").replace("배송", ""),
                         )
                         .to_string(),
                     )
