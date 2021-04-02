@@ -1,7 +1,5 @@
-use serde::{Deserialize, Serialize};
 use juniper::GraphQLObject;
-
-use crate::tracking_status::TrackingStatus;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, GraphQLObject)]
 pub struct DeliveryStatus {
@@ -12,4 +10,12 @@ pub struct DeliveryStatus {
     pub receiver: Option<String>,
     pub product: Option<String>,
     pub tracks: Option<Vec<TrackingStatus>>,
+}
+
+#[derive(Debug, Serialize, Deserialize, GraphQLObject)]
+pub struct TrackingStatus {
+    pub time: String,
+    pub location: String,
+    pub status: String,
+    pub message: Option<String>,
 }

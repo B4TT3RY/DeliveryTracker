@@ -1,7 +1,7 @@
 use anyhow::{anyhow, Result};
 use async_trait::async_trait;
 
-use crate::delivery_status::DeliveryStatus;
+use crate::status_struct::DeliveryStatus;
 
 use super::{
     cjlogistics::CJLogistics, cupost::CUPost, epost::EPost, gspostbox::GSPostbox, hanjin::Hanjin,

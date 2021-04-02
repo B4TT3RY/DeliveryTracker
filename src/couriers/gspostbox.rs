@@ -5,8 +5,7 @@ use serde_json::Value;
 
 use crate::{
     couriers::courier::{Courier, CourierType},
-    delivery_status::DeliveryStatus,
-    tracking_status::TrackingStatus,
+    status_struct::{DeliveryStatus, TrackingStatus},
 };
 
 pub struct GSPostbox {
@@ -47,7 +46,11 @@ impl Courier for GSPostbox {
         let json = serde_json::from_str::<Value>(json)?;
 
         if json["code"].as_i64().unwrap() != 200 {
-            return Err(anyhow!("{} {} 운송장 번호로 조회된 결과가 없습니다.", Self::get_name(), &self.tracking_number));
+            return Err(anyhow!(
+                "{} {} 운송장 번호로 조회된 결과가 없습니다.",
+                Self::get_name(),
+                &self.tracking_number
+            ));
         }
 
         let name = format!(

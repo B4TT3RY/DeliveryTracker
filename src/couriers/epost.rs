@@ -4,8 +4,9 @@ use regex::Regex;
 use scraper::{Html, Selector};
 
 use crate::{
-    couriers::courier::Courier, delivery_status::DeliveryStatus, get_html_string,
-    tracking_status::TrackingStatus,
+    couriers::courier::Courier,
+    get_html_string,
+    status_struct::{DeliveryStatus, TrackingStatus},
 };
 
 pub struct EPost {
@@ -48,7 +49,11 @@ impl Courier for EPost {
             .next()
             .is_some()
         {
-            return Err(anyhow!("{} {} 운송장 번호로 조회된 결과가 없습니다.", Self::get_name(), &self.tracking_number));
+            return Err(anyhow!(
+                "{} {} 운송장 번호로 조회된 결과가 없습니다.",
+                Self::get_name(),
+                &self.tracking_number
+            ));
         }
 
         let tracking_number = get_html_string!(document, "#print > table > tbody > tr > th");
@@ -58,7 +63,7 @@ impl Courier for EPost {
         let regex = Regex::new("\n|\t| $")?;
         let mut tracks: Vec<TrackingStatus> = Vec::new();
         let selector = Selector::parse("#processTable > tbody > tr").unwrap();
-        
+
         for element in document.select(&selector) {
             tracks.push(TrackingStatus {
                 time: format!(
@@ -67,7 +72,9 @@ impl Courier for EPost {
                     get_html_string!(element, "td:nth-child(2)")
                 ),
                 location: get_html_string!(element, "td:nth-child(3)"),
-                status: regex.replace_all(&get_html_string!(element, "td:nth-child(4)"), "").to_string(),
+                status: regex
+                    .replace_all(&get_html_string!(element, "td:nth-child(4)"), "")
+                    .to_string(),
                 message: None,
             });
         }

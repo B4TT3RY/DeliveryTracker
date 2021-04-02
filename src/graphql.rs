@@ -1,9 +1,12 @@
-use surf::{Body, StatusCode, http::mime};
-use tide::{Request, Response};
-use juniper::{EmptyMutation, EmptySubscription, FieldError, FieldResult, RootNode, graphql_object, http::GraphQLRequest};
+use juniper::{
+    graphql_object, http::GraphQLRequest, EmptyMutation, EmptySubscription, FieldError,
+    FieldResult, RootNode,
+};
 use lazy_static::lazy_static;
+use surf::{http::mime, Body, StatusCode};
+use tide::{Request, Response};
 
-use crate::{couriers::courier::CourierType, delivery_status::DeliveryStatus};
+use crate::{couriers::courier::CourierType, status_struct::DeliveryStatus};
 
 struct QueryRoot;
 
@@ -19,7 +22,8 @@ impl QueryRoot {
 
 type Schema = RootNode<'static, QueryRoot, EmptyMutation, EmptySubscription>;
 lazy_static! {
-    static ref SCHEMA: Schema = Schema::new(QueryRoot {}, EmptyMutation::new(), EmptySubscription::new());
+    static ref SCHEMA: Schema =
+        Schema::new(QueryRoot {}, EmptyMutation::new(), EmptySubscription::new());
 }
 
 pub async fn handle_graphql(mut request: Request<()>) -> tide::Result {
@@ -37,9 +41,9 @@ pub async fn handle_graphql(mut request: Request<()>) -> tide::Result {
 }
 
 pub async fn handle_playground(_: Request<()>) -> tide::Result<impl Into<Response>> {
-    Ok(
-        Response::builder(200)
-            .body(juniper::http::playground::playground_source("/graphql", None))
-            .content_type(mime::HTML)
-    )
+    Ok(Response::builder(200)
+        .body(juniper::http::playground::playground_source(
+            "/graphql", None,
+        ))
+        .content_type(mime::HTML))
 }

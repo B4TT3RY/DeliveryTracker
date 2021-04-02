@@ -4,8 +4,9 @@ use regex::Regex;
 use scraper::{Html, Selector};
 
 use crate::{
-    couriers::courier::Courier, delivery_status::DeliveryStatus, get_html_string,
-    tracking_status::TrackingStatus,
+    couriers::courier::Courier,
+    get_html_string,
+    status_struct::{DeliveryStatus, TrackingStatus},
 };
 
 pub struct Lotte {
@@ -51,7 +52,11 @@ impl Courier for Lotte {
         )
         .contains("배송정보가 없습니다")
         {
-            return Err(anyhow!("{} {} 운송장 번호로 조회된 결과가 없습니다.", Self::get_name(), &self.tracking_number));
+            return Err(anyhow!(
+                "{} {} 운송장 번호로 조회된 결과가 없습니다.",
+                Self::get_name(),
+                &self.tracking_number
+            ));
         }
 
         let mut tracks: Vec<TrackingStatus> = Vec::new();
