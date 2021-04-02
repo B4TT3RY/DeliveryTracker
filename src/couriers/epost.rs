@@ -55,8 +55,10 @@ impl Courier for EPost {
         let sender = get_html_string!(document, "#print > table > tbody > tr > td:nth-child(2)");
         let receiver = get_html_string!(document, "#print > table > tbody > tr > td:nth-child(3)");
 
+        let regex = Regex::new("\n|\t| $")?;
         let mut tracks: Vec<TrackingStatus> = Vec::new();
         let selector = Selector::parse("#processTable > tbody > tr").unwrap();
+        
         for element in document.select(&selector) {
             tracks.push(TrackingStatus {
                 time: format!(
@@ -65,7 +67,7 @@ impl Courier for EPost {
                     get_html_string!(element, "td:nth-child(2)")
                 ),
                 location: get_html_string!(element, "td:nth-child(3)"),
-                status: get_html_string!(element, "td:nth-child(4)"),
+                status: regex.replace_all(&get_html_string!(element, "td:nth-child(4)"), "").to_string(),
                 message: None,
             });
         }
