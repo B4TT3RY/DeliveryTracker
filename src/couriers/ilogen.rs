@@ -46,15 +46,7 @@ impl Courier for ILogen {
             .next()
             .is_some()
         {
-            return Ok(DeliveryStatus {
-                id: Self::get_id().to_string(),
-                name: Self::get_name().to_string(),
-                tracking_number: self.tracking_number.clone(),
-                sender: None,
-                receiver: None,
-                product: None,
-                tracks: None,
-            });
+            return Err(anyhow!("{} {} 운송장 번호로 조회된 결과가 없습니다.", Self::get_name(), &self.tracking_number));
         }
 
         let product = get_html_string!(

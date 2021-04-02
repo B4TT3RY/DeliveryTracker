@@ -1,6 +1,6 @@
 use surf::{Body, StatusCode, http::mime};
 use tide::{Request, Response};
-use juniper::{EmptyMutation, EmptySubscription, RootNode, graphql_object, http::GraphQLRequest};
+use juniper::{EmptyMutation, EmptySubscription, FieldError, FieldResult, RootNode, graphql_object, http::GraphQLRequest};
 use lazy_static::lazy_static;
 
 use crate::{couriers::courier::CourierType, delivery_status::DeliveryStatus};
@@ -15,12 +15,11 @@ struct QueryRoot;
 
 #[graphql_object]
 impl QueryRoot {
-    async fn track(id: String, tracking_number: String) -> Option<DeliveryStatus> {
-        let result = CourierType::track(id, tracking_number).await;
-        if let Err(_) = result {
-            return None;
-        }
-        return result.ok();
+    async fn track(id: String, tracking_number: String) -> FieldResult<DeliveryStatus> {
+        let result = CourierType::track(id, tracking_number)
+            .await
+            .map_err(|err| FieldError::from(err));
+        result
     }
 }
 

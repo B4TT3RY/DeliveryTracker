@@ -46,15 +46,7 @@ impl Courier for Hanjin {
             .next()
             .is_none()
         {
-            return Ok(DeliveryStatus {
-                id: Self::get_id().to_string(),
-                name: Self::get_name().to_string(),
-                tracking_number: self.tracking_number.clone(),
-                sender: None,
-                receiver: None,
-                product: None,
-                tracks: None,
-            });
+            return Err(anyhow!("{} {} 운송장 번호로 조회된 결과가 없습니다.", Self::get_name(), &self.tracking_number));
         }
 
         let tracking_number = get_html_string!(document, "div.songjang-num > span.num");
