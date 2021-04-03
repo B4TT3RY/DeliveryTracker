@@ -62,7 +62,7 @@ impl Courier for Hanjin {
         let mut tracks: Vec<TrackingStatus> = Vec::new();
         let selector = Selector::parse("div.waybill-tbl > table > tbody > tr").unwrap();
         for element in document.select(&selector) {
-            let status = get_html_string!(element, ".stateDesc > strong");
+            let status = get_html_string!(element, ".stateDesc > strong:last-child");
             tracks.push(TrackingStatus {
                 state: StateType::to_type(CourierType::get_courier(Self::get_id().to_string(), None)?, &status),
                 time: format!(
