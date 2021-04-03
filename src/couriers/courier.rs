@@ -28,7 +28,8 @@ pub enum CourierType {
 }
 
 impl CourierType {
-    pub fn get_courier(id: String, tracking_number: String) -> Result<CourierType> {
+    pub fn get_courier(id: String, tracking_number: Option<String>) -> Result<CourierType> {
+        let tracking_number = tracking_number.unwrap_or(String::new());
         match id.as_str() {
             "kr.cjlogistics" => Ok(CourierType::CJLogistics(CJLogistics { tracking_number })),
             "kr.epost" => Ok(CourierType::EPost(EPost { tracking_number })),
@@ -42,7 +43,7 @@ impl CourierType {
     }
 
     pub async fn track(id: String, tracking_number: String) -> Result<DeliveryStatus> {
-        match CourierType::get_courier(id, tracking_number)? {
+        match CourierType::get_courier(id, Some(tracking_number))? {
             CourierType::CJLogistics(courier) => courier.validate().await?.track().await,
             CourierType::EPost(courier) => courier.validate().await?.track().await,
             CourierType::ILogen(courier) => courier.validate().await?.track().await,
