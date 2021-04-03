@@ -6,7 +6,7 @@ use scraper::{Html, Selector};
 use crate::{
     couriers::courier::{Courier, CourierType},
     get_html_string,
-    status_struct::{DeliveryStatus, TrackingStatus},
+    status_struct::{DeliveryStatus, TrackingStatus, StateType},
 };
 
 pub struct CUPost {
@@ -94,6 +94,7 @@ impl Courier for CUPost {
         let selector =
             Selector::parse("#gotoMainContents > table:nth-child(10) > tbody > tr").unwrap();
         for element in document.select(&selector) {
+            let status = get_html_string!(element, "td:nth-child(3)");
             let time = get_html_string!(element, "td:nth-child(1)");
             let cap = regex.captures(&time).unwrap();
             let time = format!(
@@ -102,9 +103,10 @@ impl Courier for CUPost {
                 cap.get(3).map_or("", |m| m.as_str())
             );
             tracks.push(TrackingStatus {
+                state: StateType::to_type(CourierType::get_courier(Self::get_id().to_string(), None)?, &status),
                 time,
                 location: get_html_string!(element, "td:nth-child(2)"),
-                status: get_html_string!(element, "td:nth-child(3)"),
+                status,
                 message: None,
             });
         }

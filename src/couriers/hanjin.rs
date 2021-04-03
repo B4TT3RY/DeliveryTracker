@@ -4,9 +4,9 @@ use regex::Regex;
 use scraper::{Html, Selector};
 
 use crate::{
-    couriers::courier::Courier,
+    couriers::courier::{Courier, CourierType},
     get_html_string,
-    status_struct::{DeliveryStatus, TrackingStatus},
+    status_struct::{DeliveryStatus, TrackingStatus, StateType},
 };
 
 pub struct Hanjin {
@@ -62,14 +62,16 @@ impl Courier for Hanjin {
         let mut tracks: Vec<TrackingStatus> = Vec::new();
         let selector = Selector::parse("div.waybill-tbl > table > tbody > tr").unwrap();
         for element in document.select(&selector) {
+            let status = get_html_string!(element, ".stateDesc > strong");
             tracks.push(TrackingStatus {
+                state: StateType::to_type(CourierType::get_courier(Self::get_id().to_string(), None)?, &status),
                 time: format!(
                     "{} {}",
                     get_html_string!(element, ".w-date"),
                     get_html_string!(element, ".w-time")
                 ),
                 location: get_html_string!(element, ".w-org"),
-                status: get_html_string!(element, ".stateDesc > strong"),
+                status,
                 message: Some(get_html_string!(element, ".stateDesc")),
             });
         }

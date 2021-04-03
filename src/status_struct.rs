@@ -33,10 +33,10 @@ pub enum StateType {
 }
 
 impl StateType {
-    pub fn to_type(courier_type: CourierType, status: String) -> Self {
+    pub fn to_type(courier_type: CourierType, status: &str) -> Self {
         match courier_type {
             CourierType::CJLogistics(_) => {
-                match status.as_str() {
+                match status {
                     "상품인수" => Self::Shipped,
                     "상품이동중" | "배달지도착" => Self::InTransit,
                     "배달출발" => Self::OutForDelivery,

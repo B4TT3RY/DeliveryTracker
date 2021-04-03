@@ -4,9 +4,9 @@ use regex::Regex;
 use scraper::{Html, Selector};
 
 use crate::{
-    couriers::courier::Courier,
+    couriers::courier::{Courier, CourierType},
     get_html_string,
-    status_struct::{DeliveryStatus, TrackingStatus},
+    status_struct::{DeliveryStatus, TrackingStatus, StateType},
 };
 
 pub struct Lotte {
@@ -62,10 +62,12 @@ impl Courier for Lotte {
         let mut tracks: Vec<TrackingStatus> = Vec::new();
         let selector = Selector::parse("div.contArea > table:nth-child(4) > tbody > tr").unwrap();
         for element in document.select(&selector) {
+            let status = get_html_string!(element, "td:nth-child(1)");
             tracks.push(TrackingStatus {
+                state: StateType::to_type(CourierType::get_courier(Self::get_id().to_string(), None)?, &status),
                 time: get_html_string!(element, "td:nth-child(2)"),
                 location: get_html_string!(element, "td:nth-child(3)"),
-                status: get_html_string!(element, "td:nth-child(1)"),
+                status,
                 message: Some(get_html_string!(element, "td:nth-child(4)")),
             });
         }

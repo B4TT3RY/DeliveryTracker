@@ -4,9 +4,9 @@ use regex::Regex;
 use scraper::{Html, Selector};
 
 use crate::{
-    couriers::courier::Courier,
+    couriers::courier::{Courier, CourierType},
     get_html_string,
-    status_struct::{DeliveryStatus, TrackingStatus},
+    status_struct::{DeliveryStatus, TrackingStatus, StateType},
 };
 
 pub struct CJLogistics {
@@ -74,10 +74,13 @@ impl Courier for CJLogistics {
                 continue;
             }
 
+            let status = get_html_string!(element, "td:nth-child(1)");
+
             tracks.push(TrackingStatus {
+                state: StateType::to_type(CourierType::get_courier(Self::get_id().to_string(), None)?, &status),
                 time: get_html_string!(element, "td:nth-child(2)"),
                 location: get_html_string!(element, "td > a"),
-                status: get_html_string!(element, "td:nth-child(1)"),
+                status,
                 message: Some(get_html_string!(element, "td:nth-child(3)")),
             });
         }

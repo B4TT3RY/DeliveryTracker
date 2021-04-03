@@ -5,7 +5,7 @@ use serde_json::Value;
 
 use crate::{
     couriers::courier::{Courier, CourierType},
-    status_struct::{DeliveryStatus, TrackingStatus},
+    status_struct::{DeliveryStatus, TrackingStatus, StateType},
 };
 
 pub struct GSPostbox {
@@ -78,18 +78,20 @@ impl Courier for GSPostbox {
 
         let mut tracks: Vec<TrackingStatus> = Vec::new();
         for value in json["trackingDetails"].as_array().unwrap() {
+            let status = value["transKind"]
+                .as_str()
+                .unwrap_or("")
+                .replace("  ", " ")
+                .to_string();
             tracks.push(TrackingStatus {
+                state: StateType::to_type(CourierType::get_courier(Self::get_id().to_string(), None)?, &status),
                 time: value["transTime"]
                     .as_str()
                     .unwrap_or("")
                     .replace("T", " ")
                     .to_string(),
                 location: value["transWhere"].as_str().unwrap_or("").to_string(),
-                status: value["transKind"]
-                    .as_str()
-                    .unwrap_or("")
-                    .replace("  ", " ")
-                    .to_string(),
+                status,
                 message: None,
             });
         }
