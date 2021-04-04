@@ -21,5 +21,8 @@ regex = "1.4.5"
 juniper = "0.15.4"
 lazy_static = "1.4.0"
 
-[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+[target.'cfg(not(unix))'.dependencies]
+surf = { version = "2.2.0", default-features = false, features = ["wasm-client", "encoding"] }
+
+[target.'cfg(unix)'.dependencies]
 surf = "2.2.0"
