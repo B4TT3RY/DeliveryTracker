@@ -5,30 +5,47 @@ use crate::couriers::courier::CourierType;
 
 #[derive(Debug, Serialize, Deserialize, GraphQLObject)]
 pub struct DeliveryStatus {
+    #[graphql(description="택배사 ID")]
     pub id: String,
+    #[graphql(description="택배사 이름")]
     pub name: String,
+    #[graphql(description="운송장 번호")]
     pub tracking_number: String,
+    #[graphql(description="보내는 사람")]
     pub sender: Option<String>,
+    #[graphql(description="받는 사람")]
     pub receiver: Option<String>,
+    #[graphql(description="상품 이름")]
     pub product: Option<String>,
+    #[graphql(description="처리 단계")]
     pub tracks: Option<Vec<TrackingStatus>>,
 }
 
 #[derive(Debug, Serialize, Deserialize, GraphQLObject)]
 pub struct TrackingStatus {
+    #[graphql(description="현재 단계")]
     pub state: StateType,
+    #[graphql(description="처리 시각")]
     pub time: String,
+    #[graphql(description="처리 위치")]
     pub location: String,
+    #[graphql(description="현재 단계")]
     pub status: String,
+    #[graphql(description="상태 메세지")]
     pub message: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, GraphQLEnum)]
 pub enum StateType {
+    #[graphql(description="택배 집하")]
     Shipped,
+    #[graphql(description="택배 이동중")]
     InTransit,
+    #[graphql(description="배송 출발")]
     OutForDelivery,
+    #[graphql(description="배송 완료")]
     Delivered,
+    #[graphql(description="알 수 없음")]
     Unknown,
 }
 
