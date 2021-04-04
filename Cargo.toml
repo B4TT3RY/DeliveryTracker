@@ -7,8 +7,8 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [features]
-default = ["tide"]
-wasm = ["surf/wasm-client"]
+default = ["tide", "surf"]
+wasm = ["surf", "surf/wasm-client"]
 
 [dependencies]
 anyhow = "1.0.40"
@@ -16,7 +16,7 @@ async-std = { version = "1.9.0", features = ["attributes"] }
 async-trait = "0.1.48"
 scraper = "0.12.0"
 tide = { version = "0.16.0", optional = true }
-surf = "2.2.0"
+surf = { version = "2.2.0", optional = true }
 serde = "1.0.125"
 serde_json = "1.0.64"
 regex = "1.4.5"
