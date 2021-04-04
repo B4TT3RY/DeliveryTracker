@@ -1,10 +1,5 @@
 use anyhow::Result;
-
-pub mod api;
-pub mod couriers;
-pub mod graphql;
-pub mod macros;
-pub mod status_struct;
+use deliverytracker::api;
 
 #[async_std::main]
 async fn main() -> Result<()> {
