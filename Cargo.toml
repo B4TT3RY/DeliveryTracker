@@ -8,7 +8,7 @@ edition = "2018"
 
 [features]
 default = ["tide", "surf"]
-wasm = ["surf/wasm-client,encoding"]
+wasm = ["surf/wasm-client", "surf/encoding"]
 
 [dependencies]
 anyhow = "1.0.40"
