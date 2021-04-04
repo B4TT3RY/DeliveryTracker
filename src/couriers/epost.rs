@@ -6,7 +6,7 @@ use scraper::{Html, Selector};
 use crate::{
     couriers::courier::{Courier, CourierType},
     get_html_string,
-    status_struct::{DeliveryStatus, TrackingStatus, StateType},
+    status_struct::{DeliveryStatus, StateType, TrackingStatus},
 };
 
 pub struct EPost {
@@ -69,7 +69,10 @@ impl Courier for EPost {
                 .replace_all(&get_html_string!(element, "td:nth-child(4)"), "")
                 .to_string();
             tracks.push(TrackingStatus {
-                state: StateType::to_type(CourierType::get_courier(Self::get_id().to_string(), None)?, &status),
+                state: StateType::to_type(
+                    CourierType::get_courier(Self::get_id().to_string(), None)?,
+                    &status,
+                ),
                 time: format!(
                     "{} {}",
                     get_html_string!(element, "td:nth-child(1)"),

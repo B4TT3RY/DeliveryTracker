@@ -6,7 +6,7 @@ use scraper::{Html, Selector};
 use crate::{
     couriers::courier::{Courier, CourierType},
     get_html_string,
-    status_struct::{DeliveryStatus, TrackingStatus, StateType},
+    status_struct::{DeliveryStatus, StateType, TrackingStatus},
 };
 
 pub struct Hanjin {
@@ -64,7 +64,10 @@ impl Courier for Hanjin {
         for element in document.select(&selector) {
             let status = get_html_string!(element, ".stateDesc > strong:last-child");
             tracks.push(TrackingStatus {
-                state: StateType::to_type(CourierType::get_courier(Self::get_id().to_string(), None)?, &status),
+                state: StateType::to_type(
+                    CourierType::get_courier(Self::get_id().to_string(), None)?,
+                    &status,
+                ),
                 time: format!(
                     "{} {}",
                     get_html_string!(element, ".w-date"),

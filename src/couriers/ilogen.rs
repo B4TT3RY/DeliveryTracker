@@ -6,7 +6,7 @@ use scraper::{Html, Selector};
 use crate::{
     couriers::courier::{Courier, CourierType},
     get_html_string,
-    status_struct::{DeliveryStatus, TrackingStatus, StateType},
+    status_struct::{DeliveryStatus, StateType, TrackingStatus},
 };
 
 pub struct ILogen {
@@ -72,7 +72,10 @@ impl Courier for ILogen {
         for element in document.select(&selector) {
             let status = get_html_string!(element, "td:nth-child(3)");
             tracks.push(TrackingStatus {
-                state: StateType::to_type(CourierType::get_courier(Self::get_id().to_string(), None)?, &status),
+                state: StateType::to_type(
+                    CourierType::get_courier(Self::get_id().to_string(), None)?,
+                    &status,
+                ),
                 time: get_html_string!(element, "td:nth-child(1)"),
                 location: get_html_string!(element, "td:nth-child(2)"),
                 status: status.clone(),
