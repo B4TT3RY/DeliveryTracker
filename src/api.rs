@@ -1,11 +1,6 @@
 use anyhow::Result;
-use serde_json::json;
-use tide::{Request, Response};
 
-use crate::{
-    couriers::courier::CourierType,
-    graphql::{handle_graphql, handle_playground},
-};
+use crate::graphql::{handle_graphql, handle_playground};
 
 pub async fn start_api_server() -> Result<()> {
     let mut app = tide::new();
