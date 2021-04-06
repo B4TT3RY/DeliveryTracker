@@ -1,16 +1,13 @@
 #[macro_export]
 macro_rules! get_html_string {
     ($document:ident, $selector:expr) => {{
-        let selector = Selector::parse($selector).unwrap();
-        $document
-            .select(&selector)
-            .next()
-            .context("Element not found")?
-            .text()
-            .map(|str| str.trim())
-            .collect::<Vec<_>>()
-            .join(" ")
-            .replace("  ", " ")
+        let result = $document
+            .select(&Selector::parse($selector).unwrap())
+            .flat_map(|el| el.text())
+            .collect::<String>();
+        let result = Regex::new(r#"(\s{2,}|\n|\t)"#).unwrap().replace_all(&result, " ").to_string();
+        result
+            .trim()
             .to_string()
     }};
 }

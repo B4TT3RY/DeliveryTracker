@@ -1,4 +1,4 @@
-use anyhow::{anyhow, Context, Result};
+use anyhow::{anyhow, Result};
 use async_trait::async_trait;
 use regex::Regex;
 use scraper::{Html, Selector};
@@ -60,14 +60,11 @@ impl Courier for EPost {
         let sender = get_html_string!(document, "#print > table > tbody > tr > td:nth-child(2)");
         let receiver = get_html_string!(document, "#print > table > tbody > tr > td:nth-child(3)");
 
-        let regex = Regex::new("\n|\t| $")?;
         let mut tracks: Vec<TrackingStatus> = Vec::new();
         let selector = Selector::parse("#processTable > tbody > tr").unwrap();
 
         for element in document.select(&selector) {
-            let status = regex
-                .replace_all(&get_html_string!(element, "td:nth-child(4)"), "")
-                .to_string();
+            let status = get_html_string!(element, "td:nth-child(4)");
             tracks.push(TrackingStatus {
                 state: StateType::to_type(
                     CourierType::get_courier(Self::get_id().to_string(), None)?,
