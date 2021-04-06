@@ -5,8 +5,9 @@ macro_rules! get_html_string {
             .select(&Selector::parse($selector).unwrap())
             .flat_map(|el| el.text())
             .collect::<String>();
-        let result = Regex::new(r#"(\s{2,}|\n|\t)"#).unwrap().replace_all(&result, " ").to_string();
-        result
+        Regex::new(r#"(\s{2,}|\n|\t)"#)
+            .unwrap()
+            .replace_all(&result, " ")
             .trim()
             .to_string()
     }};
