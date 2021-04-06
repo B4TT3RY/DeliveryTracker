@@ -85,7 +85,7 @@ impl StateType {
                 _ => Self::Unknown,
             },
             CourierType::Hanjin(_) => match status {
-                "접수" => Self::Shipped,
+                "접수" | "입고" => Self::Shipped,
                 "이동중" | "도착" | "배송준비중" => Self::InTransit,
                 "배송출발" => Self::OutForDelivery,
                 "배송완료" => Self::Delivered,

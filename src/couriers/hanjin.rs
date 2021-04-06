@@ -59,10 +59,12 @@ impl Courier for Hanjin {
         let receiver = get_html_string!(document, r#"td[data-label="받는 분"]"#);
         let product = get_html_string!(document, r#"td[data-label="상품명"]"#);
 
+        let regex = Regex::new("(접수|입고|이동중|도착|배송준비중|배송출발|배송완료)").unwrap();
         let mut tracks: Vec<TrackingStatus> = Vec::new();
         let selector = Selector::parse("div.waybill-tbl > table > tbody > tr").unwrap();
         for element in document.select(&selector) {
-            let status = get_html_string!(element, ".stateDesc > strong:last-child");
+            let message = get_html_string!(element, ".stateDesc");
+            let status = regex.captures(&message).unwrap().get(0).unwrap().as_str();
             tracks.push(TrackingStatus {
                 state: StateType::to_type(
                     CourierType::get_courier(Self::get_id().to_string(), None)?,
@@ -74,8 +76,8 @@ impl Courier for Hanjin {
                     get_html_string!(element, ".w-time")
                 ),
                 location: get_html_string!(element, ".w-org"),
-                status,
-                message: Some(get_html_string!(element, ".stateDesc")),
+                status: status.to_string(),
+                message: Some(message),
             });
         }
 
