@@ -58,10 +58,10 @@ impl Courier for CJLogistics {
             ));
         }
 
-        let tracking_number = get_html_string!(document, ".last_b:nth-child(1)");
-        let sender = get_html_string!(document, ".last_b:nth-child(2)");
-        let receiver = get_html_string!(document, ".last_b:nth-child(3)");
-        let product = get_html_string!(document, ".last_b:nth-child(4)");
+        let tracking_number = get_html_string!(document, "#tabContents > ul > li.first.focus > div > div:nth-child(1) > div > table > tbody > tr:nth-child(2) > td:nth-child(1)");
+        let sender = get_html_string!(document, "#tabContents > ul > li.first.focus > div > div:nth-child(1) > div > table > tbody > tr:nth-child(2) > td:nth-child(2)");
+        let receiver = get_html_string!(document, "#tabContents > ul > li.first.focus > div > div:nth-child(1) > div > table > tbody > tr:nth-child(2) > td:nth-child(3)");
+        let product = get_html_string!(document, "#tabContents > ul > li.first.focus > div > div:nth-child(1) > div > table > tbody > tr:nth-child(2) > td:nth-child(4)");
 
         let mut tracks: Vec<TrackingStatus> = Vec::new();
         let selector = Selector::parse(
