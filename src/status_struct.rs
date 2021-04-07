@@ -37,8 +37,10 @@ pub struct TrackingStatus {
 
 #[derive(Debug, Serialize, Deserialize, GraphQLEnum)]
 pub enum StateType {
+    #[graphql(description = "택배 정보 접수")]
+    InformationReceived,
     #[graphql(description = "택배 집하")]
-    Shipped,
+    AtPickup,
     #[graphql(description = "택배 이동중")]
     InTransit,
     #[graphql(description = "배송 출발")]
@@ -53,7 +55,7 @@ impl StateType {
     pub fn to_type(courier_type: CourierType, status: &str) -> Self {
         match courier_type {
             CourierType::CJLogistics(_) => match status {
-                "상품인수" => Self::Shipped,
+                "상품인수" => Self::AtPickup,
                 "상품이동중" | "배달지도착" => Self::InTransit,
                 "배달출발" => Self::OutForDelivery,
                 "배달완료" => Self::Delivered,
@@ -71,21 +73,22 @@ impl StateType {
                 }
             }
             CourierType::ILogen(_) => match status {
-                "집하완료" => Self::Shipped,
+                "집하완료" => Self::AtPickup,
                 "터미널입고" | "터미널출고" | "배송입고" => Self::InTransit,
                 "배송출고" => Self::OutForDelivery,
                 "배송완료" => Self::Delivered,
                 _ => Self::Unknown,
             },
             CourierType::Lotte(_) => match status {
-                "상품접수" => Self::Shipped,
+                "상품접수" => Self::AtPickup,
                 "상품 이동중" => Self::InTransit,
                 "배송 출발" => Self::OutForDelivery,
                 "배달 완료" => Self::Delivered,
                 _ => Self::Unknown,
             },
             CourierType::Hanjin(_) => match status {
-                "접수" | "입고" => Self::Shipped,
+                "접수" => Self::InformationReceived,
+                "입고" => Self::AtPickup,
                 "이동중" | "도착" | "배송준비중" => Self::InTransit,
                 "배송출발" => Self::OutForDelivery,
                 "배송완료" => Self::Delivered,
@@ -93,11 +96,12 @@ impl StateType {
             },
             CourierType::GSPostbox(_) => {
                 if status == "점포접수" {
-                    Self::Shipped
-                } else if status.contains("배송기사")
-                    || status.contains("입고")
+                    Self::InformationReceived
+                } else if status.contains("인수") {
+                    Self::AtPickup
+                } else if status.contains("입고")
                     || status.contains("출고")
-                {
+                    || status.contains("인계") {
                     Self::InTransit
                 } else if status == "점포도착" {
                     Self::OutForDelivery
@@ -109,7 +113,7 @@ impl StateType {
             }
             CourierType::CUPost(_) => {
                 if status.contains("점포접수") {
-                    Self::Shipped
+                    Self::AtPickup
                 } else if status.contains("입고") || status.contains("출고") {
                     Self::InTransit
                 } else if status.contains("도착") {
