@@ -1,7 +1,7 @@
 use anyhow::{anyhow, Result};
 use async_trait::async_trait;
+use nipper::Document;
 use regex::Regex;
-use scraper::{Html, Selector};
 
 use crate::{
     couriers::courier::{Courier, CourierType},
@@ -42,13 +42,9 @@ impl Courier for EPost {
             .recv_string()
             .await
             .map_err(|err| anyhow!(err))?;
-        let document = Html::parse_document(&response);
+        let document = Document::from(&response);
 
-        if document
-            .select(&Selector::parse("#print > table > tbody > tr:nth-child(2) > td").unwrap())
-            .next()
-            .is_some()
-        {
+        if document.select("#print > table > tbody > tr:nth-child(2) > td").exists() {
             return Err(anyhow!(
                 "{} {} 운송장 번호로 조회된 결과가 없습니다.",
                 Self::get_name(),
@@ -61,9 +57,8 @@ impl Courier for EPost {
         let receiver = get_html_string!(document, "#print > table > tbody > tr > td:nth-child(3)");
 
         let mut tracks: Vec<TrackingStatus> = Vec::new();
-        let selector = Selector::parse("#processTable > tbody > tr").unwrap();
 
-        for element in document.select(&selector) {
+        for element in document.select("#processTable > tbody > tr").iter() {
             let status = get_html_string!(element, "td:nth-child(4)");
             tracks.push(TrackingStatus {
                 state: StateType::to_type(

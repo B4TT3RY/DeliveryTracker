@@ -1,7 +1,7 @@
 use anyhow::{anyhow, Result};
 use async_trait::async_trait;
+use nipper::Document;
 use regex::Regex;
-use scraper::{Html, Selector};
 
 use crate::{
     couriers::courier::{Courier, CourierType},
@@ -40,13 +40,9 @@ impl Courier for Hanjin {
             .recv_string()
             .await
             .map_err(|err| anyhow!(err))?;
-        let document = Html::parse_document(&response);
+        let document = Document::from(&response);
 
-        if document
-            .select(&Selector::parse(".delivery-tbl").unwrap())
-            .next()
-            .is_none()
-        {
+        if !document.select(".delivery-tbl").exists() {
             return Err(anyhow!(
                 "{} {} 운송장 번호로 조회된 결과가 없습니다.",
                 Self::get_name(),
@@ -61,8 +57,8 @@ impl Courier for Hanjin {
 
         let regex = Regex::new("(접수|입고|이동중|도착|배송준비중|배송출발|배송완료)").unwrap();
         let mut tracks: Vec<TrackingStatus> = Vec::new();
-        let selector = Selector::parse("div.waybill-tbl > table > tbody > tr").unwrap();
-        for element in document.select(&selector) {
+        
+        for element in document.select("div.waybill-tbl > table > tbody > tr").iter() {
             let message = get_html_string!(element, ".stateDesc");
             let status = regex.captures(&message).unwrap().get(0).unwrap().as_str();
             tracks.push(TrackingStatus {

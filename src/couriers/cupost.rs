@@ -1,7 +1,7 @@
 use anyhow::{anyhow, Result};
 use async_trait::async_trait;
+use nipper::Document;
 use regex::Regex;
-use scraper::{Html, Selector};
 
 use crate::{
     couriers::courier::{Courier, CourierType},
@@ -56,13 +56,9 @@ impl Courier for CUPost {
             return Ok(cj);
         }
 
-        let document: Html = Html::parse_document(&response);
+        let document = Document::from(&response);
 
-        if document
-            .select(&Selector::parse(".ac").unwrap())
-            .next()
-            .is_some()
-        {
+        if document.select(".ac").exists() {
             return Err(anyhow!(
                 "{} {} 운송장 번호로 조회된 결과가 없습니다.",
                 Self::get_name(),
@@ -91,9 +87,8 @@ impl Courier for CUPost {
 
         let regex = Regex::new(r#"^(\d{4}.\d{2}.\d{2})(.|\n)*(\d{2}:\d{2})$"#)?;
         let mut tracks: Vec<TrackingStatus> = Vec::new();
-        let selector =
-            Selector::parse("#gotoMainContents > table:nth-child(10) > tbody > tr").unwrap();
-        for element in document.select(&selector) {
+        
+        for element in document.select("#gotoMainContents > table:nth-child(10) > tbody > tr").iter() {
             let status = get_html_string!(element, "td:nth-child(3)");
             let time = get_html_string!(element, "td:nth-child(1)");
             let cap = regex.captures(&time).unwrap();

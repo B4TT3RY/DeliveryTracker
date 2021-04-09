@@ -1,7 +1,7 @@
 use anyhow::{anyhow, Result};
 use async_trait::async_trait;
+use nipper::Document;
 use regex::Regex;
-use scraper::{Html, Selector};
 
 use crate::{
     couriers::courier::{Courier, CourierType},
@@ -43,7 +43,7 @@ impl Courier for CJLogistics {
             .recv_string()
             .await
             .map_err(|err| anyhow!(err))?;
-        let document = Html::parse_document(&response);
+        let document = Document::from(&response);
 
         if get_html_string!(
             document,
@@ -64,13 +64,9 @@ impl Courier for CJLogistics {
         let product = get_html_string!(document, "#tabContents > ul > li.first.focus > div > div:nth-child(1) > div > table > tbody > tr:nth-child(2) > td:nth-child(4)");
 
         let mut tracks: Vec<TrackingStatus> = Vec::new();
-        let selector = Selector::parse(
-            "#tabContents > ul > li.first.focus > div > div:nth-child(2) > div > table > tbody >tr",
-        )
-        .unwrap();
 
-        for element in document.select(&selector) {
-            if element.inner_html().contains("th") {
+        for element in document.select("#tabContents > ul > li.first.focus > div > div:nth-child(2) > div > table > tbody >tr").iter() {
+            if element.html().contains("th") {
                 continue;
             }
 
