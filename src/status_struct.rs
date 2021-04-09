@@ -62,7 +62,9 @@ impl StateType {
                 _ => Self::Unknown,
             },
             CourierType::EPost(_) => {
-                if status == "발송" || status == "도착" {
+                if status == "접수" {
+                    Self::InformationReceived
+                } else if status == "발송" || status == "도착" {
                     Self::InTransit
                 } else if status.contains("배달준비") {
                     Self::OutForDelivery
