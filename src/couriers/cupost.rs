@@ -87,8 +87,11 @@ impl Courier for CUPost {
 
         let regex = Regex::new(r#"^(\d{4}.\d{2}.\d{2})(.|\n)*(\d{2}:\d{2})$"#)?;
         let mut tracks: Vec<TrackingStatus> = Vec::new();
-        
-        for element in document.select("#gotoMainContents > table:nth-child(10) > tbody > tr").iter() {
+
+        for element in document
+            .select("#gotoMainContents > table:nth-child(10) > tbody > tr")
+            .iter()
+        {
             let status = get_html_string!(element, "td:nth-child(3)");
             let time = get_html_string!(element, "td:nth-child(1)");
             let cap = regex.captures(&time).unwrap();

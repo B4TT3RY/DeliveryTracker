@@ -57,8 +57,11 @@ impl Courier for Hanjin {
 
         let regex = Regex::new("(접수|입고|이동중|도착|배송준비중|배송출발|배송완료)").unwrap();
         let mut tracks: Vec<TrackingStatus> = Vec::new();
-        
-        for element in document.select("div.waybill-tbl > table > tbody > tr").iter() {
+
+        for element in document
+            .select("div.waybill-tbl > table > tbody > tr")
+            .iter()
+        {
             let message = get_html_string!(element, ".stateDesc");
             let status = regex.captures(&message).unwrap().get(0).unwrap().as_str();
             tracks.push(TrackingStatus {

@@ -60,7 +60,10 @@ impl Courier for Lotte {
         }
 
         let mut tracks: Vec<TrackingStatus> = Vec::new();
-        for element in document.select("div.contArea > table:nth-child(4) > tbody > tr").iter() {
+        for element in document
+            .select("div.contArea > table:nth-child(4) > tbody > tr")
+            .iter()
+        {
             let status = get_html_string!(element, "td:nth-child(1)");
             tracks.push(TrackingStatus {
                 state: StateType::to_type(

@@ -101,7 +101,8 @@ impl StateType {
                     Self::AtPickup
                 } else if status.contains("입고")
                     || status.contains("출고")
-                    || status.contains("인계") {
+                    || status.contains("인계")
+                {
                     Self::InTransit
                 } else if status == "점포도착" {
                     Self::OutForDelivery

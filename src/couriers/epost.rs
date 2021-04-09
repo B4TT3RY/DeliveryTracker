@@ -44,7 +44,10 @@ impl Courier for EPost {
             .map_err(|err| anyhow!(err))?;
         let document = Document::from(&response);
 
-        if document.select("#print > table > tbody > tr:nth-child(2) > td").exists() {
+        if document
+            .select("#print > table > tbody > tr:nth-child(2) > td")
+            .exists()
+        {
             return Err(anyhow!(
                 "{} {} 운송장 번호로 조회된 결과가 없습니다.",
                 Self::get_name(),
