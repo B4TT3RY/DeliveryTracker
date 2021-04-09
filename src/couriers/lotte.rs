@@ -1,7 +1,7 @@
 use anyhow::{anyhow, Result};
 use async_trait::async_trait;
+use nipper::Document;
 use regex::Regex;
-use scraper::{Html, Selector};
 
 use crate::{
     couriers::courier::{Courier, CourierType},
@@ -44,7 +44,7 @@ impl Courier for Lotte {
             .recv_string()
             .await
             .map_err(|err| anyhow!(err))?;
-        let document = Html::parse_document(&response);
+        let document = Document::from(&response);
 
         if get_html_string!(
             document,
@@ -60,8 +60,7 @@ impl Courier for Lotte {
         }
 
         let mut tracks: Vec<TrackingStatus> = Vec::new();
-        let selector = Selector::parse("div.contArea > table:nth-child(4) > tbody > tr").unwrap();
-        for element in document.select(&selector) {
+        for element in document.select("div.contArea > table:nth-child(4) > tbody > tr").iter() {
             let status = get_html_string!(element, "td:nth-child(1)");
             tracks.push(TrackingStatus {
                 state: StateType::to_type(
