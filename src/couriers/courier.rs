@@ -3,10 +3,7 @@ use async_trait::async_trait;
 
 use crate::status_struct::DeliveryStatus;
 
-use super::{
-    cjlogistics::CJLogistics, cupost::CUPost, epost::EPost, gspostbox::GSPostbox, hanjin::Hanjin,
-    ilogen::ILogen, lotte::Lotte,
-};
+use super::{cainiao::Cainiao, cjlogistics::CJLogistics, cupost::CUPost, epost::EPost, gspostbox::GSPostbox, hanjin::Hanjin, ilogen::ILogen, lotte::Lotte};
 
 #[async_trait]
 pub trait Courier {
@@ -25,6 +22,7 @@ pub enum CourierType {
     Hanjin(Hanjin),
     GSPostbox(GSPostbox),
     CUPost(CUPost),
+    Cainiao(Cainiao),
 }
 
 impl CourierType {
@@ -38,6 +36,7 @@ impl CourierType {
             "kr.hanjin" => Ok(CourierType::Hanjin(Hanjin { tracking_number })),
             "kr.gspostbox" => Ok(CourierType::GSPostbox(GSPostbox { tracking_number })),
             "kr.cupost" => Ok(CourierType::CUPost(CUPost { tracking_number })),
+            "cn.cainiao" => Ok(CourierType::Cainiao(Cainiao { tracking_number })),
             _ => Err(anyhow!("해당 택배사가 존재하지 않습니다.")),
         }
     }
@@ -51,6 +50,7 @@ impl CourierType {
             CourierType::Hanjin(courier) => courier.validate().await?.track().await,
             CourierType::GSPostbox(courier) => courier.validate().await?.track().await,
             CourierType::CUPost(courier) => courier.validate().await?.track().await,
+            CourierType::Cainiao(courier) => courier.validate().await?.track().await,
         }
     }
 }

@@ -127,6 +127,9 @@ impl StateType {
                     Self::Unknown
                 }
             }
+            CourierType::Cainiao(_) => {
+                Self::Unknown
+            }
         }
     }
 }
