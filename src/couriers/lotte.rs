@@ -64,6 +64,10 @@ impl Courier for Lotte {
             .select("div.contArea > table:nth-child(4) > tbody > tr")
             .iter()
         {
+            let location = get_html_string!(element, "td:nth-child(3)");
+            if location == "고객" {
+                continue;
+            }
             let status = get_html_string!(element, "td:nth-child(1)");
             tracks.push(TrackingStatus {
                 state: StateType::to_type(
@@ -71,7 +75,7 @@ impl Courier for Lotte {
                     &status,
                 ),
                 time: get_html_string!(element, "td:nth-child(2)"),
-                location: get_html_string!(element, "td:nth-child(3)"),
+                location,
                 status,
                 message: Some(get_html_string!(element, "td:nth-child(4)")),
             });
