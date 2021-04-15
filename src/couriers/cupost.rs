@@ -106,7 +106,7 @@ impl Courier for CUPost {
                     &status,
                 ),
                 time,
-                location: get_html_string!(element, "td:nth-child(2)"),
+                location: Some(get_html_string!(element, "td:nth-child(2)")),
                 status,
                 message: None,
             });

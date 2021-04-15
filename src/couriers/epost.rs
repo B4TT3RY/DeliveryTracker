@@ -73,7 +73,7 @@ impl Courier for EPost {
                     get_html_string!(element, "td:nth-child(1)"),
                     get_html_string!(element, "td:nth-child(2)")
                 ),
-                location: get_html_string!(element, "td:nth-child(3)"),
+                location: Some(get_html_string!(element, "td:nth-child(3)")),
                 status,
                 message: None,
             });

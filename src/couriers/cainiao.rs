@@ -74,7 +74,7 @@ impl Courier for Cainiao {
                     &status,
                 ),
                 time: value["time"].as_str().unwrap().to_string(),
-                location: "".to_string(),
+                location: None,
                 status,
                 message: None,
             });

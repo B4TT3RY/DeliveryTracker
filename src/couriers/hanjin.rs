@@ -74,7 +74,7 @@ impl Courier for Hanjin {
                     get_html_string!(element, ".w-date"),
                     get_html_string!(element, ".w-time")
                 ),
-                location: get_html_string!(element, ".w-org"),
+                location: Some(get_html_string!(element, ".w-org")),
                 status: status.to_string(),
                 message: Some(message),
             });

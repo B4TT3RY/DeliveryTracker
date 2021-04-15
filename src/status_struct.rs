@@ -28,7 +28,7 @@ pub struct TrackingStatus {
     #[graphql(description = "처리 시각")]
     pub time: String,
     #[graphql(description = "처리 위치")]
-    pub location: String,
+    pub location: Option<String>,
     #[graphql(description = "현재 단계")]
     pub status: String,
     #[graphql(description = "상태 메세지")]

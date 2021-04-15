@@ -75,7 +75,7 @@ impl Courier for Lotte {
                     &status,
                 ),
                 time: get_html_string!(element, "td:nth-child(2)"),
-                location,
+                location: Some(location),
                 status,
                 message: Some(get_html_string!(element, "td:nth-child(4)")),
             });

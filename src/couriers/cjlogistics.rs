@@ -78,7 +78,7 @@ impl Courier for CJLogistics {
                     &status,
                 ),
                 time: get_html_string!(element, "td:nth-child(2)"),
-                location: get_html_string!(element, "td > a"),
+                location: Some(get_html_string!(element, "td > a")),
                 status,
                 message: Some(get_html_string!(element, "td:nth-child(3)")),
             });
