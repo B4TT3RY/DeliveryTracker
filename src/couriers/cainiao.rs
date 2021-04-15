@@ -42,22 +42,17 @@ impl Courier for Cainiao {
             .map_err(|err| anyhow!(err))?;
         let document = Document::from(&response);
 
-        if get_html_string!(
-            document,
-            "#tabContents div:nth-child(1) table tr:nth-child(2) td"
-        )
-        .contains("조회된 데이터가 없습니다")
-        {
+        let json = get_html_string!(document, "#waybill_list_val_box")
+            .replace("&quot;", "\"");
+        let json: Value = serde_json::from_str(&json)?;
+
+        if !json["data"][0]["errorCode"].is_null() {
             return Err(anyhow!(
                 "{} {} 운송장 번호로 조회된 결과가 없습니다.",
                 Self::get_name(),
                 &self.tracking_number
             ));
         }
-
-        let json = get_html_string!(document, "#waybill_list_val_box")
-            .replace("&quot;", "\"");
-        let json: Value = serde_json::from_str(&json)?;
 
         let tracking_number = json["data"][0]["mailNo"].as_str().unwrap().to_string();
         let sender = json["data"][0]["originCountry"].as_str().unwrap().to_string();
