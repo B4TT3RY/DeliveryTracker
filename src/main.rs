@@ -1,3 +1,5 @@
+#![warn(clippy::all)]
+
 use anyhow::Result;
 
 #[cfg(feature = "tide")]
