@@ -42,8 +42,7 @@ impl Courier for Cainiao {
             .map_err(|err| anyhow!(err))?;
         let document = Document::from(&response);
 
-        let json = get_html_string!(document, "#waybill_list_val_box")
-            .replace("&quot;", "\"");
+        let json = get_html_string!(document, "#waybill_list_val_box").replace("&quot;", "\"");
         let json: Value = serde_json::from_str(&json)?;
 
         if !json["data"][0]["errorCode"].is_null() {
@@ -55,12 +54,18 @@ impl Courier for Cainiao {
         }
 
         let tracking_number = json["data"][0]["mailNo"].as_str().unwrap().to_string();
-        let sender = json["data"][0]["originCountry"].as_str().unwrap().to_string();
+        let sender = json["data"][0]["originCountry"]
+            .as_str()
+            .unwrap()
+            .to_string();
         let receiver = json["data"][0]["destCountry"].as_str().unwrap().to_string();
 
         let mut tracks: Vec<TrackingStatus> = Vec::new();
 
-        for value in json["data"][0]["section2"]["detailList"].as_array().unwrap() {
+        for value in json["data"][0]["section2"]["detailList"]
+            .as_array()
+            .unwrap()
+        {
             let status = value["desc"].as_str().unwrap().to_string();
 
             tracks.push(TrackingStatus {
@@ -74,7 +79,7 @@ impl Courier for Cainiao {
                 message: None,
             });
         }
-        
+
         tracks.reverse();
 
         Ok(DeliveryStatus {

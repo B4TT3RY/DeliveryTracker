@@ -1,3 +1,4 @@
+pub mod cainiao;
 pub mod cjlogistics;
 pub mod courier;
 pub mod cupost;
@@ -6,4 +7,3 @@ pub mod gspostbox;
 pub mod hanjin;
 pub mod ilogen;
 pub mod lotte;
-pub mod cainiao;

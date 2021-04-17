@@ -3,7 +3,10 @@ use async_trait::async_trait;
 
 use crate::status_struct::DeliveryStatus;
 
-use super::{cainiao::Cainiao, cjlogistics::CJLogistics, cupost::CUPost, epost::EPost, gspostbox::GSPostbox, hanjin::Hanjin, ilogen::ILogen, lotte::Lotte};
+use super::{
+    cainiao::Cainiao, cjlogistics::CJLogistics, cupost::CUPost, epost::EPost, gspostbox::GSPostbox,
+    hanjin::Hanjin, ilogen::ILogen, lotte::Lotte,
+};
 
 #[async_trait]
 pub trait Courier {
