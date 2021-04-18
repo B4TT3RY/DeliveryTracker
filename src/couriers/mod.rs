@@ -48,11 +48,14 @@ macro_rules! define_couriers {
 }
 
 define_couriers! {
+    cainiao::Cainiao,
     cjlogistics::CJLogistics,
     cupost::CUPost,
     epost::EPost,
     gspostbox::GSPostbox,
-    hanjin::Hanjin
+    hanjin::Hanjin,
+    ilogen::ILogen,
+    lotte::Lotte
 }
 
 use async_graphql::{Enum, SimpleObject};
