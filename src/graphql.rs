@@ -5,7 +5,7 @@ use async_graphql::{
 use surf::{http::mime, Body, StatusCode};
 use tide::{Request, Response};
 
-use crate::{couriers::courier::CourierType, status_struct::DeliveryStatus};
+use crate::couriers::{Courier, DeliveryStatus};
 
 pub struct QueryRoot;
 
@@ -16,7 +16,8 @@ impl QueryRoot {
         #[graphql(desc = "택배사 ID")] id: String,
         #[graphql(desc = "추적할 운송장 번호")] tracking_number: String,
     ) -> Result<DeliveryStatus> {
-        CourierType::track(id, tracking_number)
+        Courier::new(id, Some(tracking_number))?
+            .track()
             .await
             .map_err(|err| Error::from(err))
     }
