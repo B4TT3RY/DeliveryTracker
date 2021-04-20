@@ -908,7 +908,6 @@ dependencies = [
  "async-graphql",
  "async-graphql-tide",
  "async-std",
- "async-trait",
  "nipper",
  "once_cell",
  "regex",
