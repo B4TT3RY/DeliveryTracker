@@ -17,7 +17,7 @@ pub struct Courier {
 
 macro_rules! define_couriers {
     ($($module:ident :: $name:ident),+) => {
-        #[derive(EnumIter)]
+        #[derive(EnumIter, Copy, Clone, Debug)]
         pub enum CourierKind {
             $($name),+
         }
@@ -33,6 +33,31 @@ macro_rules! define_couriers {
                     tracking_number: tracking_number.unwrap_or_default(),
                     kind,
                 })
+            }
+
+            pub fn new_with_kind(kind: CourierKind, tracking_number: Option<String>) -> Self {
+                Self {
+                    tracking_number: tracking_number.unwrap_or_default(),
+                    kind,
+                }
+            }
+
+            pub fn get_id(&self) -> &'static str {
+                match self.kind {
+                    $(CourierKind::$name => $module::ID),+
+                }
+            }
+
+            pub fn get_name(&self) -> &'static str {
+                match self.kind {
+                    $(CourierKind::$name => $module::NAME),+
+                }
+            }
+
+            pub fn validate(&self) -> Result<()> {
+                match self.kind {
+                    $(CourierKind::$name => $module::validate(self)),+
+                }
             }
 
             pub async fn track(&self) -> Result<DeliveryStatus> {
