@@ -1,4 +1,5 @@
 use anyhow::{anyhow, Result};
+use strum_macros::EnumIter;
 
 pub mod cjlogistics;
 pub mod epost;
@@ -16,6 +17,7 @@ pub struct Courier {
 
 macro_rules! define_couriers {
     ($($module:ident :: $name:ident),+) => {
+        #[derive(EnumIter)]
         pub enum CourierKind {
             $($name),+
         }
