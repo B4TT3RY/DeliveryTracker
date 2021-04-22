@@ -2,9 +2,9 @@ use async_graphql::{
     http::{playground_source, GraphQLPlaygroundConfig},
     Error, Object, Result, SimpleObject,
 };
+use strum::IntoEnumIterator;
 use surf::{http::mime, Body, StatusCode};
 use tide::{Request, Response};
-use strum::IntoEnumIterator;
 
 use crate::couriers::{Courier, CourierKind, DeliveryStatus};
 
@@ -33,7 +33,10 @@ impl QueryRoot {
         let mut result = Vec::new();
         for kind in CourierKind::iter() {
             let courier = Courier::new_with_kind(kind, None);
-            result.push(CourierInfo { id: courier.get_id(), name: courier.get_name() });
+            result.push(CourierInfo {
+                id: courier.get_id(),
+                name: courier.get_name(),
+            });
         }
 
         result
@@ -49,7 +52,10 @@ impl QueryRoot {
             if courier.validate().is_err() {
                 continue;
             }
-            result.push(CourierInfo { id: courier.get_id(), name: courier.get_name() });
+            result.push(CourierInfo {
+                id: courier.get_id(),
+                name: courier.get_name(),
+            });
         }
 
         result

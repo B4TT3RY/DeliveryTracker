@@ -1,14 +1,14 @@
 use anyhow::{anyhow, Result};
 use strum_macros::EnumIter;
 
+pub mod cainiao;
 pub mod cjlogistics;
+pub mod cupost;
 pub mod epost;
+pub mod gspostbox;
+pub mod hanjin;
 pub mod ilogen;
 pub mod lotte;
-pub mod hanjin;
-pub mod gspostbox;
-pub mod cupost;
-pub mod cainiao;
 
 pub struct Courier {
     pub tracking_number: String,
