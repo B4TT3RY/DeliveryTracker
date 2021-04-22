@@ -11,7 +11,7 @@ pub const URL: &str = "https://www.hanjin.co.kr/kor/CMS/DeliveryMgr/WaybillResul
 pub const ID: &str = "kr.hanjin";
 pub const NAME: &str = "한진택배";
 
-static REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r#"^(\d{10}|\d{12})$"#).unwrap());
+static REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r#"^\d{12}$"#).unwrap());
 
 pub fn validate(courier: &Courier) -> Result<()> {
     if !REGEX.is_match(&courier.tracking_number) {
