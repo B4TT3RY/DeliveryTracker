@@ -12,7 +12,7 @@ pub const URL: &str = "https://global.cainiao.com/detail.htm?lang=en&mailNoList=
 pub const ID: &str = "cn.cainiao";
 pub const NAME: &str = "CAINIAO";
 
-static REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r#"^(\w|\d)+$"#).unwrap());
+static REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r#"^[a-zA-Z0-9]+$"#).unwrap());
 
 pub fn validate(courier: &Courier) -> Result<()> {
     if !REGEX.is_match(&courier.tracking_number) {
