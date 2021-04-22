@@ -1,5 +1,7 @@
 use anyhow::{anyhow, Result};
 use nipper::Document;
+use once_cell::sync::Lazy;
+use regex::Regex;
 use serde_json::Value;
 
 use crate::get_html_string;
@@ -10,9 +12,11 @@ pub const URL: &str = "https://global.cainiao.com/detail.htm?lang=en&mailNoList=
 pub const ID: &str = "cn.cainiao";
 pub const NAME: &str = "CAINIAO";
 
+static REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r#"^(\w|\d)+$"#).unwrap());
+
 pub fn validate(courier: &Courier) -> Result<()> {
-    if courier.tracking_number.is_empty() {
-        Err(anyhow!("운송장번호를 입력해주세요."))
+    if !REGEX.is_match(&courier.tracking_number) {
+        Err(anyhow!("운송장번호를 다시 확인해주세요."))
     } else {
         Ok(())
     }
