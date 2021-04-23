@@ -123,19 +123,27 @@ pub struct TrackingStatus {
 pub enum StateType {
     /// 택배 정보 접수
     InformationReceived,
-
     /// 택배 집하
     AtPickup,
-
     /// 택배 이동중
     InTransit,
-
     /// 배송 출발
     OutForDelivery,
-
     /// 배송 완료
     Delivered,
-
     /// 알 수 없음
     Unknown,
+}
+
+impl StateType {
+    pub fn get_priority(state: StateType) -> u8 {
+        match state {
+            StateType::InformationReceived => 1,
+            StateType::AtPickup => 2,
+            StateType::InTransit => 3,
+            StateType::OutForDelivery => 4,
+            StateType::Delivered => 5,
+            StateType::Unknown => 0,
+        }
+    }
 }

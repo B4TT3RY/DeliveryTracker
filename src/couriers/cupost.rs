@@ -127,6 +127,8 @@ pub async fn track(courier: &Courier) -> Result<DeliveryStatus> {
         });
     }
 
+    tracks.sort_by_key(|k| StateType::get_priority(k.state));
+
     Ok(DeliveryStatus {
         id: ID.to_string(),
         name: format!("{} (CU끼리택배)", NAME).to_string(),

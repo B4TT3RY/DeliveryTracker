@@ -83,6 +83,7 @@ pub async fn track(courier: &Courier) -> Result<DeliveryStatus> {
     }
 
     tracks.reverse();
+    tracks.sort_by_key(|k| StateType::get_priority(k.state));
 
     Ok(DeliveryStatus {
         id: ID.to_string(),
