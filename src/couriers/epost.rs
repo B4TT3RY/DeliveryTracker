@@ -52,11 +52,17 @@ pub async fn track(courier: &Courier) -> Result<DeliveryStatus> {
         .select("#print > table > tbody > tr:nth-child(2) > td")
         .exists()
     {
-        return Err(anyhow!(
-            "{} {} 운송장 번호로 조회된 결과가 없습니다.",
-            NAME,
-            courier.tracking_number
-        ));
+        return Ok(
+            DeliveryStatus {
+                id: ID.to_string(),
+                name: NAME.to_string(),
+                tracking_number: None,
+                sender: None,
+                receiver: None,
+                product: None,
+                tracks: None,
+            }
+        );
     }
 
     let tracking_number = get_html_string!(document, "#print > table > tbody > tr > th");

@@ -39,11 +39,17 @@ pub async fn track(courier: &Courier) -> Result<DeliveryStatus> {
     let json: Value = serde_json::from_str(&json)?;
 
     if !json["data"][0]["errorCode"].is_null() {
-        return Err(anyhow!(
-            "{} {} 운송장 번호로 조회된 결과가 없습니다.",
-            NAME,
-            &courier.tracking_number
-        ));
+        return Ok(
+            DeliveryStatus {
+                id: ID.to_string(),
+                name: NAME.to_string(),
+                tracking_number: None,
+                sender: None,
+                receiver: None,
+                product: None,
+                tracks: None,
+            }
+        );
     }
 
     let tracking_number = json["data"][0]["mailNo"]
