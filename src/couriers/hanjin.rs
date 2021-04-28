@@ -41,7 +41,8 @@ pub async fn track(courier: &Courier) -> Result<DeliveryStatus> {
         .map_err(|err| anyhow!(err))?;
     let document = Document::from(&response);
 
-    if !document.select(".delivery-tbl").exists() {
+    if get_html_string!(document, ".comm-sec")
+        .contains("운송장이 등록되지 않았거나") {
         return Ok(
             DeliveryStatus {
                 id: ID.to_string(),
