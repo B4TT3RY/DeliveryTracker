@@ -89,7 +89,7 @@ pub async fn track(courier: &Courier) -> Result<DeliveryStatus> {
     Ok(DeliveryStatus {
         id: ID.to_string(),
         name: NAME.to_string(),
-        tracking_number,
+        tracking_number: Some(tracking_number),
         sender: Some(sender),
         receiver: Some(receiver),
         product: Some(product),

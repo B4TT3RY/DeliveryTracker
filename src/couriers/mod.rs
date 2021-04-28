@@ -94,7 +94,7 @@ pub struct DeliveryStatus {
     /// 택배사 이름
     pub name: String,
     /// 운송장 번호
-    pub tracking_number: String,
+    pub tracking_number: Option<String>,
     /// 보내는 사람
     pub sender: Option<String>,
     /// 받는 사람
