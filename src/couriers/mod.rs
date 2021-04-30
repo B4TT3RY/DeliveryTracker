@@ -127,6 +127,10 @@ pub enum StateType {
     AtPickup,
     /// 택배 이동중
     InTransit,
+    /// 택배 이동중 (출발)
+    InTransitSend,
+    /// 택배 이동중 (도착)
+    InTransitReceived,
     /// 배송 출발
     OutForDelivery,
     /// 배송 완료
@@ -137,13 +141,16 @@ pub enum StateType {
 
 impl StateType {
     pub fn get_priority(state: StateType) -> u8 {
+        use StateType::*;
         match state {
-            StateType::InformationReceived => 1,
-            StateType::AtPickup => 2,
-            StateType::InTransit => 3,
-            StateType::OutForDelivery => 4,
-            StateType::Delivered => 5,
-            StateType::Unknown => 0,
+            InformationReceived => 1,
+            AtPickup => 2,
+            InTransit => 3,
+            InTransitSend => 3,
+            InTransitReceived => 3,
+            OutForDelivery => 4,
+            Delivered => 5,
+            Unknown => 0,
         }
     }
 }
