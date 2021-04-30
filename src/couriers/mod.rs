@@ -131,6 +131,8 @@ pub enum StateType {
     InTransitSend,
     /// 택배 이동중 (도착)
     InTransitReceived,
+    /// 배달 준비
+    ReadyForDelivery,
     /// 배송 출발
     OutForDelivery,
     /// 배송 완료
@@ -148,8 +150,9 @@ impl StateType {
             InTransit => 3,
             InTransitSend => 3,
             InTransitReceived => 3,
-            OutForDelivery => 4,
-            Delivered => 5,
+            ReadyForDelivery => 4,
+            OutForDelivery => 5,
+            Delivered => 6,
             Unknown => 0,
         }
     }
