@@ -25,8 +25,10 @@ pub fn state_from(status: &str) -> StateType {
     use StateType::*;
     if status.contains("점포접수") {
         AtPickup
-    } else if status.contains("입고") || status.contains("출고") {
-        InTransit
+    } else if status.contains("입고") {
+        InTransitReceived
+    } else if status.contains("출고") {
+        InTransitSend
     } else if status.contains("도착") {
         OutForDelivery
     } else if status.contains("수령") {

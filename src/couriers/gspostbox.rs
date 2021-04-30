@@ -25,8 +25,10 @@ pub fn state_from(status: &str) -> StateType {
         InformationReceived
     } else if status.contains("인수") {
         AtPickup
-    } else if status.contains("입고") || status.contains("출고") || status.contains("인계") {
-        InTransit
+    } else if status.contains("입고") || status.contains("인계") {
+        InTransitReceived
+    } else if status.contains("출고") {
+        InTransitSend
     } else if status == "점포도착" {
         OutForDelivery
     } else if status == "고객전달" {

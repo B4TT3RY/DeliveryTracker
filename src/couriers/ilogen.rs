@@ -25,7 +25,9 @@ pub fn state_from(status: &str) -> StateType {
     use StateType::*;
     match status {
         "집하완료" => AtPickup,
-        "터미널입고" | "터미널출고" | "배송입고" => InTransit,
+        "터미널입고" => InTransitReceived,
+        "터미널출고" => InTransitSend,
+        "배송입고" => ReadyForDelivery,
         "배송출고" => OutForDelivery,
         "배송완료" => Delivered,
         _ => Unknown,

@@ -25,7 +25,8 @@ pub fn state_from(status: &str) -> StateType {
     use StateType::*;
     match status {
         "상품인수" => AtPickup,
-        "상품이동중" | "배달지도착" => InTransit,
+        "상품이동중" => InTransit,
+        "배달지도착" => ReadyForDelivery,
         "배달출발" => OutForDelivery,
         "배달완료" => Delivered,
         _ => Unknown,

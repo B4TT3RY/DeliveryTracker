@@ -27,8 +27,10 @@ pub fn state_from(status: &str) -> StateType {
         InformationReceived
     } else if status == "인수완료" || status == "집하완료" {
         AtPickup
-    } else if status == "발송" || status == "도착" {
-        InTransit
+    } else if status == "발송" {
+        InTransitSend
+    } else if status == "도착" {
+        InTransitReceived
     } else if status.contains("배달준비") {
         OutForDelivery
     } else if status.contains("배달완료") {
