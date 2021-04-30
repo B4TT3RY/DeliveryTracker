@@ -72,7 +72,20 @@ pub async fn track(courier: &Courier) -> Result<DeliveryStatus> {
     let mut tracks: Vec<TrackingStatus> = Vec::new();
 
     for element in document.select("#processTable > tbody > tr").iter() {
+        let location = get_html_string!(element, "td:nth-child(3)");
+        let location = location
+            .split_ascii_whitespace()
+            .next()
+            .unwrap_or(&location)
+            .to_string();
+
         let status = get_html_string!(element, "td:nth-child(4)");
+        let status = status
+            .split_whitespace()
+            .next()
+            .unwrap_or(&status)
+            .to_string();
+
         tracks.push(TrackingStatus {
             state: state_from(&status),
             time: format!(
@@ -80,7 +93,7 @@ pub async fn track(courier: &Courier) -> Result<DeliveryStatus> {
                 get_html_string!(element, "td:nth-child(1)"),
                 get_html_string!(element, "td:nth-child(2)")
             ),
-            location: Some(get_html_string!(element, "td:nth-child(3)")),
+            location: Some(location),
             status,
             message: None,
         });
