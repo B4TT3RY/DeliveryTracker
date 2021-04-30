@@ -25,7 +25,7 @@ pub fn state_from(status: &str) -> StateType {
     use StateType::*;
     if status == "접수" {
         InformationReceived
-    } else if status == "인수완료" {
+    } else if status == "인수완료" || status == "집하완료" {
         AtPickup
     } else if status == "발송" || status == "도착" {
         InTransit
