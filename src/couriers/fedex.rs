@@ -7,7 +7,7 @@ use super::{Courier, DeliveryStatus, StateType, TrackingStatus};
 
 pub const URL: &str = "https://www.fedex.com/trackingCal/track";
 pub const ID: &str = "us.fedex";
-pub const NAME: &str = "Fedex";
+pub const NAME: &str = "FedEx";
 
 static REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r#"^(\d{12})$"#).unwrap());
 
