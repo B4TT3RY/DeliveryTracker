@@ -5,6 +5,7 @@ pub mod cainiao;
 pub mod cjlogistics;
 pub mod cupost;
 pub mod epost;
+pub mod fedex;
 pub mod gspostbox;
 pub mod hanjin;
 pub mod ilogen;
@@ -82,7 +83,8 @@ define_couriers! {
     hanjin::Hanjin,
     gspostbox::GSPostbox,
     cupost::CUPost,
-    cainiao::Cainiao
+    cainiao::Cainiao,
+    fedex::Fedex
 }
 
 use async_graphql::{Enum, SimpleObject};
