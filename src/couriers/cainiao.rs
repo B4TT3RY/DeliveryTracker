@@ -56,10 +56,6 @@ pub async fn track(courier: &Courier) -> Result<DeliveryStatus> {
         );
     }
 
-    let tracking_number = json["data"][0]["mailNo"]
-        .as_str()
-        .ok_or(anyhow!("Can't find mailNo in cn.cainiao"))?
-        .to_string();
     let sender = json["data"][0]["originCountry"]
         .as_str()
         .ok_or(anyhow!("Can't find originCountry in cn.cainiao"))?
@@ -98,7 +94,7 @@ pub async fn track(courier: &Courier) -> Result<DeliveryStatus> {
     Ok(DeliveryStatus {
         id: ID.to_string(),
         name: NAME.to_string(),
-        tracking_number: Some(tracking_number),
+        tracking_number: Some(courier.tracking_number.to_string()),
         sender: Some(sender),
         receiver: Some(receiver),
         product: None,

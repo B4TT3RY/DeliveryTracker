@@ -86,7 +86,6 @@ pub async fn track(courier: &Courier) -> Result<DeliveryStatus> {
         return Ok(cj);
     }
 
-    let tracking_number = json["invoiceNo"].as_str().unwrap_or("").to_string();
     let sender = json["sender"]["name"].as_str().unwrap_or("").to_string();
     let receiver = json["receiver"]["name"].as_str().unwrap_or("").to_string();
     let product = json["goodsName"].as_str().unwrap_or("").to_string();
@@ -116,7 +115,7 @@ pub async fn track(courier: &Courier) -> Result<DeliveryStatus> {
     Ok(DeliveryStatus {
         id: ID.to_string(),
         name,
-        tracking_number: Some(tracking_number),
+        tracking_number: Some(courier.tracking_number.to_string()),
         sender: Some(sender),
         receiver: Some(receiver),
         product: Some(product),

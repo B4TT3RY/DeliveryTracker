@@ -63,7 +63,6 @@ pub async fn track(courier: &Courier) -> Result<DeliveryStatus> {
         );
     }
 
-    let tracking_number = get_html_string!(document, "#tabContents > ul > li.first.focus > div > div:nth-child(1) > div > table > tbody > tr:nth-child(2) > td:nth-child(1)");
     let sender = get_html_string!(document, "#tabContents > ul > li.first.focus > div > div:nth-child(1) > div > table > tbody > tr:nth-child(2) > td:nth-child(2)");
     let receiver = get_html_string!(document, "#tabContents > ul > li.first.focus > div > div:nth-child(1) > div > table > tbody > tr:nth-child(2) > td:nth-child(3)");
     let product = get_html_string!(document, "#tabContents > ul > li.first.focus > div > div:nth-child(1) > div > table > tbody > tr:nth-child(2) > td:nth-child(4)");
@@ -96,7 +95,7 @@ pub async fn track(courier: &Courier) -> Result<DeliveryStatus> {
     Ok(DeliveryStatus {
         id: ID.to_string(),
         name: NAME.to_string(),
-        tracking_number: Some(tracking_number),
+        tracking_number: Some(courier.tracking_number.to_string()),
         sender: Some(sender),
         receiver: Some(receiver),
         product: Some(product),

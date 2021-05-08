@@ -58,7 +58,6 @@ pub async fn track(courier: &Courier) -> Result<DeliveryStatus> {
         );
     }
 
-    let tracking_number = get_html_string!(document, "div.songjang-num > span.num");
     let sender = get_html_string!(document, r#"td[data-label="보내는 분"]"#);
     let receiver = get_html_string!(document, r#"td[data-label="받는 분"]"#);
     let product = get_html_string!(document, r#"td[data-label="상품명"]"#);
@@ -88,9 +87,9 @@ pub async fn track(courier: &Courier) -> Result<DeliveryStatus> {
     tracks.sort_by_key(|k| StateType::get_priority(k.state));
 
     Ok(DeliveryStatus {
-        id: ID.to_string(),
         name: NAME.to_string(),
-        tracking_number: Some(tracking_number),
+        id: ID.to_string(),
+        tracking_number: Some(courier.tracking_number.to_string()),
         sender: Some(sender),
         receiver: Some(receiver),
         product: Some(product),

@@ -67,7 +67,6 @@ pub async fn track(courier: &Courier) -> Result<DeliveryStatus> {
         );
     }
 
-    let tracking_number = get_html_string!(document, "#print > table > tbody > tr > th");
     let sender = get_html_string!(document, "#print > table > tbody > tr > td:nth-child(2)");
     let receiver = get_html_string!(document, "#print > table > tbody > tr > td:nth-child(3)");
 
@@ -106,7 +105,7 @@ pub async fn track(courier: &Courier) -> Result<DeliveryStatus> {
     Ok(DeliveryStatus {
         id: ID.to_string(),
         name: NAME.to_string(),
-        tracking_number: Some(tracking_number),
+        tracking_number: Some(courier.tracking_number.to_string()),
         sender: Some(sender),
         receiver: Some(receiver),
         product: None,

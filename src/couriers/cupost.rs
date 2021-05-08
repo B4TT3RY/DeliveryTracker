@@ -80,10 +80,6 @@ pub async fn track(courier: &Courier) -> Result<DeliveryStatus> {
         );
     }
 
-    let tracking_number = get_html_string!(
-        document,
-        "#gotoMainContents > table:nth-child(5) > tbody > tr:nth-child(1) > td:nth-child(2)"
-    );
     let product = get_html_string!(
         document,
         "#gotoMainContents > table:nth-child(5) > tbody > tr:nth-child(1) > td:nth-child(4)"
@@ -140,7 +136,7 @@ pub async fn track(courier: &Courier) -> Result<DeliveryStatus> {
     Ok(DeliveryStatus {
         id: ID.to_string(),
         name: format!("{} (CU끼리택배)", NAME).to_string(),
-        tracking_number: Some(tracking_number),
+        tracking_number: Some(courier.tracking_number.to_string()),
         sender: Some(sender),
         receiver: Some(receiver),
         product: Some(product),
