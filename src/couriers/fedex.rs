@@ -73,7 +73,7 @@ pub async fn track(courier: &Courier) -> Result<DeliveryStatus> {
 
     let json: Value = serde_json::from_str(&response)?;
 
-    if json["TrackPackagesResponse"]["packageList"][0]["errorList"][0]["code"].as_str() != Some("0") {
+    if !json["TrackPackagesResponse"]["packageList"][0]["errorList"][0]["code"].as_str().unwrap().is_empty() {
         return Ok(
             DeliveryStatus {
                 id: ID.to_string(),
