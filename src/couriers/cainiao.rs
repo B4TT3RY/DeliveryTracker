@@ -22,9 +22,13 @@ pub fn validate(courier: &Courier) -> Result<()> {
     }
 }
 
-pub fn state_from(_status: &str) -> StateType {
+pub fn state_from(status: &str) -> StateType {
     use StateType::*;
-    Unknown
+    if status.contains("Delivered") {
+        Delivered
+    } else {
+        Unknown
+    }
 }
 
 pub async fn track(courier: &Courier) -> Result<DeliveryStatus> {
