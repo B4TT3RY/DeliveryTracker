@@ -1,6 +1,6 @@
 # DeliveryTracker
 
-## 지원 택배사
+## 국내 지원 택배사
 |이름|ID|비고|
 |---|---|---|
 |대한통운|`kr.logistics`||
@@ -10,6 +10,10 @@
 |한진택배|`kr.hanjin`||
 |GS Postbox 택배|`kr.gspostbox`||
 |CU Post|`kr.cupost`||
+
+## 국외 지원 택배사
+|이름|ID|비고|
+|---|---|---|
 |CAINIAO|`cn.cainiao`|state가 전부 `UNKNOWN`으로 나옴|
 |FedEx|`us.fedex`||
 
