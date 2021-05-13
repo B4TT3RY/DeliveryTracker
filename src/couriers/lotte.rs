@@ -43,13 +43,13 @@ pub async fn track(courier: &Courier) -> Result<DeliveryStatus> {
         .await
         .map_err(|err| anyhow!(err))?;
     let document = Document::from(&response);
-
-    if get_html_string!(
+    
+    let status = get_html_string!(
         document,
         "#contents > div > div.contArea > table:nth-child(4) > tbody > tr > td"
-    )
-    .contains("없습니다.")
-    {
+    );
+
+    if status.is_empty() || status.contains("없습니다.") {
         return Ok(
             DeliveryStatus {
                 id: ID.to_string(),
