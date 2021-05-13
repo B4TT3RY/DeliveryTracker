@@ -46,9 +46,9 @@ pub async fn track(courier: &Courier) -> Result<DeliveryStatus> {
 
     if get_html_string!(
         document,
-        "#contents > div > div.contArea > table.tblH.mt60 > tbody > tr > td"
+        "#contents > div > div.contArea > table:nth-child(4) > tbody > tr > td"
     )
-    .contains("배송정보가 없습니다")
+    .contains("없습니다.")
     {
         return Ok(
             DeliveryStatus {
