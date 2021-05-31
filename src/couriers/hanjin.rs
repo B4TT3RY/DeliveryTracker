@@ -23,15 +23,24 @@ pub fn validate(courier: &Courier) -> Result<()> {
 
 pub fn state_from(status: &str) -> StateType {
     use StateType::*;
-    match status {
-        "운송장 정보" | "접수" => InformationReceived,
-        "입고" => AtPickup,
-        "이동중" => InTransitSend,
-        "도착" => InTransitReceived,
-        "배송준비중" => ReadyForDelivery,
-        "배송출발" => OutForDelivery,
-        "배송완료" => Delivered,
-        _ => Unknown,
+    if status.contains("운송장 정보") || status.contains("접수") {
+        InformationReceived
+    } else if status.contains("입고") {
+        AtPickup
+    } else if status.contains("이동중") || status.contains("출발") {
+        InTransitSend
+    } else if status.contains("도착") || status.contains("반입") {
+        InTransitReceived
+    } else if status.contains("배송준비중") {
+        ReadyForDelivery
+    } else if status.contains("배송출발") {
+        OutForDelivery
+    } else if status.contains("배송완료") {
+        Delivered
+    } else if status.contains("") {
+        InTransit
+    } else {
+        Unknown
     }
 }
 
@@ -62,15 +71,13 @@ pub async fn track(courier: &Courier) -> Result<DeliveryStatus> {
     let receiver = get_html_string!(document, r#"td[data-label="받는 분"]"#);
     let product = get_html_string!(document, r#"td[data-label="상품명"]"#);
 
-    let regex = Regex::new("(운송장 정보가 등록|접수|입고|이동중|도착|배송준비중|배송출발|배송완료)").unwrap();
     let mut tracks: Vec<TrackingStatus> = Vec::new();
 
     for element in document
         .select("div.waybill-tbl > table > tbody > tr")
         .iter()
     {
-        let message = get_html_string!(element, ".stateDesc");
-        let status = regex.captures(&message).unwrap().get(0).unwrap().as_str();
+        let status = get_html_string!(element, ".stateDesc");
         tracks.push(TrackingStatus {
             state: state_from(&status),
             time: format!(
@@ -80,11 +87,11 @@ pub async fn track(courier: &Courier) -> Result<DeliveryStatus> {
             ),
             location: Some(get_html_string!(element, ".w-org")),
             status: status.to_string(),
-            message: Some(message),
+            message: None
         });
     }
 
-    tracks.sort_by_key(|k| StateType::get_priority(k.state));
+    // tracks.sort_by_key(|k| StateType::get_priority(k.state));
 
     Ok(DeliveryStatus {
         name: NAME.to_string(),
