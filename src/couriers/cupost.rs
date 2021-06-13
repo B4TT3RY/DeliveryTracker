@@ -60,7 +60,7 @@ pub async fn track(courier: &Courier) -> Result<DeliveryStatus> {
         }
         let mut cj = cj?;
         cj.id = ID.to_string();
-        cj.name = format!("{} (CJ대한통운 국내택배)", NAME).to_string();
+        cj.name = format!("{} (CJ대한통운 국내택배)", NAME);
         return Ok(cj);
     }
 
@@ -135,7 +135,7 @@ pub async fn track(courier: &Courier) -> Result<DeliveryStatus> {
 
     Ok(DeliveryStatus {
         id: ID.to_string(),
-        name: format!("{} (CU끼리택배)", NAME).to_string(),
+        name: format!("{} (CU끼리택배)", NAME),
         tracking_number: Some(courier.tracking_number.to_string()),
         sender: Some(sender),
         receiver: Some(receiver),

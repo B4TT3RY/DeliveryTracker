@@ -58,29 +58,29 @@ pub async fn track(courier: &Courier) -> Result<DeliveryStatus> {
 
     let sender = json["data"][0]["originCountry"]
         .as_str()
-        .ok_or(anyhow!("Can't find originCountry in cn.cainiao"))?
+        .ok_or_else(|| anyhow!("Can't find originCountry in cn.cainiao"))?
         .to_string();
     let receiver = json["data"][0]["destCountry"]
         .as_str()
-        .ok_or(anyhow!("Can't find destCountry in cn.cainiao"))?
+        .ok_or_else(|| anyhow!("Can't find destCountry in cn.cainiao"))?
         .to_string();
 
     let mut tracks: Vec<TrackingStatus> = Vec::new();
 
     for value in json["data"][0]["section2"]["detailList"]
         .as_array()
-        .ok_or(anyhow!("Can't find detailList in cn.cainiao"))?
+        .ok_or_else(|| anyhow!("Can't find detailList in cn.cainiao"))?
     {
         let status = value["desc"]
             .as_str()
-            .ok_or(anyhow!("Can't find desc in cn.cainiao"))?
+            .ok_or_else(|| anyhow!("Can't find desc in cn.cainiao"))?
             .to_string();
 
         tracks.push(TrackingStatus {
             state: state_from(&status),
             time: value["time"]
                 .as_str()
-                .ok_or(anyhow!("Can't find time in cn.cainiao"))?
+                .ok_or_else(|| anyhow!("Can't find time in cn.cainiao"))?
                 .to_string(),
             location: None,
             status,

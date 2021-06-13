@@ -26,7 +26,7 @@ impl QueryRoot {
         Courier::new(id, Some(tracking_number))?
             .track()
             .await
-            .map_err(|err| Error::from(err))
+            .map_err(Error::from)
     }
 
     async fn couriers(&self) -> Vec<CourierInfo> {
