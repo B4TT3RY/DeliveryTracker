@@ -80,6 +80,9 @@ pub async fn track(courier: &Courier) -> Result<DeliveryStatus> {
         }
 
         let status = get_html_string!(element, "td:nth-child(1)");
+        if status.contains("조회된 데이터가 없습니다") {
+            continue;
+        }
 
         tracks.push(TrackingStatus {
             state: state_from(&status),
