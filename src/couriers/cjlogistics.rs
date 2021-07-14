@@ -102,6 +102,9 @@ pub async fn track(courier: &Courier) -> Result<DeliveryStatus> {
         sender: Some(sender),
         receiver: Some(receiver),
         product: Some(product),
-        tracks: Some(tracks),
+        tracks: match tracks.is_empty() {
+            true => None,
+            false => Some(tracks),
+        },
     })
 }
