@@ -1,30 +1,6 @@
 [package]
-name = "deliverytracker"
+name = "DeliveryTracker"
 version = "0.1.0"
-authors = ["B4TT3RY <gb4tt3ry@gmail.com>"]
-edition = "2018"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[features]
-default = ["runnable"]
-runnable = ["async-std", "tide", "tide-compress", "curl"]
-curl = ["surf/curl-client", "surf/middleware-logger", "surf/encoding"]
-wasm = ["surf/wasm-client"]
+edition = "2021"
 
 [dependencies]
-async-std = { version = "1.9.0", features = ["attributes"], optional = true }
-surf = { version = "2.2.0", optional = true, default-features = false }
-tide-compress = { version = "0.9.0", optional = true }
-tide = { version = "0.16.0", optional = true }
-async-graphql-tide = "2.8.4"
-async-graphql = "2.8.2"
-strum_macros = "0.20.1"
-serde_json = "1.0.64"
-quick-xml = "0.22.0"
-once_cell = "1.7.2"
-anyhow = "1.0.40"
-serde = "1.0.125"
-nipper = "0.1.9"
-strum = "0.20.0"
-regex = "1.4.6"
