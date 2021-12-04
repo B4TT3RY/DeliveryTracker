@@ -13,28 +13,6 @@ pub trait Courier {
 pub type TrackingResult = Result<tracker::TrackingInfo, TrackingError>;
 
 #[derive(Debug)]
-pub struct TrackingInfo {
-    pub id: String,
-    pub name: String,
-    pub url: String,
-    pub tracking_number: String,
-    pub is_delivered: bool,
-    pub sender: Option<String>,
-    pub receiver: Option<String>,
-    pub product: Option<String>,
-    pub tracks: Vec<TrackingDetail>,
-}
-
-#[derive(Debug)]
-pub struct TrackingDetail {
-    pub time: String,
-    pub message: Option<String>,
-    pub status: Option<String>,
-    pub location: Option<String>,
-    pub live_tracking_url: Option<String>,
-}
-
-#[derive(Debug)]
 pub enum TrackingError {
     RequestFailed(String),
     WrongTrackingNumber,
