@@ -15,7 +15,7 @@ pub type TrackingResult = Result<tracker::TrackingInfo, TrackingError>;
 #[derive(Debug)]
 pub enum TrackingError {
     RequestFailed(String),
-    WrongTrackingNumber,
+    WrongTrackingNumber(String),
     NotExistsTrackingNumber,
 }
 

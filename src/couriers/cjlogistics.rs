@@ -42,7 +42,7 @@ impl Courier for Cjlogistics {
 
     async fn track(tracking_number: &str) -> TrackingResult {
         if !Self::validate(tracking_number) {
-            return Err(TrackingError::WrongTrackingNumber);
+            return Err(TrackingError::WrongTrackingNumber("숫자 10자리 또는 12자리".to_string()));
         }
         let client = reqwest::Client::new();
         let url = "https://www.cjlogistics.com/ko/tool/parcel/tracking";

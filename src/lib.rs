@@ -1,3 +1,4 @@
+use couriers::epost::Epost;
 use tonic::{Status, Response};
 
 use crate::{tracker::tracker_server::Tracker, couriers::cjlogistics::Cjlogistics, structs::Courier};
@@ -22,6 +23,9 @@ impl Tracker for DeliveryTracker {
             "kr.cjlogistics" => {
                 Cjlogistics::track(tracking_number).await
             }
+            "kr.epost" => {
+                Epost::track(tracking_number).await
+            }
             _ => {
                 return Err(Status::invalid_argument("Not supported courier"));
             }
@@ -37,9 +41,9 @@ impl Tracker for DeliveryTracker {
             Err(err) => {
                 use structs::TrackingError::*;
                 let (status, message) = match err {
-                    RequestFailed(_) => (1, ""),
-                    WrongTrackingNumber => (2, ""),
-                    NotExistsTrackingNumber => (3, ""),
+                    RequestFailed(err) => (1, err),
+                    WrongTrackingNumber(err) => (2, err),
+                    NotExistsTrackingNumber => (3, String::new()),
                 };
                 Ok(Response::new(
                     tracker::TrackingResponse {
