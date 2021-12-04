@@ -1,5 +1,7 @@
 use async_trait::async_trait;
 
+use crate::tracker;
+
 #[async_trait]
 pub trait Courier {
     fn id() -> &'static str;
@@ -8,7 +10,7 @@ pub trait Courier {
     async fn track(tracking_number: &str) -> TrackingResult;
 }
 
-pub type TrackingResult = Result<TrackingInfo, TrackingError>;
+pub type TrackingResult = Result<tracker::TrackingInfo, TrackingError>;
 
 #[derive(Debug)]
 pub struct TrackingInfo {

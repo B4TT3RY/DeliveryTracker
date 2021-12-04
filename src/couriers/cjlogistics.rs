@@ -2,7 +2,7 @@ use async_trait::async_trait;
 use nipper::Document;
 use serde_json::Value;
 
-use crate::structs::{Courier, TrackingDetail, TrackingError, TrackingInfo, TrackingResult};
+use crate::{structs::{Courier, TrackingError, TrackingResult}, tracker};
 
 pub struct Cjlogistics {}
 
@@ -58,27 +58,33 @@ impl Courier for Cjlogistics {
             .json()
             .await?;
 
-        println!("{}", json);
-
         if json["parcelResultMap"]["resultList"].as_array().unwrap().is_empty() {
             return Err(TrackingError::NotExistsTrackingNumber);
         }
 
-        let mut tracks: Vec<TrackingDetail> = vec![];
+        let mut tracks: Vec<tracker::TrackingDetail> = vec![];
+        let detail = &json["parcelResultMap"]["resultList"][0];
 
         for element in json["parcelDetailResultMap"]["resultList"].as_array().unwrap() {
-            tracks.push(TrackingDetail {
+            let mut live_tracking_url: Option<String> = None;
+
+            if element["empImgNm"] != "EMP_IMG_NM" {
+                live_tracking_url = Some(format!(
+                    "https://mms.doortodoor.co.kr:8443/MMSPUSH/location.do?empnum={}&trspbillnum={}",
+                    base64::encode(element["empImgNm"].as_str().unwrap().as_bytes()),
+                    base64::encode(detail["invcNo"].as_str().unwrap().as_bytes())
+                ));
+            }
+            tracks.push(tracker::TrackingDetail {
                 time: element["dTime"].as_str().unwrap().to_string(),
                 message: Some(element["crgNm"].as_str().unwrap().replace(".(", ". (").to_string()),
                 status: Some(element["scanNm"].as_str().unwrap().to_string()),
                 location: Some(element["regBranNm"].as_str().unwrap().to_string()),
-                live_tracking_url: None,
+                live_tracking_url,
             });
         }
 
-        let detail = &json["parcelResultMap"]["resultList"][0];
-
-        Ok(TrackingInfo {
+        Ok(tracker::TrackingInfo {
             id: Self::id().to_string(),
             name: Self::name().to_string(),
             url: url.to_string(),

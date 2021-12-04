@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package tracker;
+
+service Tracker {
+    rpc Track(TrackingRequest) returns (TrackingResponse);
+}
+
+message TrackingRequest {
+    string courier_id = 1;
+    string tracking_number = 2;
+}
+
+message TrackingResponse {
+    enum Status {
+        OK = 0;
+        REQUEST_FAILED = 1;
+        WRONG_TRACKING_NUMBER = 2;
+        NOT_EXISTS_TRACKING_NUMBER = 3;
+    }
+    Status status = 1;
+    optional string message = 2;
+    TrackingInfo tracking_info = 3;
+}
+
+message TrackingInfo {
+    string id = 1;
+    string name = 2;
+    string url = 3;
+    string tracking_number = 4;
+    bool is_delivered = 5;
+    optional string sender = 6;
+    optional string receiver = 7;
+    optional string product = 8;
+    repeated TrackingDetail tracks = 9;
+}
+
+message TrackingDetail {
+    string time = 1;
+    optional string message = 2;
+    optional string status = 3;
+    optional string location = 4;
+    optional string live_tracking_url = 5;
+}

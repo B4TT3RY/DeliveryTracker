@@ -1,12 +1,28 @@
 #![warn(clippy::all)]
 
-use couriers::cjlogistics::Cjlogistics;
-use structs::Courier;
+use std::net::SocketAddr;
 
-mod couriers;
-mod structs;
+use deliverytracker::{DeliveryTracker, tracker::tracker_server::TrackerServer};
+use log::info;
+use tokio::runtime::Runtime;
+use tonic::transport::Server;
 
-#[tokio::main]
-async fn main() -> eyre::Result<()> {
-    Ok(())
+fn main() {
+    pretty_env_logger::init();
+
+    let bind_address = std::env::var("BIND_ADDR")
+        .ok()
+        .and_then(|addr| addr.parse().ok())
+        .expect("cannot find bind address from BIND_ADDR");
+
+    Runtime::new().unwrap().block_on(run(bind_address));
+}
+
+async fn run(address: SocketAddr) {
+    info!("Try running server...");
+    Server::builder()
+        .add_service(TrackerServer::new(DeliveryTracker::default()))
+        .serve(address)
+        .await
+        .expect("Can't run server");
 }
