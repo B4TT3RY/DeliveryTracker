@@ -1,4 +1,5 @@
 pub mod cjlogistics;
+pub mod cupost;
 pub mod epost;
 pub mod epostems;
 pub mod gspostbox;
