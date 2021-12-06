@@ -1,5 +1,5 @@
 use couriers::kr::{
-    cjlogistics::Cjlogistics, epost::Epost, epostems::EpostEMS, hanjin::Hanjin, lotte::Lotte, logen::Logen,
+    cjlogistics::Cjlogistics, epost::Epost, epostems::EpostEMS, hanjin::Hanjin, lotte::Lotte, logen::Logen, gspostbox::Gspostbox,
 };
 use structs::Courier;
 use tonic::{Response, Status};
@@ -29,6 +29,7 @@ impl Tracker for DeliveryTracker {
             "kr.cjlogistics" => Cjlogistics::track(tracking_number).await,
             "kr.epost" => Epost::track(tracking_number).await,
             "kr.epostems" => EpostEMS::track(tracking_number).await,
+            "kr.gspostbox" => Gspostbox::track(tracking_number).await,
             "kr.hanjin" => Hanjin::track(tracking_number).await,
             "kr.logen" => Logen::track(tracking_number).await,
             "kr.lotte" => Lotte::track(tracking_number).await,
@@ -82,6 +83,12 @@ impl Tracker for DeliveryTracker {
             couriers.push(tracker::SupportCouriersDetail {
                 id: EpostEMS::id().to_string(),
                 name: EpostEMS::name().to_string(),
+            });
+        }
+        if Gspostbox::validate(&tracking_number) {
+            couriers.push(tracker::SupportCouriersDetail {
+                id: Gspostbox::id().to_string(),
+                name: Gspostbox::name().to_string(),
             });
         }
         if Hanjin::validate(&tracking_number) {
