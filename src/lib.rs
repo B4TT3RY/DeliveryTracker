@@ -52,4 +52,29 @@ impl Tracker for DeliveryTracker {
             }
         }
     }
+
+    async fn get_support_couriers(
+        &self,
+        request: tonic::Request<tracker::SupportCouriersRequest>,
+    ) -> Result<tonic::Response<tracker::SupportCouriersResponse>, tonic::Status> {
+        let mut couriers: Vec<tracker::SupportCouriersDetail> = Vec::new();
+        let tracking_number = request.into_inner().tracking_number;
+
+        if Cjlogistics::validate(&tracking_number) {
+            couriers.push(tracker::SupportCouriersDetail {
+                id: Cjlogistics::id().to_string(),
+                name: Cjlogistics::name().to_string(),
+            });
+        }
+        if Epost::validate(&tracking_number) {
+            couriers.push(tracker::SupportCouriersDetail {
+                id: Epost::id().to_string(),
+                name: Epost::name().to_string(),
+            });
+        }
+
+        Ok(Response::new(tracker::SupportCouriersResponse {
+            couriers,
+        }))
+    }
 }

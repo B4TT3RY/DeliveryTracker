@@ -4,6 +4,7 @@ package tracker;
 
 service Tracker {
     rpc Track(TrackingRequest) returns (TrackingResponse);
+    rpc GetSupportCouriers(SupportCouriersRequest) returns (SupportCouriersResponse);
 }
 
 message TrackingRequest {
@@ -41,4 +42,17 @@ message TrackingDetail {
     optional string status = 3;
     optional string location = 4;
     optional string live_tracking_url = 5;
+}
+
+message SupportCouriersRequest {
+    string tracking_number = 1;
+}
+
+message SupportCouriersResponse {
+    repeated SupportCouriersDetail couriers = 1;
+}
+
+message SupportCouriersDetail {
+    string id = 1;
+    string name = 2;
 }
