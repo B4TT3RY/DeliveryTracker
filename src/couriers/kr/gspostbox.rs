@@ -57,8 +57,7 @@ impl Courier for Gspostbox {
 
         let mut tracks: Vec<tracker::TrackingDetail> = vec![];
 
-        for element in json["trackingDetails"].as_array().unwrap()
-        {
+        for element in json["trackingDetails"].as_array().unwrap() {
             let datetime = Seoul.datetime_from_str(
                 &element["transTime"].as_str().unwrap(),
                 "%Y-%m-%dT%H:%M:%S",
