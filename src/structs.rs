@@ -17,6 +17,7 @@ pub enum TrackingError {
     RequestFailed(String),
     WrongTrackingNumber(String),
     NotExistsTrackingNumber,
+    ParsingError(String),
 }
 
 impl From<reqwest::Error> for TrackingError {
@@ -28,5 +29,11 @@ impl From<reqwest::Error> for TrackingError {
 impl From<reqwest::header::ToStrError> for TrackingError {
     fn from(error: reqwest::header::ToStrError) -> Self {
         TrackingError::RequestFailed(error.to_string())
+    }
+}
+
+impl From<regex::Error> for TrackingError {
+    fn from(error: regex::Error) -> Self {
+        TrackingError::ParsingError(error.to_string())
     }
 }

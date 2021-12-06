@@ -44,6 +44,7 @@ impl Tracker for DeliveryTracker {
                     RequestFailed(err) => (1, err),
                     WrongTrackingNumber(err) => (2, err),
                     NotExistsTrackingNumber => (3, String::new()),
+                    ParsingError(err) => (4, err),
                 };
                 Ok(Response::new(
                     tracker::TrackingResponse {
