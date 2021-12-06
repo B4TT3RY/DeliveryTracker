@@ -12,6 +12,7 @@
 |우체국 EMS|`kr.epostems`||
 |GS Postbox 택배|`kr.gspostbox`||
 |한진택배|`kr.hanjin`||
+|일양로지스|`kr.ilyanglogis`|`EUC-KR` 인코딩 이슈|
 |경동택배|`kr.kyoungdong`||
 |로젠택배|`kr.logen`||
 |롯데택배|`kr.lotte`||

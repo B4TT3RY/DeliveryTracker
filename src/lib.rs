@@ -3,7 +3,7 @@ use couriers::{
     kr::{
         chunil::Chunil, cjlogistics::Cjlogistics, cupost::Cupost, daesin::Daesin, epost::Epost,
         epostems::EpostEMS, gspostbox::Gspostbox, hanjin::Hanjin, kyoungdong::Kyoungdong,
-        logen::Logen, lotte::Lotte,
+        logen::Logen, lotte::Lotte, ilyanglogis::IlyangLogis,
     },
     us::warpex::Warpex,
 };
@@ -41,6 +41,7 @@ impl Tracker for DeliveryTracker {
             "kr.epostems" => EpostEMS::track(tracking_number).await,
             "kr.gspostbox" => Gspostbox::track(tracking_number).await,
             "kr.hanjin" => Hanjin::track(tracking_number).await,
+            "kr.ilyanglogis" => IlyangLogis::track(tracking_number).await,
             "kr.kyoungdong" => Kyoungdong::track(tracking_number).await,
             "kr.logen" => Logen::track(tracking_number).await,
             "kr.lotte" => Lotte::track(tracking_number).await,
@@ -132,6 +133,12 @@ impl Tracker for DeliveryTracker {
             couriers.push(tracker::SupportCouriersDetail {
                 id: Hanjin::id().to_string(),
                 name: Hanjin::name().to_string(),
+            });
+        }
+        if IlyangLogis::validate(&tracking_number) {
+            couriers.push(tracker::SupportCouriersDetail {
+                id: IlyangLogis::id().to_string(),
+                name: IlyangLogis::name().to_string(),
             });
         }
         if Kyoungdong::validate(&tracking_number) {
