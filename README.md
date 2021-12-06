@@ -4,7 +4,7 @@
 
 |이름|ID|비고|
 |---|---|---|
-|천일택배|`kr.chunil`||
+|천일택배|`kr.chunil`|시간 정보 미제공|
 |CJ대한통운|`kr.cjlogistics`||
 |CU Post|`kr.cupost`||
 |대신택배|`kr.daesin`||
