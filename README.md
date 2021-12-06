@@ -18,6 +18,7 @@
 |이름|ID|비고|
 |---|---|---|
 |CAINIAO|`cn.cainiao`|데이터를 가져올 수 없음|
+|WarpEX|`us.warpex`|
 
 ## 지원 예정 택배사
 
