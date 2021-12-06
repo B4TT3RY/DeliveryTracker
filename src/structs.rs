@@ -43,3 +43,9 @@ impl From<chrono::ParseError> for TrackingError {
         TrackingError::ParsingError(error.to_string())
     }
 }
+
+impl From<serde_json::Error> for TrackingError {
+    fn from(error: serde_json::Error) -> Self {
+        TrackingError::ParsingError(error.to_string())
+    }
+}
