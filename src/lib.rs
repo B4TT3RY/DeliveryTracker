@@ -1,5 +1,5 @@
 use couriers::kr::{
-    cjlogistics::Cjlogistics, epost::Epost, epostems::EpostEMS, hanjin::Hanjin, lotte::Lotte,
+    cjlogistics::Cjlogistics, epost::Epost, epostems::EpostEMS, hanjin::Hanjin, lotte::Lotte, logen::Logen,
 };
 use structs::Courier;
 use tonic::{Response, Status};
@@ -30,6 +30,7 @@ impl Tracker for DeliveryTracker {
             "kr.epost" => Epost::track(tracking_number).await,
             "kr.epostems" => EpostEMS::track(tracking_number).await,
             "kr.hanjin" => Hanjin::track(tracking_number).await,
+            "kr.logen" => Logen::track(tracking_number).await,
             "kr.lotte" => Lotte::track(tracking_number).await,
             _ => {
                 return Err(Status::invalid_argument("Not supported courier"));
@@ -87,6 +88,12 @@ impl Tracker for DeliveryTracker {
             couriers.push(tracker::SupportCouriersDetail {
                 id: Hanjin::id().to_string(),
                 name: Hanjin::name().to_string(),
+            });
+        }
+        if Logen::validate(&tracking_number) {
+            couriers.push(tracker::SupportCouriersDetail {
+                id: Logen::id().to_string(),
+                name: Logen::name().to_string(),
             });
         }
         if Lotte::validate(&tracking_number) {
