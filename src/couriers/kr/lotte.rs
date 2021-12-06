@@ -22,7 +22,9 @@ impl Courier for Lotte {
 
     fn validate(tracking_number: &str) -> bool {
         tracking_number.parse::<u64>().is_ok()
-            && (tracking_number.len() == 10 || tracking_number.len() == 12 || tracking_number.len() == 13)
+            && (tracking_number.len() == 10
+                || tracking_number.len() == 12
+                || tracking_number.len() == 13)
     }
 
     async fn track(tracking_number: &str) -> crate::structs::TrackingResult {
@@ -49,7 +51,10 @@ impl Courier for Lotte {
 
         let mut tracks: Vec<tracker::TrackingDetail> = vec![];
 
-        for element in document.select("#contents > div > div.contArea > table:nth-child(4) > tbody > tr").iter() {
+        for element in document
+            .select("#contents > div > div.contArea > table:nth-child(4) > tbody > tr")
+            .iter()
+        {
             if element.select("td:nth-child(2)").text().contains("--:--") {
                 continue;
             }
@@ -61,7 +66,13 @@ impl Courier for Lotte {
 
             tracks.push(tracker::TrackingDetail {
                 time: datetime.format("%Y-%m-%d %H:%M:%S").to_string(),
-                message: Some(element.select("td:nth-child(4)").text().replace("  ", " ").replace(".(", ". (")),
+                message: Some(
+                    element
+                        .select("td:nth-child(4)")
+                        .text()
+                        .replace("  ", " ")
+                        .replace(".(", ". ("),
+                ),
                 status: Some(element.select("td:nth-child(1)").text().to_string()),
                 location: Some(element.select("td:nth-child(3)").text().trim().to_string()),
                 live_tracking_url: None,

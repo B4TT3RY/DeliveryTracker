@@ -48,7 +48,10 @@ impl Courier for EpostEMS {
 
         let mut tracks: Vec<tracker::TrackingDetail> = vec![];
 
-        for element in document.select("#print > table.table_col.detail_off.ma_t_5 > tbody > tr").iter() {
+        for element in document
+            .select("#print > table.table_col.detail_off.ma_t_5 > tbody > tr")
+            .iter()
+        {
             let datetime = Seoul.datetime_from_str(
                 &element.select("td:nth-child(1)").text().to_string(),
                 "%Y.%m.%d %H:%M",

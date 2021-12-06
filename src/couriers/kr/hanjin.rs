@@ -53,7 +53,10 @@ impl Courier for Hanjin {
 
         let mut tracks: Vec<tracker::TrackingDetail> = vec![];
 
-        for element in document.select("#delivery-wr > div > div.waybill-tbl > table > tbody > tr").iter() {
+        for element in document
+            .select("#delivery-wr > div > div.waybill-tbl > table > tbody > tr")
+            .iter()
+        {
             let datetime = Seoul.datetime_from_str(
                 &format!(
                     "{} {}",
@@ -80,21 +83,18 @@ impl Courier for Hanjin {
                 .select("td[data-label='상품명']")
                 .text()
                 .to_string(),
-            is_delivered: document
-                .select("li.on > span.num")
-                .text()
-                .contains("STEP6"),
+            is_delivered: document.select("li.on > span.num").text().contains("STEP6"),
             sender: Some(
                 document
                     .select("td[data-label='보내는 분']")
                     .text()
-                    .to_string()
+                    .to_string(),
             ),
             receiver: Some(
                 document
                     .select("td[data-label='받는 분']")
                     .text()
-                    .to_string()
+                    .to_string(),
             ),
             product: None,
             tracks,

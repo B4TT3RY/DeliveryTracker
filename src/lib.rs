@@ -1,4 +1,6 @@
-use couriers::kr::{cjlogistics::Cjlogistics, epost::Epost, epostems::EpostEMS, hanjin::Hanjin, lotte::Lotte};
+use couriers::kr::{
+    cjlogistics::Cjlogistics, epost::Epost, epostems::EpostEMS, hanjin::Hanjin, lotte::Lotte,
+};
 use structs::Courier;
 use tonic::{Response, Status};
 
@@ -94,8 +96,6 @@ impl Tracker for DeliveryTracker {
             });
         }
 
-        Ok(Response::new(tracker::SupportCouriersResponse {
-            couriers,
-        }))
+        Ok(Response::new(tracker::SupportCouriersResponse { couriers }))
     }
 }
