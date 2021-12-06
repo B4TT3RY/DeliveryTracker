@@ -1,5 +1,6 @@
 pub mod cjlogistics;
 pub mod cupost;
+pub mod daesin;
 pub mod epost;
 pub mod epostems;
 pub mod gspostbox;
