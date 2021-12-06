@@ -1,4 +1,6 @@
 use async_trait::async_trait;
+use chrono::TimeZone;
+use chrono_tz::Asia::Seoul;
 use nipper::Document;
 use regex::Regex;
 
@@ -39,15 +41,27 @@ impl Courier for Epost {
         let document = Document::from(&body);
 
         let mut tracks: Vec<tracker::TrackingDetail> = vec![];
+        let space_regex = Regex::new(r"\s+")?;
 
         for element in document.select("#processTable > tbody > tr").iter() {
-            let status = element.select("td:nth-child(4)").text();
-            let (status, _) = status.trim().split_once(&['\n', ' '][..]).unwrap_or_else(|| (status.trim(), ""));
+            let status = element
+                .select("td:nth-child(4)")
+                .text()
+                .trim()
+                .replace(&['\n', '\t'][..], "");
+            let status = space_regex.replace_all(&status, " ").to_string();
+            let (status, _) = status.trim().split_once(" (").unwrap_or_else(|| (&status, ""));
+
             let location = element.select("td:nth-child(3)").text();
             let (location, _) = location.trim().split_once('\n').unwrap_or_else(|| (location.trim(), ""));
-            
+
+            let datetime = Seoul.datetime_from_str(
+                &format!("{} {}", element.select("td:nth-child(1)").text(), element.select("td:nth-child(2)").text()),
+                "%Y.%m.%d %H:%M"
+            )?;
+                
             tracks.push(tracker::TrackingDetail {
-                time: format!("{} {}", element.select("td:nth-child(1)").text(), element.select("td:nth-child(2)").text()),
+                time: datetime.format("%Y-%m-%d %H:%M:%S").to_string(),
                 message: None,
                 status: Some(status.to_string()),
                 location: Some(location.to_string()),

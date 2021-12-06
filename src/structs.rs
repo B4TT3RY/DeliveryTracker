@@ -37,3 +37,9 @@ impl From<regex::Error> for TrackingError {
         TrackingError::ParsingError(error.to_string())
     }
 }
+
+impl From<chrono::ParseError> for TrackingError {
+    fn from(error: chrono::ParseError) -> Self {
+        TrackingError::ParsingError(error.to_string())
+    }
+}

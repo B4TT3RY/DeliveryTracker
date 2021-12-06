@@ -1,4 +1,6 @@
 use async_trait::async_trait;
+use chrono::TimeZone;
+use chrono_tz::Asia::Seoul;
 use nipper::Document;
 use serde_json::Value;
 
@@ -75,9 +77,12 @@ impl Courier for Cjlogistics {
                     base64::encode(detail["invcNo"].as_str().unwrap().as_bytes())
                 ));
             }
+            
+            let datetime = Seoul.datetime_from_str(element["dTime"].as_str().unwrap(), "%Y-%m-%d %H:%M:%S.%f")?;
+
             tracks.push(tracker::TrackingDetail {
-                time: element["dTime"].as_str().unwrap().to_string(),
-                message: Some(element["crgNm"].as_str().unwrap().replace(".(", ". (").to_string()),
+                time: datetime.format("%Y-%m-%d %H:%M:%S").to_string(),
+                message: Some(element["crgNm"].as_str().unwrap().replace("(", " (").to_string()),
                 status: Some(element["scanNm"].as_str().unwrap().to_string()),
                 location: Some(element["regBranNm"].as_str().unwrap().to_string()),
                 live_tracking_url,
