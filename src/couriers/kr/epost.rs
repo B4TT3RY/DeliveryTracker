@@ -4,7 +4,10 @@ use chrono_tz::Asia::Seoul;
 use nipper::Document;
 use regex::Regex;
 
-use crate::{structs::{Courier, TrackingError}, tracker};
+use crate::{
+    structs::{Courier, TrackingError},
+    tracker,
+};
 
 pub struct Epost {}
 
@@ -24,15 +27,17 @@ impl Courier for Epost {
 
     async fn track(tracking_number: &str) -> crate::structs::TrackingResult {
         if !Self::validate(tracking_number) {
-            return Err(TrackingError::WrongTrackingNumber("숫자 13자리".to_string()));
+            return Err(TrackingError::WrongTrackingNumber(
+                "숫자 13자리".to_string(),
+            ));
         }
 
-        let url = format!("https://service.epost.go.kr/trace.RetrieveDomRigiTraceList.comm?sid1={}", tracking_number);
+        let url = format!(
+            "https://service.epost.go.kr/trace.RetrieveDomRigiTraceList.comm?sid1={}",
+            tracking_number
+        );
 
-        let body = reqwest::get(&url)
-            .await?
-            .text()
-            .await?;
+        let body = reqwest::get(&url).await?.text().await?;
 
         if body.contains("배달정보를 찾지 못했습니다") {
             return Err(TrackingError::NotExistsTrackingNumber);
@@ -50,16 +55,26 @@ impl Courier for Epost {
                 .trim()
                 .replace(&['\n', '\t'][..], "");
             let status = space_regex.replace_all(&status, " ").to_string();
-            let (status, _) = status.trim().split_once(" (").unwrap_or_else(|| (&status, ""));
+            let (status, _) = status
+                .trim()
+                .split_once(" (")
+                .unwrap_or_else(|| (&status, ""));
 
             let location = element.select("td:nth-child(3)").text();
-            let (location, _) = location.trim().split_once('\n').unwrap_or_else(|| (location.trim(), ""));
+            let (location, _) = location
+                .trim()
+                .split_once('\n')
+                .unwrap_or_else(|| (location.trim(), ""));
 
             let datetime = Seoul.datetime_from_str(
-                &format!("{} {}", element.select("td:nth-child(1)").text(), element.select("td:nth-child(2)").text()),
-                "%Y.%m.%d %H:%M"
+                &format!(
+                    "{} {}",
+                    element.select("td:nth-child(1)").text(),
+                    element.select("td:nth-child(2)").text()
+                ),
+                "%Y.%m.%d %H:%M",
             )?;
-                
+
             tracks.push(tracker::TrackingDetail {
                 time: datetime.format("%Y-%m-%d %H:%M:%S").to_string(),
                 message: None,
@@ -70,7 +85,10 @@ impl Courier for Epost {
         }
 
         let sender_regex = Regex::new("<td>(.+)<br>")?;
-        let sender_html = document.select("#print > table > tbody > tr > td:nth-child(2)").html().to_string();
+        let sender_html = document
+            .select("#print > table > tbody > tr > td:nth-child(2)")
+            .html()
+            .to_string();
         let sender = sender_regex
             .captures(&sender_html)
             .unwrap()
@@ -81,10 +99,22 @@ impl Courier for Epost {
             id: Self::id().to_string(),
             name: Self::name().to_string(),
             url: url.to_string(),
-            tracking_number: document.select("#print > table > tbody > tr > th").text().to_string(),
-            is_delivered: document.select("#print > table > tbody > tr > td:nth-child(6)").text().contains("배달완료"),
+            tracking_number: document
+                .select("#print > table > tbody > tr > th")
+                .text()
+                .to_string(),
+            is_delivered: document
+                .select("#print > table > tbody > tr > td:nth-child(6)")
+                .text()
+                .contains("배달완료"),
             sender: Some(sender.to_string()),
-            receiver: Some(document.select("#print > table > tbody > tr > td:nth-child(3)").text().trim().to_string()),
+            receiver: Some(
+                document
+                    .select("#print > table > tbody > tr > td:nth-child(3)")
+                    .text()
+                    .trim()
+                    .to_string(),
+            ),
             product: None,
             tracks,
         })

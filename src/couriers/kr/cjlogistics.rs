@@ -4,7 +4,10 @@ use chrono_tz::Asia::Seoul;
 use nipper::Document;
 use serde_json::Value;
 
-use crate::{structs::{Courier, TrackingError, TrackingResult}, tracker};
+use crate::{
+    structs::{Courier, TrackingError, TrackingResult},
+    tracker,
+};
 
 pub struct Cjlogistics {}
 
@@ -22,7 +25,11 @@ impl Cjlogistics {
             .collect::<Vec<_>>()
             .join(";");
         let document = Document::from(&response.text().await?);
-        let csrf = document.select("input[name='_csrf']").attr("value").unwrap().to_string();
+        let csrf = document
+            .select("input[name='_csrf']")
+            .attr("value")
+            .unwrap()
+            .to_string();
         Ok((csrf, cookies))
     }
 }
@@ -44,7 +51,9 @@ impl Courier for Cjlogistics {
 
     async fn track(tracking_number: &str) -> TrackingResult {
         if !Self::validate(tracking_number) {
-            return Err(TrackingError::WrongTrackingNumber("숫자 10자리 또는 12자리".to_string()));
+            return Err(TrackingError::WrongTrackingNumber(
+                "숫자 10자리 또는 12자리".to_string(),
+            ));
         }
         let client = reqwest::Client::new();
         let url = "https://www.cjlogistics.com/ko/tool/parcel/tracking";
@@ -60,14 +69,21 @@ impl Courier for Cjlogistics {
             .json()
             .await?;
 
-        if json["parcelResultMap"]["resultList"].as_array().unwrap().is_empty() {
+        if json["parcelResultMap"]["resultList"]
+            .as_array()
+            .unwrap()
+            .is_empty()
+        {
             return Err(TrackingError::NotExistsTrackingNumber);
         }
 
         let mut tracks: Vec<tracker::TrackingDetail> = vec![];
         let detail = &json["parcelResultMap"]["resultList"][0];
 
-        for element in json["parcelDetailResultMap"]["resultList"].as_array().unwrap() {
+        for element in json["parcelDetailResultMap"]["resultList"]
+            .as_array()
+            .unwrap()
+        {
             let mut live_tracking_url: Option<String> = None;
 
             if element["empImgNm"] != "EMP_IMG_NM" {
@@ -77,12 +93,19 @@ impl Courier for Cjlogistics {
                     base64::encode(detail["invcNo"].as_str().unwrap().as_bytes())
                 ));
             }
-            
-            let datetime = Seoul.datetime_from_str(element["dTime"].as_str().unwrap(), "%Y-%m-%d %H:%M:%S.%f")?;
+
+            let datetime = Seoul
+                .datetime_from_str(element["dTime"].as_str().unwrap(), "%Y-%m-%d %H:%M:%S.%f")?;
 
             tracks.push(tracker::TrackingDetail {
                 time: datetime.format("%Y-%m-%d %H:%M:%S").to_string(),
-                message: Some(element["crgNm"].as_str().unwrap().replace("(", " (").to_string()),
+                message: Some(
+                    element["crgNm"]
+                        .as_str()
+                        .unwrap()
+                        .replace("(", " (")
+                        .to_string(),
+                ),
                 status: Some(element["scanNm"].as_str().unwrap().to_string()),
                 location: Some(element["regBranNm"].as_str().unwrap().to_string()),
                 live_tracking_url,
