@@ -1,7 +1,8 @@
-use couriers::epost::Epost;
+use couriers::kr::{cjlogistics::Cjlogistics, epost::Epost};
+use structs::Courier;
 use tonic::{Status, Response};
 
-use crate::{tracker::tracker_server::Tracker, couriers::cjlogistics::Cjlogistics, structs::Courier};
+use crate::{tracker::tracker_server::Tracker};
 
 mod couriers;
 mod structs;
