@@ -59,10 +59,8 @@ impl Courier for Lotte {
                 continue;
             }
 
-            let datetime = Seoul.datetime_from_str(
-                &element.select("td:nth-child(2)").text(),
-                "%Y-%m-%d %H:%M",
-            )?;
+            let datetime = Seoul
+                .datetime_from_str(&element.select("td:nth-child(2)").text(), "%Y-%m-%d %H:%M")?;
 
             tracks.push(tracker::TrackingDetail {
                 time: datetime.format("%Y-%m-%d %H:%M:%S").to_string(),

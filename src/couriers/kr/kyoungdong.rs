@@ -31,24 +31,25 @@ impl Courier for Kyoungdong {
             ));
         }
 
-        let json: Value = reqwest::get(format!("https://kdexp.com/newDeliverySearch.kd?barcode={}", tracking_number))
-            .await?
-            .json()
-            .await?;
+        let json: Value = reqwest::get(format!(
+            "https://kdexp.com/newDeliverySearch.kd?barcode={}",
+            tracking_number
+        ))
+        .await?
+        .json()
+        .await?;
 
-        if json["result"]
-            .as_str()
-            .unwrap()
-            == "fail"
-        {
+        if json["result"].as_str().unwrap() == "fail" {
             return Err(TrackingError::NotExistsTrackingNumber);
         }
 
         let mut tracks: Vec<tracker::TrackingDetail> = vec![];
 
         for element in json["items"].as_array().unwrap() {
-            let datetime = Seoul
-                .datetime_from_str(element["reg_date"].as_str().unwrap(), "%Y-%m-%d %H:%M:%S.%f")?;
+            let datetime = Seoul.datetime_from_str(
+                element["reg_date"].as_str().unwrap(),
+                "%Y-%m-%d %H:%M:%S.%f",
+            )?;
 
             tracks.push(tracker::TrackingDetail {
                 time: datetime.format("%Y-%m-%d %H:%M:%S").to_string(),
@@ -65,8 +66,16 @@ impl Courier for Kyoungdong {
             url: "https://kdexp.com/main.kd".to_string(),
             tracking_number: json["info"]["barcode"].as_str().unwrap().to_string(),
             is_delivered: !json["info"]["rec_dt"].is_null(),
-            sender: Some(format!("{} ({})", json["info"]["send_name"].as_str().unwrap(), json["info"]["branch_start"].as_str().unwrap())),
-            receiver: Some(format!("{} ({})", json["info"]["re_name"].as_str().unwrap(), json["info"]["branch_end"].as_str().unwrap())),
+            sender: Some(format!(
+                "{} ({})",
+                json["info"]["send_name"].as_str().unwrap(),
+                json["info"]["branch_start"].as_str().unwrap()
+            )),
+            receiver: Some(format!(
+                "{} ({})",
+                json["info"]["re_name"].as_str().unwrap(),
+                json["info"]["branch_end"].as_str().unwrap()
+            )),
             product: Some(json["info"]["prod"].as_str().unwrap().to_string()),
             tracks,
         })

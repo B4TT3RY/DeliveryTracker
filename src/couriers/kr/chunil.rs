@@ -36,10 +36,7 @@ impl Courier for Chunil {
             tracking_number
         );
 
-        let body = reqwest::get(&url)
-            .await?
-            .text()
-            .await?;
+        let body = reqwest::get(&url).await?.text().await?;
 
         if body.contains("결과가 없습니다") {
             return Err(TrackingError::NotExistsTrackingNumber);
@@ -49,10 +46,7 @@ impl Courier for Chunil {
 
         let mut tracks: Vec<tracker::TrackingDetail> = vec![];
 
-        for element in document
-            .select("#tracking > tbody > tr")
-            .iter()
-        {
+        for element in document.select("#tracking > tbody > tr").iter() {
             if element.html().contains("날짜") {
                 continue;
             }

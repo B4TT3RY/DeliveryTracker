@@ -52,10 +52,8 @@ impl Courier for EpostEMS {
             .select("#print > table.table_col.detail_off.ma_t_5 > tbody > tr")
             .iter()
         {
-            let datetime = Seoul.datetime_from_str(
-                &element.select("td:nth-child(1)").text(),
-                "%Y.%m.%d %H:%M",
-            )?;
+            let datetime = Seoul
+                .datetime_from_str(&element.select("td:nth-child(1)").text(), "%Y.%m.%d %H:%M")?;
 
             tracks.push(tracker::TrackingDetail {
                 time: datetime.format("%Y-%m-%d %H:%M:%S").to_string(),

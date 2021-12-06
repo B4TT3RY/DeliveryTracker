@@ -57,44 +57,43 @@ impl Courier for Daesin {
 
             let dealer_type = element.select("td:nth-child(1)").text().to_string();
 
-            let datetime = Seoul.datetime_from_str(
-                &element.select("td:nth-child(4)").text(),
-                "%Y-%m-%d %H:%M",
-            )?;
+            let datetime = Seoul
+                .datetime_from_str(&element.select("td:nth-child(4)").text(), "%Y-%m-%d %H:%M")?;
 
             tracks.push(tracker::TrackingDetail {
                 time: datetime.format("%Y-%m-%d %H:%M:%S").to_string(),
                 message: None,
-                status: Some(
-                    if dealer_type == "발송취급점" {
-                        "인수".to_string()
-                    } else {
-                        "도착".to_string()
-                    }
-                ),
-                location: Some(format!("[{}] {}", element.select("td:nth-child(1)").text().trim(), element.select("td:nth-child(2)").text().trim())),
+                status: Some(if dealer_type == "발송취급점" {
+                    "인수".to_string()
+                } else {
+                    "도착".to_string()
+                }),
+                location: Some(format!(
+                    "[{}] {}",
+                    element.select("td:nth-child(1)").text().trim(),
+                    element.select("td:nth-child(2)").text().trim()
+                )),
                 live_tracking_url: None,
             });
 
             let start_time = element.select("td:nth-child(5)").text().to_string();
 
             if !start_time.is_empty() {
-                let datetime = Seoul.datetime_from_str(
-                    &start_time,
-                    "%Y-%m-%d %H:%M",
-                )?;
-    
+                let datetime = Seoul.datetime_from_str(&start_time, "%Y-%m-%d %H:%M")?;
+
                 tracks.push(tracker::TrackingDetail {
                     time: datetime.format("%Y-%m-%d %H:%M:%S").to_string(),
                     message: None,
-                    status: Some(
-                        if dealer_type == "도착취급점" {
-                            "배송완료".to_string()
-                        } else {
-                            "출발".to_string()
-                        }
-                    ),
-                    location: Some(format!("[{}] {}", element.select("td:nth-child(1)").text().trim(), element.select("td:nth-child(2)").text().trim())),
+                    status: Some(if dealer_type == "도착취급점" {
+                        "배송완료".to_string()
+                    } else {
+                        "출발".to_string()
+                    }),
+                    location: Some(format!(
+                        "[{}] {}",
+                        element.select("td:nth-child(1)").text().trim(),
+                        element.select("td:nth-child(2)").text().trim()
+                    )),
                     live_tracking_url: None,
                 });
             }

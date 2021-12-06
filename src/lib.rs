@@ -1,6 +1,12 @@
-use couriers::{kr::{
-    cjlogistics::Cjlogistics, epost::Epost, epostems::EpostEMS, hanjin::Hanjin, lotte::Lotte, logen::Logen, gspostbox::Gspostbox, cupost::Cupost, daesin::Daesin, kyoungdong::Kyoungdong, chunil::Chunil,
-}, cn::cainiao::Cainiao, us::warpex::Warpex};
+use couriers::{
+    cn::cainiao::Cainiao,
+    kr::{
+        chunil::Chunil, cjlogistics::Cjlogistics, cupost::Cupost, daesin::Daesin, epost::Epost,
+        epostems::EpostEMS, gspostbox::Gspostbox, hanjin::Hanjin, kyoungdong::Kyoungdong,
+        logen::Logen, lotte::Lotte,
+    },
+    us::warpex::Warpex,
+};
 use structs::Courier;
 use tonic::{Response, Status};
 
@@ -79,7 +85,7 @@ impl Tracker for DeliveryTracker {
                 name: Cainiao::name().to_string(),
             });
         }
-        
+
         if Chunil::validate(&tracking_number) {
             couriers.push(tracker::SupportCouriersDetail {
                 id: Chunil::id().to_string(),

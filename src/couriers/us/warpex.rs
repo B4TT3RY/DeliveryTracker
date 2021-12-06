@@ -27,10 +27,15 @@ impl Courier for Warpex {
 
     async fn track(tracking_number: &str) -> crate::structs::TrackingResult {
         if !Self::validate(tracking_number) {
-            return Err(TrackingError::WrongTrackingNumber("숫자 12자리".to_string()));
+            return Err(TrackingError::WrongTrackingNumber(
+                "숫자 12자리".to_string(),
+            ));
         }
 
-        let url = format!("https://packing.warpex.com/api/warpexTrack?wbl={}", tracking_number);
+        let url = format!(
+            "https://packing.warpex.com/api/warpexTrack?wbl={}",
+            tracking_number
+        );
 
         let body = reqwest::Client::new()
             .get(&url)
@@ -48,27 +53,17 @@ impl Courier for Warpex {
         let mut tracks: Vec<tracker::TrackingDetail> = vec![];
         let message_regex = Regex::new(r"\s+").unwrap();
 
-        for element in document
-            .select("#history > ul > li")
-            .iter()
-        {
-            let datetime = Seoul.datetime_from_str(
-                &element.select(".date").text(),
-                "%Y-%m-%d %p %I:%M:%S",
-            )?;
+        for element in document.select("#history > ul > li").iter() {
+            let datetime =
+                Seoul.datetime_from_str(&element.select(".date").text(), "%Y-%m-%d %p %I:%M:%S")?;
 
             tracks.push(tracker::TrackingDetail {
                 time: datetime.format("%Y-%m-%d %H:%M:%S").to_string(),
                 message: Some(
-                    message_regex.replace_all(
-                    &element
-                            .select(".txt")
-                            .text()
-                            .to_string(),
-                    " "
-                    )
-                    .trim()
-                    .to_string()
+                    message_regex
+                        .replace_all(&element.select(".txt").text().to_string(), " ")
+                        .trim()
+                        .to_string(),
                 ),
                 status: None,
                 location: None,
@@ -77,11 +72,15 @@ impl Courier for Warpex {
         }
 
         let sender_regex = Regex::new(r"[\n|\t|\s]+").unwrap();
-        let sender = document.select("div.Tdate > div > p:nth-child(1) > span").html();
+        let sender = document
+            .select("div.Tdate > div > p:nth-child(1) > span")
+            .html();
         let (_, sender) = sender.split_once("<br>").unwrap();
         let sender = sender_regex.replace_all(sender, " ");
 
-        let receiver = document.select("div.Tdate > div > p:nth-child(2) > span").html();
+        let receiver = document
+            .select("div.Tdate > div > p:nth-child(2) > span")
+            .html();
         let (_, receiver) = receiver.split_once("<br>").unwrap();
 
         Ok(tracker::TrackingInfo {

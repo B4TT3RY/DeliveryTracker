@@ -53,16 +53,14 @@ impl Courier for Gspostbox {
         let regex = Regex::new("(var trackingInfo = )(.+)(;)")?;
         let capture = regex.captures(&body).unwrap();
         let json = capture.get(2).map_or("", |m| m.as_str());
-    
+
         let json: Value = serde_json::from_str(json)?;
 
         let mut tracks: Vec<tracker::TrackingDetail> = vec![];
 
         for element in json["trackingDetails"].as_array().unwrap() {
-            let datetime = Seoul.datetime_from_str(
-                &element["transTime"].as_str().unwrap(),
-                "%Y-%m-%dT%H:%M:%S",
-            )?;
+            let datetime = Seoul
+                .datetime_from_str(&element["transTime"].as_str().unwrap(), "%Y-%m-%dT%H:%M:%S")?;
 
             tracks.push(tracker::TrackingDetail {
                 time: datetime.format("%Y-%m-%d %H:%M:%S").to_string(),
@@ -75,7 +73,11 @@ impl Courier for Gspostbox {
 
         Ok(tracker::TrackingInfo {
             id: Self::id().to_string(),
-            name: format!("{} {}", Self::name(), json["serviceName"].as_str().unwrap().to_string()),
+            name: format!(
+                "{} {}",
+                Self::name(),
+                json["serviceName"].as_str().unwrap().to_string()
+            ),
             url: url.to_string(),
             tracking_number: json["invoiceNo"].as_str().unwrap().to_string(),
             is_delivered: json["latestTrackingDetail"]["transKind"] == "고객전달",

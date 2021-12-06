@@ -34,7 +34,10 @@ impl Courier for Cainiao {
             ));
         }
 
-        let url = format!("https://global.cainiao.com/detail.htm?lang=en&mailNoList={}", tracking_number);
+        let url = format!(
+            "https://global.cainiao.com/detail.htm?lang=en&mailNoList={}",
+            tracking_number
+        );
 
         let body = reqwest::Client::new()
             .get(&url)
@@ -46,7 +49,10 @@ impl Courier for Cainiao {
 
         let document = Document::from(&body);
 
-        let json = document.select("#waybill_list_val_box").text().replace("&quot;", "\"");
+        let json = document
+            .select("#waybill_list_val_box")
+            .text()
+            .replace("&quot;", "\"");
         let json: Value = serde_json::from_str(&json)?;
 
         if !json["data"][0]["errorCode"].is_null() {
@@ -59,17 +65,12 @@ impl Courier for Cainiao {
             .as_array()
             .unwrap()
         {
-            let datetime = Seoul
-                .datetime_from_str(element["time"].as_str().unwrap(), "%Y-%m-%d %H:%M:%S")?;
+            let datetime =
+                Seoul.datetime_from_str(element["time"].as_str().unwrap(), "%Y-%m-%d %H:%M:%S")?;
 
             tracks.push(tracker::TrackingDetail {
                 time: datetime.format("%Y-%m-%d %H:%M:%S").to_string(),
-                message: Some(
-                    element["desc"]
-                        .as_str()
-                        .unwrap()
-                        .to_string(),
-                ),
+                message: Some(element["desc"].as_str().unwrap().to_string()),
                 status: None,
                 location: None,
                 live_tracking_url: None,
@@ -84,7 +85,12 @@ impl Courier for Cainiao {
             url: url.to_string(),
             tracking_number: json["data"][0]["mailNo"].as_str().unwrap().to_string(),
             is_delivered: json["data"][0]["statusDesc"].as_str().unwrap() == "Delivered",
-            sender: Some(json["data"][0]["originCountry"].as_str().unwrap().to_string()),
+            sender: Some(
+                json["data"][0]["originCountry"]
+                    .as_str()
+                    .unwrap()
+                    .to_string(),
+            ),
             receiver: Some(json["data"][0]["destCountry"].as_str().unwrap().to_string()),
             product: None,
             tracks,

@@ -79,10 +79,7 @@ impl Courier for Hanjin {
             id: Self::id().to_string(),
             name: Self::name().to_string(),
             url: url.to_string(),
-            tracking_number: document
-                .select(".songjang-num > .num")
-                .text()
-                .to_string(),
+            tracking_number: document.select(".songjang-num > .num").text().to_string(),
             is_delivered: document.select("li.on > span.num").text().contains("STEP6"),
             sender: Some(
                 document
@@ -100,7 +97,7 @@ impl Courier for Hanjin {
                 document
                     .select("td[data-label='상품명']")
                     .text()
-                    .to_string()
+                    .to_string(),
             ),
             tracks,
         })

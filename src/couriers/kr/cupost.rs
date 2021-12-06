@@ -23,7 +23,9 @@ impl Courier for Cupost {
     }
 
     fn validate(tracking_number: &str) -> bool {
-        tracking_number.parse::<u64>().is_ok() && tracking_number.len() >= 10 && tracking_number.len() <= 12
+        tracking_number.parse::<u64>().is_ok()
+            && tracking_number.len() >= 10
+            && tracking_number.len() <= 12
     }
 
     async fn track(tracking_number: &str) -> crate::structs::TrackingResult {
@@ -32,7 +34,7 @@ impl Courier for Cupost {
                 "숫자 10자리 또는 11자리 또는 12자리".to_string(),
             ));
         }
-        
+
         let body = reqwest::Client::new()
             .post("https://www.cupost.co.kr/postbox/delivery/localResult.cupost")
             .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36")
@@ -41,7 +43,7 @@ impl Courier for Cupost {
             .await?
             .text()
             .await?;
-        
+
         if body.contains("<iframe") {
             let mut cj = Cjlogistics::track(tracking_number).await?;
             cj.id = Self::id().to_string();
