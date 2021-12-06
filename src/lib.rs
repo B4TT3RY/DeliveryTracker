@@ -1,4 +1,4 @@
-use couriers::kr::{cjlogistics::Cjlogistics, epost::Epost};
+use couriers::kr::{cjlogistics::Cjlogistics, epost::Epost, epostems::EpostEMS};
 use structs::Courier;
 use tonic::{Response, Status};
 
@@ -26,6 +26,7 @@ impl Tracker for DeliveryTracker {
         let result = match courier_id {
             "kr.cjlogistics" => Cjlogistics::track(tracking_number).await,
             "kr.epost" => Epost::track(tracking_number).await,
+            "kr.epostems" => EpostEMS::track(tracking_number).await,
             _ => {
                 return Err(Status::invalid_argument("Not supported courier"));
             }
@@ -70,6 +71,12 @@ impl Tracker for DeliveryTracker {
             couriers.push(tracker::SupportCouriersDetail {
                 id: Epost::id().to_string(),
                 name: Epost::name().to_string(),
+            });
+        }
+        if EpostEMS::validate(&tracking_number) {
+            couriers.push(tracker::SupportCouriersDetail {
+                id: EpostEMS::id().to_string(),
+                name: EpostEMS::name().to_string(),
             });
         }
 
