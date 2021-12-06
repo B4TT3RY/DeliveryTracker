@@ -6,6 +6,7 @@
 |---|---|---|
 |대한통운|`kr.cjlogistics`||
 |CU Post|`kr.cupost`||
+|대신택배|`kr.daesin`||
 |우체국|`kr.epost`||
 |우체국 EMS|`kr.epostems`||
 |GS Postbox 택배|`kr.gspostbox`||
