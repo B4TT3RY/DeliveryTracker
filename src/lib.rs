@@ -1,5 +1,5 @@
 use couriers::{kr::{
-    cjlogistics::Cjlogistics, epost::Epost, epostems::EpostEMS, hanjin::Hanjin, lotte::Lotte, logen::Logen, gspostbox::Gspostbox, cupost::Cupost, daesin::Daesin,
+    cjlogistics::Cjlogistics, epost::Epost, epostems::EpostEMS, hanjin::Hanjin, lotte::Lotte, logen::Logen, gspostbox::Gspostbox, cupost::Cupost, daesin::Daesin, kyoungdong::Kyoungdong,
 }, cn::cainiao::Cainiao, us::warpex::Warpex};
 use structs::Courier;
 use tonic::{Response, Status};
@@ -34,6 +34,7 @@ impl Tracker for DeliveryTracker {
             "kr.epostems" => EpostEMS::track(tracking_number).await,
             "kr.gspostbox" => Gspostbox::track(tracking_number).await,
             "kr.hanjin" => Hanjin::track(tracking_number).await,
+            "kr.kyoungdong" => Kyoungdong::track(tracking_number).await,
             "kr.logen" => Logen::track(tracking_number).await,
             "kr.lotte" => Lotte::track(tracking_number).await,
             "us.warpex" => Warpex::track(tracking_number).await,
@@ -118,6 +119,12 @@ impl Tracker for DeliveryTracker {
             couriers.push(tracker::SupportCouriersDetail {
                 id: Hanjin::id().to_string(),
                 name: Hanjin::name().to_string(),
+            });
+        }
+        if Kyoungdong::validate(&tracking_number) {
+            couriers.push(tracker::SupportCouriersDetail {
+                id: Kyoungdong::id().to_string(),
+                name: Kyoungdong::name().to_string(),
             });
         }
         if Logen::validate(&tracking_number) {
