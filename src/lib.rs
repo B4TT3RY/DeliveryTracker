@@ -1,6 +1,6 @@
 use couriers::{kr::{
     cjlogistics::Cjlogistics, epost::Epost, epostems::EpostEMS, hanjin::Hanjin, lotte::Lotte, logen::Logen, gspostbox::Gspostbox, cupost::Cupost,
-}, cn::cainiao::Cainiao};
+}, cn::cainiao::Cainiao, us::warpex::Warpex};
 use structs::Courier;
 use tonic::{Response, Status};
 
@@ -35,6 +35,7 @@ impl Tracker for DeliveryTracker {
             "kr.hanjin" => Hanjin::track(tracking_number).await,
             "kr.logen" => Logen::track(tracking_number).await,
             "kr.lotte" => Lotte::track(tracking_number).await,
+            "us.warpex" => Warpex::track(tracking_number).await,
             _ => {
                 return Err(Status::invalid_argument("Not supported courier"));
             }
@@ -75,6 +76,7 @@ impl Tracker for DeliveryTracker {
                 name: Cainiao::name().to_string(),
             });
         }
+        
         if Cjlogistics::validate(&tracking_number) {
             couriers.push(tracker::SupportCouriersDetail {
                 id: Cjlogistics::id().to_string(),
@@ -121,6 +123,13 @@ impl Tracker for DeliveryTracker {
             couriers.push(tracker::SupportCouriersDetail {
                 id: Lotte::id().to_string(),
                 name: Lotte::name().to_string(),
+            });
+        }
+
+        if Warpex::validate(&tracking_number) {
+            couriers.push(tracker::SupportCouriersDetail {
+                id: Warpex::id().to_string(),
+                name: Warpex::name().to_string(),
             });
         }
 
