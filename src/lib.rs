@@ -1,6 +1,6 @@
-use couriers::kr::{
+use couriers::{kr::{
     cjlogistics::Cjlogistics, epost::Epost, epostems::EpostEMS, hanjin::Hanjin, lotte::Lotte, logen::Logen, gspostbox::Gspostbox, cupost::Cupost,
-};
+}, cn::cainiao::Cainiao};
 use structs::Courier;
 use tonic::{Response, Status};
 
@@ -26,6 +26,7 @@ impl Tracker for DeliveryTracker {
         let courier_id = tracking_request.courier_id.as_str();
         let tracking_number = tracking_request.tracking_number.as_str();
         let result = match courier_id {
+            "cn.cainiao" => Cainiao::track(tracking_number).await,
             "kr.cjlogistics" => Cjlogistics::track(tracking_number).await,
             "kr.cupost" => Cupost::track(tracking_number).await,
             "kr.epost" => Epost::track(tracking_number).await,
@@ -68,6 +69,12 @@ impl Tracker for DeliveryTracker {
         let mut couriers: Vec<tracker::SupportCouriersDetail> = Vec::new();
         let tracking_number = request.into_inner().tracking_number;
 
+        if Cainiao::validate(&tracking_number) {
+            couriers.push(tracker::SupportCouriersDetail {
+                id: Cainiao::id().to_string(),
+                name: Cainiao::name().to_string(),
+            });
+        }
         if Cjlogistics::validate(&tracking_number) {
             couriers.push(tracker::SupportCouriersDetail {
                 id: Cjlogistics::id().to_string(),
