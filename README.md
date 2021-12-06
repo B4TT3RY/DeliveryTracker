@@ -19,9 +19,3 @@
 |---|---|---|
 |CAINIAO|`cn.cainiao`|한번씩 데이터가 나오지 않음|
 |WarpEX|`us.warpex`|
-
-## 지원 예정 택배사
-
-|이름|ID|비고|
-|---|---|---|
-|관세청 UNIPASS|`kr.unipass`||
