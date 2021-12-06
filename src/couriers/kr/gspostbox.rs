@@ -22,13 +22,14 @@ impl Courier for Gspostbox {
     }
 
     fn validate(tracking_number: &str) -> bool {
-        tracking_number.parse::<u64>().is_ok() && tracking_number.len() == 12
+        tracking_number.parse::<u64>().is_ok()
+            && (tracking_number.len() == 10 || tracking_number.len() == 12)
     }
 
     async fn track(tracking_number: &str) -> crate::structs::TrackingResult {
         if !Self::validate(tracking_number) {
             return Err(TrackingError::WrongTrackingNumber(
-                "숫자 12자리".to_string(),
+                "숫자 10자리 또는 12자리".to_string(),
             ));
         }
 
