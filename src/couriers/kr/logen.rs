@@ -54,7 +54,7 @@ impl Courier for Logen {
             .iter()
         {
             let datetime = Seoul.datetime_from_str(
-                &element.select("td:nth-child(1)").text().to_string(),
+                &element.select("td:nth-child(1)").text(),
                 "%Y.%m.%d %H:%M",
             )?;
 

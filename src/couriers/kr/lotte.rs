@@ -60,7 +60,7 @@ impl Courier for Lotte {
             }
 
             let datetime = Seoul.datetime_from_str(
-                &element.select("td:nth-child(2)").text().to_string(),
+                &element.select("td:nth-child(2)").text(),
                 "%Y-%m-%d %H:%M",
             )?;
 
