@@ -1,6 +1,7 @@
 use async_trait::async_trait;
 use chrono::TimeZone;
 use chrono_tz::Asia::Seoul;
+use encoding::{all::WINDOWS_949, Encoding};
 use nipper::Document;
 
 use crate::{
@@ -36,7 +37,8 @@ impl Courier for IlyangLogis {
             tracking_number
         );
 
-        let body = reqwest::get(&url).await?.text().await?;
+        let body = reqwest::get(&url).await?.bytes().await?;
+        let body = WINDOWS_949.decode(&body, encoding::DecoderTrap::Replace).unwrap();
     
         if body.contains("해당 자료가 없습니다") {
             return Err(TrackingError::NotExistsTrackingNumber);
