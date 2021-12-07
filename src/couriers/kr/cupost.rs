@@ -44,15 +44,15 @@ impl Courier for Cupost {
             .text()
             .await?;
 
+        if body.contains("조회하신 내용이 없습니다") {
+            return Err(TrackingError::NotExistsTrackingNumber);
+        }
+
         if body.contains("<iframe") {
             let mut cj = Cjlogistics::track(tracking_number).await?;
             cj.id = Self::id().to_string();
             cj.name = format!("{} (국내택배)", Self::name());
             return Ok(cj);
-        }
-
-        if body.contains("조회하신 내용이 없습니다") {
-            return Err(TrackingError::NotExistsTrackingNumber);
         }
 
         let document = Document::from(&body);
