@@ -38,8 +38,10 @@ impl Courier for IlyangLogis {
         );
 
         let body = reqwest::get(&url).await?.bytes().await?;
-        let body = WINDOWS_949.decode(&body, encoding::DecoderTrap::Replace).unwrap();
-    
+        let body = WINDOWS_949
+            .decode(&body, encoding::DecoderTrap::Replace)
+            .unwrap();
+
         if body.contains("해당 자료가 없습니다") {
             return Err(TrackingError::NotExistsTrackingNumber);
         }
@@ -48,7 +50,10 @@ impl Courier for IlyangLogis {
 
         let mut tracks: Vec<tracker::TrackingDetail> = vec![];
 
-        for element in document.select("#popContainer > div > table > tbody > tr").iter() {
+        for element in document
+            .select("#popContainer > div > table > tbody > tr")
+            .iter()
+        {
             let datetime = Seoul.datetime_from_str(
                 &format!(
                     "{} {}",

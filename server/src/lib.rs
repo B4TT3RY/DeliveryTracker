@@ -1,8 +1,4 @@
-use couriers::{
-    cn::*,
-    kr::*,
-    us::*,
-};
+use couriers::{cn::*, kr::*, us::*};
 use structs::Courier;
 use tonic::{Response, Status};
 
