@@ -403,7 +403,10 @@ dependencies = [
 name = "bot"
 version = "0.1.0"
 dependencies = [
+ "prost",
  "tokio",
+ "tonic",
+ "tonic-build",
 ]
 
 [[package]]
