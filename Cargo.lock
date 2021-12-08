@@ -409,6 +409,10 @@ dependencies = [
 name = "bot"
 version = "0.1.0"
 dependencies = [
+ "derive_more",
+ "futures",
+ "log",
+ "pretty_env_logger",
  "prost",
  "teloxide",
  "tokio",
