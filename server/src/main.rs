@@ -2,7 +2,7 @@
 
 use std::net::SocketAddr;
 
-use deliverytracker::{tracker::tracker_server::TrackerServer, DeliveryTracker};
+use server::{tracker::tracker_server::TrackerServer, DeliveryTracker};
 use log::info;
 use tokio::runtime::Runtime;
 use tonic::transport::Server;
