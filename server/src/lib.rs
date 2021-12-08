@@ -1,11 +1,7 @@
 use couriers::{
-    cn::cainiao::Cainiao,
-    kr::{
-        chunil::Chunil, cjlogistics::Cjlogistics, cupost::Cupost, daesin::Daesin, epost::Epost,
-        epostems::EpostEMS, gspostbox::Gspostbox, hanjin::Hanjin, kyoungdong::Kyoungdong,
-        logen::Logen, lotte::Lotte, ilyanglogis::IlyangLogis,
-    },
-    us::warpex::Warpex,
+    cn::*,
+    kr::*,
+    us::*,
 };
 use structs::Courier;
 use tonic::{Response, Status};

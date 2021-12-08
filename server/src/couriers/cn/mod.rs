@@ -1,1 +1,3 @@
-pub mod cainiao;
+mod cainiao;
+
+pub use cainiao::Cainiao;
