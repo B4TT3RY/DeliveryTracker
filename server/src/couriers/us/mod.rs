@@ -1,3 +1,3 @@
-pub mod warpex;
+mod warpex;
 
 pub use warpex::Warpex;
