@@ -402,6 +402,9 @@ dependencies = [
 [[package]]
 name = "bot"
 version = "0.1.0"
+dependencies = [
+ "tokio",
+]
 
 [[package]]
 name = "bumpalo"
@@ -2588,10 +2591,7 @@ dependencies = [
  "memchr",
  "mio",
  "num_cpus",
- "once_cell",
- "parking_lot",
  "pin-project-lite 0.2.7",
- "signal-hook-registry",
  "tokio-macros",
  "winapi",
 ]
