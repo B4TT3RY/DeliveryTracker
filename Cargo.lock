@@ -412,6 +412,7 @@ dependencies = [
  "prost",
  "teloxide",
  "tokio",
+ "tokio-stream",
  "tonic",
  "tonic-build",
 ]
