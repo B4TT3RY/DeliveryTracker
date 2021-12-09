@@ -1,10 +1,11 @@
+use serde::{Serialize, Deserialize};
 use teloxide::{teloxide, prelude::*};
 
 use crate::dialogue::Dialogue;
 
 use super::receive_tracking_number::ReceiveTrackingNumberState;
 
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct StartState;
 
 #[teloxide(subtransition)]

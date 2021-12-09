@@ -1,11 +1,12 @@
 pub mod states;
 
 use derive_more::From;
+use serde::{Serialize, Deserialize};
 use teloxide::{macros::Transition, prelude::*, types::Message};
 
 use self::states::{StartState, ReceiveTrackingNumberState, NothingState};
 
-#[derive(Transition, Clone, From)]
+#[derive(Transition, Clone, From, Serialize, Deserialize)]
 pub enum Dialogue {
     Nothing(NothingState),
     Start(StartState),

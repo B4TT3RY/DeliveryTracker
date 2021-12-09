@@ -1,8 +1,9 @@
+use serde::{Serialize, Deserialize};
 use teloxide::{teloxide, prelude::*};
 
 use crate::dialogue::Dialogue;
 
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct ReceiveTrackingNumberState {
     pub tracking_number: String,
 }
