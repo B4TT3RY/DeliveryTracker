@@ -1,19 +1,20 @@
-mod states;
+pub mod states;
 
 use derive_more::From;
 use teloxide::{macros::Transition, prelude::*, types::Message};
 
-use self::states::{StartState, ReceiveTrackingNumber};
+use self::states::{StartState, ReceiveTrackingNumberState, NothingState};
 
 #[derive(Transition, Clone, From)]
 pub enum Dialogue {
+    Nothing(NothingState),
     Start(StartState),
-    ReceiveTrackingNumber(ReceiveTrackingNumber),
+    ReceiveTrackingNumber(ReceiveTrackingNumberState),
 }
 
 impl Default for Dialogue {
     fn default() -> Self {
-        Self::Start(StartState)
+        Self::Nothing(NothingState)
     }
 }
 

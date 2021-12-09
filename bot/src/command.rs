@@ -2,8 +2,10 @@ use std::error::Error;
 
 use teloxide::{utils::command::BotCommand, prelude::*, types::Message};
 
+use crate::{dialogue::{Dialogue, states::{NothingState, StartState, ReceiveTrackingNumberState}}, telegram};
 
-#[derive(BotCommand)]
+
+#[derive(BotCommand, Debug)]
 #[command(rename = "lowercase")]
 pub enum Command {
     #[command(description = "off")]
@@ -20,23 +22,32 @@ pub enum Command {
 
 impl Command {
     pub async fn handler(
-        cx: UpdateWithCx<crate::BotType, Message>,
+        cx: &UpdateWithCx<crate::BotType, Message>,
         command: Command,
-    ) -> Result<(), Box<dyn Error + Send + Sync>> {
+    ) -> Result<Dialogue, Box<dyn Error + Send + Sync>> {
         match command {
             Command::Start | Command::Help => {
-                cx.answer(Command::descriptions()).await?
+                cx.answer(telegram::escape(Command::descriptions())).await?;
+                Ok(Dialogue::Nothing(NothingState))
             },
             Command::Search(tracking_number) => {
-                cx.answer(format!("{:?}", tracking_number)).await?
+                if tracking_number.is_empty() {
+                    Ok(Dialogue::Start(StartState))
+                } else {
+                    Ok(Dialogue::ReceiveTrackingNumber(ReceiveTrackingNumberState { tracking_number }))
+                }
             },
             Command::Track(tracking_number) => {
-                cx.answer(format!("{:?}", tracking_number)).await?
+                if tracking_number.is_empty() {
+                    Ok(Dialogue::Start(StartState))
+                } else {
+                    Ok(Dialogue::ReceiveTrackingNumber(ReceiveTrackingNumberState { tracking_number }))
+                }
             },
             Command::List => {
-                cx.answer("").await?
+                cx.answer("").await?;
+                Ok(Dialogue::Nothing(NothingState))
             },
-        };
-        Ok(())
+        }
     }
 }
