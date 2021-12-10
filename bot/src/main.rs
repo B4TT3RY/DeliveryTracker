@@ -6,6 +6,8 @@ use telbot_reqwest::Api;
 use telbot_types::{update::{GetUpdates, UpdateKind}, markup::ParseMode};
 use tokio::runtime::Runtime;
 
+mod command_handler;
+mod command;
 mod telegram;
 
 fn main() {
@@ -23,10 +25,14 @@ async fn run() {
         for update in updates {
             if let UpdateKind::Message { message } = update.kind {
                 if let Some(text) = message.text() {
-                    let reply = &message.reply_text(text).with_parse_mode(ParseMode::MarkdownV2);
-                    api.send_json(reply)
-                        .await
-                        .expect("Failed to send message");
+                    if text.starts_with("/") {
+                        command_handler::handle_command(&api, &message, text).await;
+                    } else {
+                        let reply = &message.reply_text(text).with_parse_mode(ParseMode::MarkdownV2);
+                        api.send_json(reply)
+                            .await
+                            .expect("Failed to send message");
+                    }
                 }
             }
             offset = offset.max(update.update_id + 1);
