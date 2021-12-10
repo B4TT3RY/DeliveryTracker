@@ -7,12 +7,8 @@ edition = "2021"
 
 [dependencies]
 tokio = { version = "1.14.0", features = ["rt-multi-thread"], default-features = false }
-teloxide = { version = "0.5.3", features = ["macros", "auto-send", "sqlite-storage"] }
 pretty_env_logger = "0.4.0"
-derive_more = "0.99.17"
-tokio-stream = "0.1.3"
 futures = "0.3.18"
-serde = "1.0.130"
 tonic = "0.6.1"
 prost = "0.9.0"
 log = "0.4.8"
