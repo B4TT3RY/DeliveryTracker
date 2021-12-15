@@ -8,6 +8,7 @@ use tokio::runtime::Runtime;
 
 mod command_handler;
 mod command;
+mod dialogue;
 mod telegram;
 
 fn main() {
