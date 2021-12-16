@@ -1,6 +1,6 @@
 use std::env;
 
-use bot::tracker::{tracker_client::TrackerClient, SupportCouriersRequest};
+use bot::tracker::{tracker_client::TrackerClient, SupportCouriersRequest, TrackingRequest};
 use telbot_hyper::{Api, types::{message::SendMessage, markup::ParseMode}};
 
 use crate::{dialogue::{DialogueStage, Dialogue, ReceivedTrackingNumberState, SelectedCourierState}, telegram::escape};
@@ -49,9 +49,20 @@ pub async fn handle_dialogue(api: &Api, stage: DialogueStage, answer: &str) {
             }
         },
         DialogueStage::SelectedCourier(state) => {
-            let send_message = SendMessage::new(state.user_id, escape(format!("송장: {}, 택배사: {}", state.tracking_number, answer)))
-                .with_parse_mode(ParseMode::MarkdownV2);
-            api.send_json(&send_message).await.unwrap();
+            let mut client = TrackerClient::connect(env::var("GRPC_ADDR").expect("env GRPC_ADDR is not set.")).await.unwrap();
+            let request = tonic::Request::new(TrackingRequest {
+                tracking_number: state.tracking_number,
+                courier_id: answer.to_string(),
+            });
+            if let Ok(response) = client.track(request).await {
+                let send_message = SendMessage::new(state.user_id, escape(format!("{:#?}", response.into_inner())))
+                    .with_parse_mode(ParseMode::MarkdownV2);
+                api.send_json(&send_message).await.unwrap();
+            } else {
+                let send_message = SendMessage::new(state.user_id, escape("⚠️ 운송장 정보가 존재하지 않습니다."))
+                    .with_parse_mode(ParseMode::MarkdownV2);
+                api.send_json(&send_message).await.unwrap();
+            }
             Dialogue::exit(state.user_id);
         },
     };
