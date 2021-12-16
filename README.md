@@ -23,3 +23,41 @@
 |---|---|---|
 |CAINIAO|`cn.cainiao`|한번씩 데이터가 나오지 않음|
 |WarpEX|`us.warpex`|
+
+## 택배 상세 정보 메시지 타입 종류
+
+```rust
+TrackingDetail {
+    time: String,
+    message: Some(String),
+    status: Some(String),
+    location: Some(String),
+}
+```
+
+```rust
+TrackingDetail {
+    time: String,
+    message: None,
+    status: Some(String),
+    location: Some(String),
+}
+```
+
+```rust
+TrackingDetail {
+    time: String,
+    message: Some(String),
+    status: None,
+    location: Some(String),
+}
+```
+
+```rust
+TrackingDetail {
+    time: String,
+    message: Some(String),
+    status: None,
+    location: None,
+}
+```
