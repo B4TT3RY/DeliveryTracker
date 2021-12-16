@@ -2,9 +2,8 @@ use std::{collections::HashMap, sync::RwLock};
 
 use once_cell::sync::Lazy;
 
-static GLOBAL_DATA: Lazy<RwLock<HashMap<i64, DialogueStage>>> = Lazy::new(|| {
-    RwLock::new(HashMap::new())
-});
+static GLOBAL_DATA: Lazy<RwLock<HashMap<i64, DialogueStage>>> =
+    Lazy::new(|| RwLock::new(HashMap::new()));
 
 pub struct Dialogue;
 

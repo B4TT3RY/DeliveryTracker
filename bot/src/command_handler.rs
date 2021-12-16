@@ -1,6 +1,17 @@
-use telbot_hyper::{Api, types::{message::{SendMessage, Message}, markup::ParseMode}};
+use telbot_hyper::{
+    types::{
+        markup::ParseMode,
+        message::{Message, SendMessage},
+    },
+    Api,
+};
 
-use crate::{command::Command, telegram::{self, escape}, dialogue::{Dialogue, DialogueStage, StartState, SelectedCourierState}, dialogue_handler};
+use crate::{
+    command::Command,
+    dialogue::{Dialogue, DialogueStage, SelectedCourierState, StartState},
+    dialogue_handler,
+    telegram::{self, escape},
+};
 
 pub async fn handle_command(api: &Api, message: &Message, text: &str) {
     let command = Command::new(text);
@@ -12,14 +23,14 @@ pub async fn handle_command(api: &Api, message: &Message, text: &str) {
                 /search - 운송장 번호로 택배를 조회할 수 있어요.\n\
                 /track - 운송장 번호로 택배를 추적할 수 있어요.\n\
                 /list - 현재 추적중인 운송장을 관리할 수 있어요.\n\
-                /cancel - 대화를 취소할 수 있어요."
+                /cancel - 대화를 취소할 수 있어요.",
             );
             api.send_json(
                 &SendMessage::new(message.chat.id, help_message)
-                    .with_parse_mode(ParseMode::MarkdownV2)
-                )
-                .await
-                .expect("Failed to send help message");
+                    .with_parse_mode(ParseMode::MarkdownV2),
+            )
+            .await
+            .expect("Failed to send help message");
         }
         "/search" => {
             let stage = if let Some(tracking_number) = args.next() {
@@ -40,10 +51,10 @@ pub async fn handle_command(api: &Api, message: &Message, text: &str) {
             if Dialogue::exit(message.chat.id) {
                 api.send_json(
                     &SendMessage::new(message.chat.id, escape("❌ 취소되었어요."))
-                        .with_parse_mode(ParseMode::MarkdownV2)
-                    )
-                    .await
-                    .expect("Failed to send cancel message");
+                        .with_parse_mode(ParseMode::MarkdownV2),
+                )
+                .await
+                .expect("Failed to send cancel message");
             }
         }
         _ => {}

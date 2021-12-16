@@ -2,21 +2,27 @@
 
 use std::env;
 
-use actix_web::{HttpServer, App, Responder, get, web, post};
+use actix_web::{get, post, web, App, HttpServer, Responder};
 use dialogue::Dialogue;
-use telbot_hyper::{Api, types::{update::{Update, UpdateKind}, markup::ParseMode}};
 use dotenv::dotenv;
+use telbot_hyper::{
+    types::{
+        markup::ParseMode,
+        update::{Update, UpdateKind},
+    },
+    Api,
+};
 
-mod command_handler;
 mod command;
-mod dialogue_handler;
+mod command_handler;
 mod dialogue;
+mod dialogue_handler;
 mod telegram;
 
 #[post("/tg_webhook")]
 async fn tg_webhook(update: web::Json<Update>) -> impl Responder {
     let api = Api::new(env::var("BOT_TOKEN").expect("env BOT_TOKEN is not set."));
-    
+
     if let UpdateKind::Message { message } = &update.kind {
         if let Some(text) = message.kind.text() {
             if text.starts_with("/") {
@@ -24,10 +30,10 @@ async fn tg_webhook(update: web::Json<Update>) -> impl Responder {
             } else if let Some(stage) = Dialogue::get(message.chat.id) {
                 dialogue_handler::handle_dialogue(&api, stage, text).await;
             } else {
-                let reply = &message.reply_text(text).with_parse_mode(ParseMode::MarkdownV2);
-                api.send_json(reply)
-                    .await
-                    .expect("Failed to send message");
+                let reply = &message
+                    .reply_text(text)
+                    .with_parse_mode(ParseMode::MarkdownV2);
+                api.send_json(reply).await.expect("Failed to send message");
             }
         }
     }

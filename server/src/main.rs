@@ -2,11 +2,11 @@
 
 use std::net::SocketAddr;
 
+use dotenv::dotenv;
 use log::info;
 use server::{tracker::tracker_server::TrackerServer, DeliveryTracker};
 use tokio::runtime::Runtime;
 use tonic::transport::Server;
-use dotenv::dotenv;
 
 fn main() {
     dotenv().ok();

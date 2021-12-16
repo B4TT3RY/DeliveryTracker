@@ -1,6 +1,6 @@
 pub fn escape<S>(input: S) -> String
 where
-    S: Into<String>
+    S: Into<String>,
 {
     const ESCAPE: [char; 18] = [
         '_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!',
