@@ -1,4 +1,4 @@
-use bot::tracker::{TrackingResponse, tracking_response::Status, TrackingInfo};
+use bot::tracker::{TrackingResponse, tracking_response::Status, TrackingInfo, TrackingDetail};
 use chrono::TimeZone;
 use chrono_tz::Asia::Seoul;
 
@@ -39,6 +39,43 @@ fn create_info_header_message(info: &TrackingInfo) -> String {
     )
 }
 
+fn create_detail_message(detail: &TrackingDetail) -> String {
+    let datetime = Seoul
+        .datetime_from_str(&detail.time, "%Y-%m-%d %H:%M:%S").unwrap();
+
+    if detail.message.is_some() && detail.status.is_some() && detail.location.is_some() {
+        escape(format!(
+            "{} ({}, {}): {}",
+            detail.status(),
+            datetime.format("%H시 %M분"),
+            detail.location(),
+            detail.message(),
+        ))
+    } else if detail.message.is_none() && detail.status.is_some() && detail.location.is_some() {
+        escape(format!(
+            "{}: [{}] {}",
+            datetime.format("%H시 %M분"),
+            detail.location(),
+            detail.status(),
+        ))
+    } else if detail.message.is_some() && detail.status.is_none() && detail.location.is_some() {
+        escape(format!(
+            "{}: [{}] {}",
+            datetime.format("%H시 %M분"),
+            detail.location(),
+            detail.message(),
+        ))
+    } else if detail.message.is_some() && detail.status.is_none() && detail.location.is_none() {
+        escape(format!(
+            "{}: {}",
+            datetime.format("%H시 %M분"),
+            detail.message(),
+        ))
+    } else {
+        String::new()
+    }
+}
+
 pub fn create_simple_tracking_message(response: TrackingResponse) -> String {
     match response.status() {
         Status::Ok => {
@@ -47,43 +84,12 @@ pub fn create_simple_tracking_message(response: TrackingResponse) -> String {
             if info.tracks.len() == 0 {
                 return header;
             }
-            let last_info = info.tracks.last().unwrap();
+            let last_detail = info.tracks.last().unwrap();
 
             let datetime = Seoul
-                .datetime_from_str(&last_info.time, "%Y-%m-%d %H:%M:%S").unwrap();
+                .datetime_from_str(&last_detail.time, "%Y-%m-%d %H:%M:%S").unwrap();
 
-            let detail_message =
-                if last_info.message.is_some() && last_info.status.is_some() && last_info.location.is_some() {
-                    escape(format!(
-                        "{} ({}, {}): {}",
-                        last_info.status(),
-                        datetime.format("%H시 %M분"),
-                        last_info.location(),
-                        last_info.message(),
-                    ))
-                } else if last_info.message.is_none() && last_info.status.is_some() && last_info.location.is_some() {
-                    escape(format!(
-                        "{}: [{}] {}",
-                        datetime.format("%H시 %M분"),
-                        last_info.location(),
-                        last_info.status(),
-                    ))
-                } else if last_info.message.is_some() && last_info.status.is_none() && last_info.location.is_some() {
-                    escape(format!(
-                        "{}: [{}] {}",
-                        datetime.format("%H시 %M분"),
-                        last_info.location(),
-                        last_info.message(),
-                    ))
-                } else if last_info.message.is_some() && last_info.status.is_none() && last_info.location.is_none() {
-                    escape(format!(
-                        "{}: {}",
-                        datetime.format("%H시 %M분"),
-                        last_info.message(),
-                    ))
-                } else {
-                    String::new()
-                };
+            let detail_message = create_detail_message(last_detail);
 
             format!(
                 "{}\n\
