@@ -8,7 +8,7 @@ use telbot_hyper::{
 
 use crate::{
     command::Command,
-    dialogue::{Dialogue, DialogueStage, SelectedCourierState, StartState},
+    dialogue::{Dialogue, DialogueStage, ReceivedTrackingNumberState, StartState},
     dialogue_handler,
     telegram::{self, escape},
 };
@@ -34,9 +34,9 @@ pub async fn handle_command(api: &Api, message: &Message, text: &str) {
         }
         "/search" => {
             let stage = if let Some(tracking_number) = args.next() {
-                DialogueStage::SelectedCourier(SelectedCourierState {
+                DialogueStage::ReceivedTrackingNumber(ReceivedTrackingNumberState {
                     user_id: message.chat.id,
-                    tracking_number: tracking_number.to_string(),
+                    tracking_number: Some(tracking_number.to_string()),
                 })
             } else {
                 DialogueStage::Start(StartState {

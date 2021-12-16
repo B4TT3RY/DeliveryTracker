@@ -25,11 +25,16 @@ pub async fn handle_dialogue(api: &Api, stage: DialogueStage, answer: &str) {
                 state.user_id,
                 DialogueStage::ReceivedTrackingNumber(ReceivedTrackingNumberState {
                     user_id: state.user_id,
+                    tracking_number: None,
                 }),
             );
         }
         DialogueStage::ReceivedTrackingNumber(state) => {
-            let tracking_number = answer.to_string();
+            let tracking_number = if let Some(tracking_number) = state.tracking_number {
+                tracking_number
+            } else {
+                answer.to_string()
+            };
             let mut client =
                 TrackerClient::connect(env::var("GRPC_ADDR").expect("env GRPC_ADDR is not set."))
                     .await

@@ -22,6 +22,7 @@ pub struct StartState {
 #[derive(Clone, Debug)]
 pub struct ReceivedTrackingNumberState {
     pub user_id: i64,
+    pub tracking_number: Option<String>,
 }
 
 #[derive(Clone, Debug)]
