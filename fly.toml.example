@@ -1,0 +1,40 @@
+# fly.toml file generated for deliverytracker-bot on 2021-12-16T22:26:14+09:00
+
+app = "deliverytracker-bot"
+
+kill_signal = "SIGINT"
+kill_timeout = 5
+
+[env]
+PORT = "8080"
+BOT_TOKEN = ""
+GRPC_ADDR = "http://localhost:50051"
+
+[experimental]
+cmd = "./bot"
+
+[[services]]
+http_checks = []
+internal_port = 8080
+processes = ["app"]
+protocol = "tcp"
+script_checks = []
+
+[services.concurrency]
+hard_limit = 25
+soft_limit = 20
+type = "connections"
+
+[[services.ports]]
+handlers = ["http"]
+port = 80
+
+[[services.ports]]
+handlers = ["tls", "http"]
+port = 443
+
+[[services.tcp_checks]]
+grace_period = "1s"
+interval = "15s"
+restart_limit = 5
+timeout = "2s"
