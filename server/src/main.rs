@@ -6,8 +6,10 @@ use log::info;
 use server::{tracker::tracker_server::TrackerServer, DeliveryTracker};
 use tokio::runtime::Runtime;
 use tonic::transport::Server;
+use dotenv::dotenv;
 
 fn main() {
+    dotenv().ok();
     pretty_env_logger::init();
 
     let bind_address = std::env::var("BIND_ADDR")

@@ -5,6 +5,7 @@ use std::env;
 use actix_web::{HttpServer, App, Responder, get, web, post};
 use dialogue::Dialogue;
 use telbot_hyper::{Api, types::{update::{Update, UpdateKind}, markup::ParseMode}};
+use dotenv::dotenv;
 
 mod command_handler;
 mod command;
@@ -40,6 +41,7 @@ async fn health() -> impl Responder {
 }
 
 fn main() {
+    dotenv().ok();
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
     actix_web::rt::System::with_tokio_rt(|| {
         tokio::runtime::Builder::new_multi_thread()
@@ -53,6 +55,7 @@ fn main() {
 }
 
 async fn run() {
+    let port = env::var("PORT").expect("env PORT is not set.");
     HttpServer::new(|| {
         App::new()
             .wrap(actix_web::middleware::Logger::default())
@@ -60,8 +63,8 @@ async fn run() {
             .service(health)
     })
     .workers(2)
-    .bind("0.0.0.0:8080")
-    .expect("Couldn't bind to port 8080")
+    .bind(format!("0.0.0.0:{}", port))
+    .expect(&format!("Couldn't bind to port {}", port))
     .run()
     .await
     .unwrap()
