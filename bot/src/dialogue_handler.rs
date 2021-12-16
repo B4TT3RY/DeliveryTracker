@@ -8,7 +8,7 @@ use telbot_hyper::{
 
 use crate::{
     dialogue::{Dialogue, DialogueStage, ReceivedTrackingNumberState, SelectedCourierState},
-    telegram::escape,
+    telegram::{escape, create_simple_tracking_message},
 };
 
 pub async fn handle_dialogue(api: &Api, stage: DialogueStage, answer: &str) {
@@ -94,7 +94,7 @@ pub async fn handle_dialogue(api: &Api, stage: DialogueStage, answer: &str) {
             if let Ok(response) = client.track(request).await {
                 let send_message = SendMessage::new(
                     state.user_id,
-                    escape(format!("{:#?}", response.into_inner())),
+                    create_simple_tracking_message(response.into_inner()),
                 )
                 .with_parse_mode(ParseMode::MarkdownV2);
                 api.send_json(&send_message).await.unwrap();

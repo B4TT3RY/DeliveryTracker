@@ -7,7 +7,6 @@ use dialogue::Dialogue;
 use dotenv::dotenv;
 use telbot_hyper::{
     types::{
-        markup::ParseMode,
         update::{Update, UpdateKind},
     },
     Api,
@@ -31,8 +30,7 @@ async fn tg_webhook(update: web::Json<Update>) -> impl Responder {
                 dialogue_handler::handle_dialogue(&api, stage, text).await;
             } else {
                 let reply = &message
-                    .reply_text(text)
-                    .with_parse_mode(ParseMode::MarkdownV2);
+                    .reply_text(text);
                 api.send_json(reply).await.expect("Failed to send message");
             }
         }
