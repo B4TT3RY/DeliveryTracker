@@ -1,7 +1,6 @@
-use telbot_reqwest::Api;
-use telbot_types::{message::{SendMessage, Message}, markup::ParseMode};
+use telbot_hyper::{Api, types::{message::{SendMessage, Message}, markup::ParseMode}};
 
-use crate::{command::Command, telegram};
+use crate::{command::Command, telegram::{self, escape}, dialogue::{Dialogue, DialogueStage, StartState, SelectedCourierState}, dialogue_handler};
 
 pub async fn handle_command(api: &Api, message: &Message, text: &str) {
     let command = Command::new(text);
@@ -12,20 +11,39 @@ pub async fn handle_command(api: &Api, message: &Message, text: &str) {
                 "/help - 도움말을 볼 수 있어요.\n\
                 /search - 운송장 번호로 택배를 조회할 수 있어요.\n\
                 /track - 운송장 번호로 택배를 추적할 수 있어요.\n\
-                /list - 현재 추적중인 운송장을 관리할 수 있어요."
+                /list - 현재 추적중인 운송장을 관리할 수 있어요.\n\
+                /cancel - 대화를 취소할 수 있어요."
             );
             api.send_json(
                 &SendMessage::new(message.chat.id, help_message)
                     .with_parse_mode(ParseMode::MarkdownV2)
                 )
                 .await
-                .expect("Failed to help message");
+                .expect("Failed to send help message");
         }
         "/search" => {
-            if let Some(tracking_number) = args.next() {
-                api.send_json(&message.reply_text(format!("운송장번호: {}", tracking_number))).await.unwrap();
+            let stage = if let Some(tracking_number) = args.next() {
+                DialogueStage::SelectedCourier(SelectedCourierState {
+                    user_id: message.chat.id,
+                    tracking_number: tracking_number.to_string(),
+                })
             } else {
-                api.send_json(&message.reply_text("운송장번호 미입력")).await.unwrap();
+                DialogueStage::Start(StartState {
+                    user_id: message.chat.id,
+                })
+            };
+
+            Dialogue::next(message.chat.id, stage.clone());
+            dialogue_handler::handle_dialogue(api, stage, "").await;
+        }
+        "/cancel" => {
+            if Dialogue::exit(message.chat.id) {
+                api.send_json(
+                    &SendMessage::new(message.chat.id, escape("❌ 취소되었어요."))
+                        .with_parse_mode(ParseMode::MarkdownV2)
+                    )
+                    .await
+                    .expect("Failed to send cancel message");
             }
         }
         _ => {}

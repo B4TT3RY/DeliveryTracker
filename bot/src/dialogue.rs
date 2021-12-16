@@ -1,14 +1,56 @@
+use std::{collections::HashMap, sync::RwLock};
+
+use once_cell::sync::Lazy;
+
+static GLOBAL_DATA: Lazy<RwLock<HashMap<i64, DialogueStage>>> = Lazy::new(|| {
+    RwLock::new(HashMap::new())
+});
+
+pub struct Dialogue;
+
+#[derive(Clone, Debug)]
 pub enum DialogueStage {
     Start(StartState),
     ReceivedTrackingNumber(ReceivedTrackingNumberState),
     SelectedCourier(SelectedCourierState),
 }
 
-pub struct StartState;
-pub struct ReceivedTrackingNumberState {
-    tracking_number: String,
+#[derive(Clone, Debug)]
+pub struct StartState {
+    pub user_id: i64,
 }
+
+#[derive(Clone, Debug)]
+pub struct ReceivedTrackingNumberState {
+    pub user_id: i64,
+}
+
+#[derive(Clone, Debug)]
 pub struct SelectedCourierState {
-    tracking_number: String,
-    courier_id: String,
+    pub user_id: i64,
+    pub tracking_number: String,
+}
+
+impl Dialogue {
+    pub fn get(user_id: i64) -> Option<DialogueStage> {
+        if let Ok(map) = GLOBAL_DATA.read() {
+            map.get(&user_id).map(|stage| stage.clone())
+        } else {
+            None
+        }
+    }
+
+    pub fn next(user_id: i64, dialogue_stage: DialogueStage) {
+        if let Ok(mut map) = GLOBAL_DATA.write() {
+            map.insert(user_id, dialogue_stage);
+        }
+    }
+
+    pub fn exit(user_id: i64) -> bool {
+        if let Ok(mut map) = GLOBAL_DATA.write() {
+            map.remove(&user_id).is_some()
+        } else {
+            false
+        }
+    }
 }
