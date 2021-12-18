@@ -1,7 +1,12 @@
-use bot::tracker::{TrackingResponse, tracking_response::Status, TrackingInfo, TrackingDetail, SupportCouriersResponse};
+use bot::tracker::{
+    tracking_response::Status, SupportCouriersResponse, TrackingDetail, TrackingInfo,
+    TrackingResponse,
+};
 use chrono::TimeZone;
 use chrono_tz::Asia::Seoul;
-use telbot_hyper::types::markup::{InlineKeyboardButton, InlineKeyboardButtonKind, InlineKeyboardMarkup};
+use telbot_hyper::types::markup::{
+    InlineKeyboardButton, InlineKeyboardButtonKind, InlineKeyboardMarkup,
+};
 
 pub fn escape<S>(input: S) -> String
 where
@@ -28,21 +33,18 @@ fn create_info_header_message(info: &TrackingInfo) -> String {
         tracking_number = info.tracking_number,
         sender = escape(info.sender.as_ref().unwrap_or(&"정보 없음".to_string())),
         receiver = escape(info.receiver.as_ref().unwrap_or(&"정보 없음".to_string())),
-        product = 
-            if let Some(product) = &info.product {
-                escape(format!(
-                    " ({})",
-                    product
-                ))
-            } else {
-                "".to_string()
-            }
+        product = if let Some(product) = &info.product {
+            escape(format!(" ({})", product))
+        } else {
+            "".to_string()
+        }
     )
 }
 
 fn create_detail_message(detail: &TrackingDetail) -> String {
     let datetime = Seoul
-        .datetime_from_str(&detail.time, "%Y-%m-%d %H:%M:%S").unwrap();
+        .datetime_from_str(&detail.time, "%Y-%m-%d %H:%M:%S")
+        .unwrap();
 
     if detail.message.is_some() && detail.status.is_some() && detail.location.is_some() {
         escape(format!(
@@ -88,7 +90,8 @@ pub fn create_simple_tracking_message(response: TrackingResponse) -> String {
             let last_detail = info.tracks.last().unwrap();
 
             let datetime = Seoul
-                .datetime_from_str(&last_detail.time, "%Y-%m-%d %H:%M:%S").unwrap();
+                .datetime_from_str(&last_detail.time, "%Y-%m-%d %H:%M:%S")
+                .unwrap();
 
             let detail_message = create_detail_message(last_detail);
 
@@ -102,15 +105,9 @@ pub fn create_simple_tracking_message(response: TrackingResponse) -> String {
                 detail_message
             )
         }
-        Status::RequestFailed =>{
-            String::new()
-        }
-        Status::WrongTrackingNumber => {
-            String::new()
-        }
-        Status::NotExistsTrackingNumber => {
-            String::new()
-        }
+        Status::RequestFailed => String::new(),
+        Status::WrongTrackingNumber => String::new(),
+        Status::NotExistsTrackingNumber => String::new(),
     }
 }
 
@@ -132,6 +129,6 @@ pub fn create_courier_keyboard(support_couriers: SupportCouriersResponse) -> Inl
         .collect::<Vec<Vec<InlineKeyboardButton>>>();
 
     InlineKeyboardMarkup {
-        inline_keyboard: rows
+        inline_keyboard: rows,
     }
 }

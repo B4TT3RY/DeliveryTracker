@@ -17,7 +17,7 @@ pub enum DialogueStage {
 #[derive(Clone, Debug)]
 pub enum DialogueAnswerKind {
     Message(String),
-    CallbackQuery(String,)
+    CallbackQuery(String),
 }
 
 #[derive(Clone, Debug)]

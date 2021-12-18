@@ -2,20 +2,26 @@ use std::env;
 
 use bot::tracker::{tracker_client::TrackerClient, SupportCouriersRequest, TrackingRequest};
 use telbot_hyper::{
-    types::{markup::ParseMode, message::{SendMessage, SendChatAction, ChatActionKind, EditMessageText}},
+    types::{
+        markup::ParseMode,
+        message::{ChatActionKind, EditMessageText, SendChatAction, SendMessage},
+    },
     Api,
 };
 
 use crate::{
-    dialogue::{Dialogue, DialogueStage, ReceivedTrackingNumberState, SelectedCourierState, DialogueAnswerKind},
-    telegram::{escape, create_simple_tracking_message, create_courier_keyboard},
+    dialogue::{
+        Dialogue, DialogueAnswerKind, DialogueStage, ReceivedTrackingNumberState,
+        SelectedCourierState,
+    },
+    telegram::{create_courier_keyboard, create_simple_tracking_message, escape},
 };
 
 struct S(DialogueStage, DialogueAnswerKind);
 
 pub async fn handle_dialogue(api: &Api, stage: DialogueStage, answer: DialogueAnswerKind) {
-    use DialogueStage::*;
     use DialogueAnswerKind::*;
+    use DialogueStage::*;
 
     match S(stage, answer) {
         S(Start(state), Message(_)) => {
@@ -41,8 +47,11 @@ pub async fn handle_dialogue(api: &Api, stage: DialogueStage, answer: DialogueAn
                 message
             };
 
-            match api.send_json(&SendChatAction::new(state.user_id, ChatActionKind::Typing)).await {
-                Ok(_) => {},
+            match api
+                .send_json(&SendChatAction::new(state.user_id, ChatActionKind::Typing))
+                .await
+            {
+                Ok(_) => {}
                 Err(err) => log::error!("SendChatAction: {:?}", err),
             }
 
@@ -65,7 +74,7 @@ pub async fn handle_dialogue(api: &Api, stage: DialogueStage, answer: DialogueAn
                         ),
                     )
                     .with_parse_mode(ParseMode::MarkdownV2);
-                    
+
                     api.send_json(&send_message).await.unwrap();
                     Dialogue::exit(state.user_id);
                     return;
@@ -84,7 +93,7 @@ pub async fn handle_dialogue(api: &Api, stage: DialogueStage, answer: DialogueAn
                     DialogueStage::SelectedCourier(SelectedCourierState {
                         user_id: state.user_id,
                         tracking_number,
-                        message_id: send_message.message_id
+                        message_id: send_message.message_id,
                     }),
                 );
             } else {
@@ -98,11 +107,14 @@ pub async fn handle_dialogue(api: &Api, stage: DialogueStage, answer: DialogueAn
             }
         }
         S(SelectedCourier(state), CallbackQuery(query)) => {
-            match api.send_json(&SendChatAction::new(state.user_id, ChatActionKind::Typing)).await {
-                Ok(_) => {},
+            match api
+                .send_json(&SendChatAction::new(state.user_id, ChatActionKind::Typing))
+                .await
+            {
+                Ok(_) => {}
                 Err(err) => log::error!("SendChatAction: {:?}", err),
             }
-            
+
             let mut client =
                 TrackerClient::connect(env::var("GRPC_ADDR").expect("env GRPC_ADDR is not set."))
                     .await
@@ -111,16 +123,15 @@ pub async fn handle_dialogue(api: &Api, stage: DialogueStage, answer: DialogueAn
                 tracking_number: state.tracking_number,
                 courier_id: query,
             });
-            
+
             let text = if let Ok(response) = client.track(request).await {
                 create_simple_tracking_message(response.into_inner())
             } else {
                 escape("⚠️ 운송장 정보가 존재하지 않습니다.")
             };
 
-            let edit_message_text =
-                EditMessageText::new(state.user_id, state.message_id, text)
-                    .with_parse_mode(ParseMode::MarkdownV2);
+            let edit_message_text = EditMessageText::new(state.user_id, state.message_id, text)
+                .with_parse_mode(ParseMode::MarkdownV2);
             api.send_json(&edit_message_text).await.unwrap();
             Dialogue::exit(state.user_id);
         }

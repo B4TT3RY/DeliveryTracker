@@ -8,7 +8,9 @@ use telbot_hyper::{
 
 use crate::{
     command::Command,
-    dialogue::{Dialogue, DialogueStage, ReceivedTrackingNumberState, StartState, DialogueAnswerKind},
+    dialogue::{
+        Dialogue, DialogueAnswerKind, DialogueStage, ReceivedTrackingNumberState, StartState,
+    },
     dialogue_handler,
     telegram::{self, escape},
 };
@@ -45,7 +47,12 @@ pub async fn handle_command(api: &Api, message: &Message, text: &str) {
             };
 
             Dialogue::next(message.chat.id, stage.clone());
-            dialogue_handler::handle_dialogue(api, stage, DialogueAnswerKind::Message(String::new())).await;
+            dialogue_handler::handle_dialogue(
+                api,
+                stage,
+                DialogueAnswerKind::Message(String::new()),
+            )
+            .await;
         }
         "/cancel" => {
             if Dialogue::exit(message.chat.id) {
