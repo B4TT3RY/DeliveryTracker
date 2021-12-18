@@ -2,7 +2,7 @@ use std::env;
 
 use bot::tracker::{tracker_client::TrackerClient, SupportCouriersRequest, TrackingRequest};
 use telbot_hyper::{
-    types::{markup::ParseMode, message::SendMessage},
+    types::{markup::ParseMode, message::{SendMessage, SendChatAction, ChatActionKind}},
     Api,
 };
 
@@ -35,6 +35,12 @@ pub async fn handle_dialogue(api: &Api, stage: DialogueStage, answer: &str) {
             } else {
                 answer.to_string()
             };
+
+            match api.send_json(&SendChatAction::new(state.user_id, ChatActionKind::Typing)).await {
+                Ok(_) => {},
+                Err(err) => log::error!("SendChatAction: {:?}", err),
+            }
+
             let mut client =
                 TrackerClient::connect(env::var("GRPC_ADDR").expect("env GRPC_ADDR is not set."))
                     .await
@@ -83,6 +89,11 @@ pub async fn handle_dialogue(api: &Api, stage: DialogueStage, answer: &str) {
             }
         }
         DialogueStage::SelectedCourier(state) => {
+            match api.send_json(&SendChatAction::new(state.user_id, ChatActionKind::Typing)).await {
+                Ok(_) => {},
+                Err(err) => log::error!("SendChatAction: {:?}", err),
+            }
+            
             let mut client =
                 TrackerClient::connect(env::var("GRPC_ADDR").expect("env GRPC_ADDR is not set."))
                     .await
