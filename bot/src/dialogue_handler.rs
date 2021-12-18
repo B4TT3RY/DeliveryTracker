@@ -25,6 +25,14 @@ pub async fn handle_dialogue(api: &Api, stage: DialogueStage, answer: DialogueAn
 
     match S(stage, answer) {
         S(Start(state), Message(_)) => {
+            match api
+                .send_json(&SendChatAction::new(state.user_id, ChatActionKind::Typing))
+                .await
+            {
+                Ok(_) => {}
+                Err(err) => log::error!("SendChatAction: {:?}", err),
+            }
+
             let send_message = SendMessage::new(
                 state.user_id,
                 escape("💬 조회할 운송장 번호를 입력해주세요."),
