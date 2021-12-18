@@ -3,7 +3,7 @@
 use std::env;
 
 use actix_web::{get, post, web, App, HttpServer, Responder};
-use dialogue::Dialogue;
+use dialogue::{Dialogue, DialogueAnswerKind};
 use dotenv::dotenv;
 use telbot_hyper::{
     types::{
@@ -27,11 +27,18 @@ async fn tg_webhook(update: web::Json<Update>) -> impl Responder {
             if text.starts_with("/") {
                 command_handler::handle_command(&api, &message, text).await;
             } else if let Some(stage) = Dialogue::get(message.chat.id) {
-                dialogue_handler::handle_dialogue(&api, stage, text).await;
+                dialogue_handler::handle_dialogue(&api, stage, DialogueAnswerKind::Message(text.to_string())).await;
             } else {
                 let reply = &message
                     .reply_text(text);
                 api.send_json(reply).await.expect("Failed to send message");
+            }
+        }
+    } else if let UpdateKind::CallbackQuery { callback_query } = &update.kind {
+        if let Some(message) = &callback_query.message {
+            if let Some(stage) = Dialogue::get(message.chat.id) {
+                let answer = callback_query.data.as_ref().and_then(|str| Some(str.to_string())).unwrap_or_default();
+                dialogue_handler::handle_dialogue(&api, stage, DialogueAnswerKind::CallbackQuery(answer)).await;
             }
         }
     }

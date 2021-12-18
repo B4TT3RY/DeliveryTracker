@@ -1,6 +1,7 @@
-use bot::tracker::{TrackingResponse, tracking_response::Status, TrackingInfo, TrackingDetail};
+use bot::tracker::{TrackingResponse, tracking_response::Status, TrackingInfo, TrackingDetail, SupportCouriersResponse};
 use chrono::TimeZone;
 use chrono_tz::Asia::Seoul;
+use telbot_hyper::types::markup::{InlineKeyboardButton, InlineKeyboardButtonKind, InlineKeyboardMarkup};
 
 pub fn escape<S>(input: S) -> String
 where
@@ -110,5 +111,27 @@ pub fn create_simple_tracking_message(response: TrackingResponse) -> String {
         Status::NotExistsTrackingNumber => {
             String::new()
         }
+    }
+}
+
+pub fn create_courier_keyboard(support_couriers: SupportCouriersResponse) -> InlineKeyboardMarkup {
+    let rows = support_couriers
+        .couriers
+        .iter()
+        .map(|courier| InlineKeyboardButton {
+            text: courier.name.clone(),
+            kind: InlineKeyboardButtonKind::Callback {
+                callback_data: courier.id.clone(),
+            },
+        })
+        .collect::<Vec<InlineKeyboardButton>>()
+        .chunks(2)
+        .collect::<Vec<&[InlineKeyboardButton]>>()
+        .iter()
+        .map(|vec| vec.to_vec())
+        .collect::<Vec<Vec<InlineKeyboardButton>>>();
+
+    InlineKeyboardMarkup {
+        inline_keyboard: rows
     }
 }

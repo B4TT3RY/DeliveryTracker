@@ -15,6 +15,12 @@ pub enum DialogueStage {
 }
 
 #[derive(Clone, Debug)]
+pub enum DialogueAnswerKind {
+    Message(String),
+    CallbackQuery(String,)
+}
+
+#[derive(Clone, Debug)]
 pub struct StartState {
     pub user_id: i64,
 }
@@ -29,6 +35,7 @@ pub struct ReceivedTrackingNumberState {
 pub struct SelectedCourierState {
     pub user_id: i64,
     pub tracking_number: String,
+    pub message_id: i64,
 }
 
 impl Dialogue {
