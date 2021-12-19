@@ -22,7 +22,7 @@ impl Courier for EpostEMS {
     }
 
     fn validate(tracking_number: &str) -> bool {
-        let regex = Regex::new(r"^\w{2}\d{9}\w{2}$").unwrap();
+        let regex = Regex::new(r"^[a-zA-Z]{2}[0-9]{9}[a-zA-Z]{2}$").unwrap();
         regex.is_match(tracking_number)
     }
 
