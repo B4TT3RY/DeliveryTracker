@@ -79,28 +79,10 @@ impl Tracker for DeliveryTracker {
         //     });
         // }
 
-        if Chunil::validate(&tracking_number) {
-            couriers.push(tracker::SupportCouriersDetail {
-                id: Chunil::id().to_string(),
-                name: Chunil::name().to_string(),
-            });
-        }
         if Cjlogistics::validate(&tracking_number) {
             couriers.push(tracker::SupportCouriersDetail {
                 id: Cjlogistics::id().to_string(),
                 name: Cjlogistics::name().to_string(),
-            });
-        }
-        if Cupost::validate(&tracking_number) {
-            couriers.push(tracker::SupportCouriersDetail {
-                id: Cupost::id().to_string(),
-                name: Cupost::name().to_string(),
-            });
-        }
-        if Daesin::validate(&tracking_number) {
-            couriers.push(tracker::SupportCouriersDetail {
-                id: Daesin::id().to_string(),
-                name: Daesin::name().to_string(),
             });
         }
         if Epost::validate(&tracking_number) {
@@ -115,28 +97,10 @@ impl Tracker for DeliveryTracker {
                 name: EpostEMS::name().to_string(),
             });
         }
-        if Gspostbox::validate(&tracking_number) {
-            couriers.push(tracker::SupportCouriersDetail {
-                id: Gspostbox::id().to_string(),
-                name: Gspostbox::name().to_string(),
-            });
-        }
         if Hanjin::validate(&tracking_number) {
             couriers.push(tracker::SupportCouriersDetail {
                 id: Hanjin::id().to_string(),
                 name: Hanjin::name().to_string(),
-            });
-        }
-        if IlyangLogis::validate(&tracking_number) {
-            couriers.push(tracker::SupportCouriersDetail {
-                id: IlyangLogis::id().to_string(),
-                name: IlyangLogis::name().to_string(),
-            });
-        }
-        if Kyoungdong::validate(&tracking_number) {
-            couriers.push(tracker::SupportCouriersDetail {
-                id: Kyoungdong::id().to_string(),
-                name: Kyoungdong::name().to_string(),
             });
         }
         if Logen::validate(&tracking_number) {
@@ -149,6 +113,44 @@ impl Tracker for DeliveryTracker {
             couriers.push(tracker::SupportCouriersDetail {
                 id: Lotte::id().to_string(),
                 name: Lotte::name().to_string(),
+            });
+        }
+        if Cupost::validate(&tracking_number) {
+            couriers.push(tracker::SupportCouriersDetail {
+                id: Cupost::id().to_string(),
+                name: Cupost::name().to_string(),
+            });
+        }
+        if Gspostbox::validate(&tracking_number) {
+            couriers.push(tracker::SupportCouriersDetail {
+                id: Gspostbox::id().to_string(),
+                name: Gspostbox::name().to_string(),
+            });
+        }
+        
+
+        if Chunil::validate(&tracking_number) {
+            couriers.push(tracker::SupportCouriersDetail {
+                id: Chunil::id().to_string(),
+                name: Chunil::name().to_string(),
+            });
+        }
+        if Daesin::validate(&tracking_number) {
+            couriers.push(tracker::SupportCouriersDetail {
+                id: Daesin::id().to_string(),
+                name: Daesin::name().to_string(),
+            });
+        }
+        if IlyangLogis::validate(&tracking_number) {
+            couriers.push(tracker::SupportCouriersDetail {
+                id: IlyangLogis::id().to_string(),
+                name: IlyangLogis::name().to_string(),
+            });
+        }
+        if Kyoungdong::validate(&tracking_number) {
+            couriers.push(tracker::SupportCouriersDetail {
+                id: Kyoungdong::id().to_string(),
+                name: Kyoungdong::name().to_string(),
             });
         }
 
