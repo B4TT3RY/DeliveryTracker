@@ -4,7 +4,7 @@ use bot::tracker::{tracker_client::TrackerClient, SupportCouriersRequest, Tracki
 use telbot_hyper::{
     types::{
         markup::ParseMode,
-        message::{ChatActionKind, EditMessageText, SendChatAction, SendMessage},
+        message::{EditMessageText, SendMessage},
     },
     Api,
 };
