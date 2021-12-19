@@ -25,19 +25,12 @@ pub async fn handle_dialogue(api: &Api, stage: DialogueStage, answer: DialogueAn
 
     match S(stage, answer) {
         S(Start(state), Message(_)) => {
-            match api
-                .send_json(&SendChatAction::new(state.user_id, ChatActionKind::Typing))
-                .await
-            {
-                Ok(_) => {}
-                Err(err) => log::error!("SendChatAction: {:?}", err),
-            }
-
             let send_message = SendMessage::new(
                 state.user_id,
                 escape("💬 조회할 운송장 번호를 입력해주세요."),
             )
             .with_parse_mode(ParseMode::MarkdownV2);
+
             api.send_json(&send_message).await.unwrap();
 
             Dialogue::next(
@@ -54,14 +47,6 @@ pub async fn handle_dialogue(api: &Api, stage: DialogueStage, answer: DialogueAn
             } else {
                 message
             };
-
-            match api
-                .send_json(&SendChatAction::new(state.user_id, ChatActionKind::Typing))
-                .await
-            {
-                Ok(_) => {}
-                Err(err) => log::error!("SendChatAction: {:?}", err),
-            }
 
             let mut client =
                 TrackerClient::connect(env::var("GRPC_ADDR").expect("env GRPC_ADDR is not set."))
@@ -84,6 +69,7 @@ pub async fn handle_dialogue(api: &Api, stage: DialogueStage, answer: DialogueAn
                     .with_parse_mode(ParseMode::MarkdownV2);
 
                     api.send_json(&send_message).await.unwrap();
+
                     Dialogue::exit(state.user_id);
                     return;
                 }
@@ -110,19 +96,13 @@ pub async fn handle_dialogue(api: &Api, stage: DialogueStage, answer: DialogueAn
                     escape("⚠️ 서버에 문제가 있어요. 나중에 다시 시도해주세요."),
                 )
                 .with_parse_mode(ParseMode::MarkdownV2);
+
                 api.send_json(&send_message).await.unwrap();
+
                 Dialogue::exit(state.user_id);
             }
         }
         S(SelectedCourier(state), CallbackQuery(query)) => {
-            match api
-                .send_json(&SendChatAction::new(state.user_id, ChatActionKind::Typing))
-                .await
-            {
-                Ok(_) => {}
-                Err(err) => log::error!("SendChatAction: {:?}", err),
-            }
-
             let mut client =
                 TrackerClient::connect(env::var("GRPC_ADDR").expect("env GRPC_ADDR is not set."))
                     .await
@@ -140,7 +120,9 @@ pub async fn handle_dialogue(api: &Api, stage: DialogueStage, answer: DialogueAn
 
             let edit_message_text = EditMessageText::new(state.user_id, state.message_id, text)
                 .with_parse_mode(ParseMode::MarkdownV2);
+
             api.send_json(&edit_message_text).await.unwrap();
+
             Dialogue::exit(state.user_id);
         }
         _ => {}
