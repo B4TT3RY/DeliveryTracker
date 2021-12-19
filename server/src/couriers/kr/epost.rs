@@ -18,7 +18,7 @@ impl Courier for Epost {
     }
 
     fn name() -> &'static str {
-        "우체국택배"
+        "우체국 국내우편"
     }
 
     fn validate(tracking_number: &str) -> bool {

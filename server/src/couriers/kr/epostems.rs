@@ -18,7 +18,7 @@ impl Courier for EpostEMS {
     }
 
     fn name() -> &'static str {
-        "우체국 EMS"
+        "우체국 국제우편"
     }
 
     fn validate(tracking_number: &str) -> bool {
