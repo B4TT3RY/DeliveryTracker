@@ -29,14 +29,14 @@ pub async fn handle_dialogue(api: &Api, stage: DialogueStage, answer: DialogueAn
                 TypeKind::Search => {
                     SendMessage::new(
                         state.user_id,
-                        escape("💬 조회할 운송장 번호를 입력해주세요."),
+                        escape("💬 조회할 운송장 번호를 입력해 주세요."),
                     )
                     .with_parse_mode(ParseMode::MarkdownV2)
                 }
                 TypeKind::Track => {
                     SendMessage::new(
                         state.user_id,
-                        escape("💬 추적을 시작할 운송장 번호를 입력해주세요."),
+                        escape("💬 추적을 시작할 운송장 번호를 입력해 주세요."),
                     )
                     .with_parse_mode(ParseMode::MarkdownV2)
                 }
@@ -75,7 +75,7 @@ pub async fn handle_dialogue(api: &Api, stage: DialogueStage, answer: DialogueAn
                         state.user_id,
                         escape(
                             "⚠️ 지원하는 택배사가 없어요.\n\
-                        운송장 번호를 다시 확인하시거나 관리자에게 문의해주세요.",
+                        운송장 번호를 다시 확인하시거나 관리자에게 문의해 주세요.",
                         ),
                     )
                     .with_parse_mode(ParseMode::MarkdownV2);
@@ -90,13 +90,13 @@ pub async fn handle_dialogue(api: &Api, stage: DialogueStage, answer: DialogueAn
                     TypeKind::Search => {
                         SendMessage::new(
                             state.user_id,
-                            escape("🚚 운송장을 조회할 택배사를 선택해주세요."),
+                            escape("🚚 운송장을 조회할 택배사를 선택해 주세요."),
                         )
                     }
                     TypeKind::Track => {
                         SendMessage::new(
                             state.user_id,
-                            escape("🚚 운송장을 추적할 택배사를 선택해주세요."),
+                            escape("🚚 운송장을 추적할 택배사를 선택해 주세요."),
                         )
                     }
                 }
@@ -117,7 +117,7 @@ pub async fn handle_dialogue(api: &Api, stage: DialogueStage, answer: DialogueAn
             } else {
                 let send_message = SendMessage::new(
                     state.user_id,
-                    escape("⚠️ 서버에 문제가 있어요. 나중에 다시 시도해주세요."),
+                    escape("⚠️ 서버에 문제가 있어요. 나중에 다시 시도해 주세요."),
                 )
                 .with_parse_mode(ParseMode::MarkdownV2);
 
@@ -139,7 +139,7 @@ pub async fn handle_dialogue(api: &Api, stage: DialogueStage, answer: DialogueAn
             let text = if let Ok(response) = client.track(request).await {
                 create_simple_tracking_message(response.into_inner())
             } else {
-                escape("⚠️ 운송장 정보가 존재하지 않습니다.")
+                escape("⚠️ 운송장 정보가 없어요.")
             };
 
             let edit_message_text = EditMessageText::new(state.user_id, state.message_id, text)
