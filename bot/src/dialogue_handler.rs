@@ -26,20 +26,16 @@ pub async fn handle_dialogue(api: &Api, stage: DialogueStage, answer: DialogueAn
     match S(stage, answer) {
         S(Start(state), Message(_)) => {
             let send_message = match state.kind {
-                TypeKind::Search => {
-                    SendMessage::new(
-                        state.user_id,
-                        escape("💬 조회할 운송장 번호를 입력해 주세요."),
-                    )
-                    .with_parse_mode(ParseMode::MarkdownV2)
-                }
-                TypeKind::Track => {
-                    SendMessage::new(
-                        state.user_id,
-                        escape("💬 추적을 시작할 운송장 번호를 입력해 주세요."),
-                    )
-                    .with_parse_mode(ParseMode::MarkdownV2)
-                }
+                TypeKind::Search => SendMessage::new(
+                    state.user_id,
+                    escape("💬 조회할 운송장 번호를 입력해 주세요."),
+                )
+                .with_parse_mode(ParseMode::MarkdownV2),
+                TypeKind::Track => SendMessage::new(
+                    state.user_id,
+                    escape("💬 추적을 시작할 운송장 번호를 입력해 주세요."),
+                )
+                .with_parse_mode(ParseMode::MarkdownV2),
             };
 
             api.send_json(&send_message).await.unwrap();
@@ -87,22 +83,18 @@ pub async fn handle_dialogue(api: &Api, stage: DialogueStage, answer: DialogueAn
                 }
 
                 let send_message = match state.kind {
-                    TypeKind::Search => {
-                        SendMessage::new(
-                            state.user_id,
-                            escape("🚚 운송장을 조회할 택배사를 선택해 주세요."),
-                        )
-                    }
-                    TypeKind::Track => {
-                        SendMessage::new(
-                            state.user_id,
-                            escape("🚚 운송장을 추적할 택배사를 선택해 주세요."),
-                        )
-                    }
+                    TypeKind::Search => SendMessage::new(
+                        state.user_id,
+                        escape("🚚 운송장을 조회할 택배사를 선택해 주세요."),
+                    ),
+                    TypeKind::Track => SendMessage::new(
+                        state.user_id,
+                        escape("🚚 운송장을 추적할 택배사를 선택해 주세요."),
+                    ),
                 }
                 .with_parse_mode(ParseMode::MarkdownV2)
                 .with_reply_markup(create_courier_keyboard(response));
-                
+
                 let send_message = api.send_json(&send_message).await.unwrap();
 
                 Dialogue::next(

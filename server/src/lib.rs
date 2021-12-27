@@ -127,7 +127,6 @@ impl Tracker for DeliveryTracker {
                 name: Gspostbox::name().to_string(),
             });
         }
-        
 
         if Chunil::validate(&tracking_number) {
             couriers.push(tracker::SupportCouriersDetail {

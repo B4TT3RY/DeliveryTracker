@@ -9,7 +9,8 @@ use telbot_hyper::{
 use crate::{
     command::Command,
     dialogue::{
-        Dialogue, DialogueAnswerKind, DialogueStage, ReceivedTrackingNumberState, StartState, TypeKind,
+        Dialogue, DialogueAnswerKind, DialogueStage, ReceivedTrackingNumberState, StartState,
+        TypeKind,
     },
     dialogue_handler,
     telegram::{self, escape},

@@ -23,7 +23,7 @@ pub enum DialogueAnswerKind {
 #[derive(Clone, Debug)]
 pub enum TypeKind {
     Search,
-    Track
+    Track,
 }
 
 #[derive(Clone, Debug)]
