@@ -56,6 +56,28 @@ pub async fn handle_command(api: &Api, message: &Message, text: &str) {
             )
             .await;
         }
+        "/track" => {
+            let stage = if let Some(tracking_number) = args.next() {
+                DialogueStage::ReceivedTrackingNumber(ReceivedTrackingNumberState {
+                    kind: TypeKind::Track,
+                    user_id: message.chat.id,
+                    tracking_number: Some(tracking_number.to_string()),
+                })
+            } else {
+                DialogueStage::Start(StartState {
+                    kind: TypeKind::Track,
+                    user_id: message.chat.id,
+                })
+            };
+
+            Dialogue::next(message.chat.id, stage.clone());
+            dialogue_handler::handle_dialogue(
+                api,
+                stage,
+                DialogueAnswerKind::Message(String::new()),
+            )
+            .await;
+        }
         "/cancel" => {
             if Dialogue::exit(message.chat.id) {
                 api.send_json(
