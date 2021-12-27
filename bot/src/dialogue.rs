@@ -21,18 +21,27 @@ pub enum DialogueAnswerKind {
 }
 
 #[derive(Clone, Debug)]
+pub enum TypeKind {
+    Search,
+    Track
+}
+
+#[derive(Clone, Debug)]
 pub struct StartState {
+    pub kind: TypeKind,
     pub user_id: i64,
 }
 
 #[derive(Clone, Debug)]
 pub struct ReceivedTrackingNumberState {
+    pub kind: TypeKind,
     pub user_id: i64,
     pub tracking_number: Option<String>,
 }
 
 #[derive(Clone, Debug)]
 pub struct SelectedCourierState {
+    pub kind: TypeKind,
     pub user_id: i64,
     pub tracking_number: String,
     pub message_id: i64,

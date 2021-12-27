@@ -12,7 +12,7 @@ use telbot_hyper::{
 use crate::{
     dialogue::{
         Dialogue, DialogueAnswerKind, DialogueStage, ReceivedTrackingNumberState,
-        SelectedCourierState,
+        SelectedCourierState, TypeKind,
     },
     telegram::{create_courier_keyboard, create_simple_tracking_message, escape},
 };
@@ -36,6 +36,7 @@ pub async fn handle_dialogue(api: &Api, stage: DialogueStage, answer: DialogueAn
             Dialogue::next(
                 state.user_id,
                 DialogueStage::ReceivedTrackingNumber(ReceivedTrackingNumberState {
+                    kind: TypeKind::Search,
                     user_id: state.user_id,
                     tracking_number: None,
                 }),
@@ -85,6 +86,7 @@ pub async fn handle_dialogue(api: &Api, stage: DialogueStage, answer: DialogueAn
                 Dialogue::next(
                     state.user_id,
                     DialogueStage::SelectedCourier(SelectedCourierState {
+                        kind: state.kind,
                         user_id: state.user_id,
                         tracking_number,
                         message_id: send_message.message_id,
