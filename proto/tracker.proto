@@ -12,14 +12,15 @@ message SearchRequest {
     string tracking_number = 2;
 }
 
+enum StatusKind {
+    OK = 0;
+    REQUEST_FAILED = 1;
+    WRONG_TRACKING_NUMBER = 2;
+    NOT_EXISTS_TRACKING_NUMBER = 3;
+}
+
 message SearchResponse {
-    enum Status {
-        OK = 0;
-        REQUEST_FAILED = 1;
-        WRONG_TRACKING_NUMBER = 2;
-        NOT_EXISTS_TRACKING_NUMBER = 3;
-    }
-    Status status = 1;
+    StatusKind status = 1;
     optional string message = 2;
     TrackingInfo tracking_info = 3;
 }

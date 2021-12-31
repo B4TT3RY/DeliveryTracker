@@ -1,5 +1,5 @@
 use bot::tracker::{
-    search_response::Status, SupportCouriersResponse, TrackingDetail, TrackingInfo,
+    StatusKind, SupportCouriersResponse, TrackingDetail, TrackingInfo,
     SearchResponse,
 };
 use chrono::TimeZone;
@@ -81,7 +81,7 @@ fn create_detail_message(detail: &TrackingDetail) -> String {
 
 pub fn create_simple_tracking_message(response: SearchResponse) -> String {
     match response.status() {
-        Status::Ok => {
+        StatusKind::Ok => {
             let info = response.tracking_info.unwrap();
             let header = create_info_header_message(&info);
             if info.tracks.len() == 0 {
@@ -105,9 +105,9 @@ pub fn create_simple_tracking_message(response: SearchResponse) -> String {
                 detail_message
             )
         }
-        Status::RequestFailed => String::new(),
-        Status::WrongTrackingNumber => String::new(),
-        Status::NotExistsTrackingNumber => String::new(),
+        StatusKind::RequestFailed => String::new(),
+        StatusKind::WrongTrackingNumber => String::new(),
+        StatusKind::NotExistsTrackingNumber => String::new(),
     }
 }
 
