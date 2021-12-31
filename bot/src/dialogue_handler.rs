@@ -1,6 +1,6 @@
 use std::env;
 
-use bot::tracker::{tracker_client::TrackerClient, SupportCouriersRequest, TrackingRequest};
+use bot::tracker::{tracker_client::TrackerClient, SupportCouriersRequest, SearchRequest};
 use telbot_hyper::{
     types::{
         markup::ParseMode,
@@ -123,12 +123,12 @@ pub async fn handle_dialogue(api: &Api, stage: DialogueStage, answer: DialogueAn
                 TrackerClient::connect(env::var("GRPC_ADDR").expect("env GRPC_ADDR is not set."))
                     .await
                     .unwrap();
-            let request = tonic::Request::new(TrackingRequest {
+            let request = tonic::Request::new(SearchRequest {
                 tracking_number: state.tracking_number,
                 courier_id: query,
             });
 
-            let text = if let Ok(response) = client.track(request).await {
+            let text = if let Ok(response) = client.search(request).await {
                 create_simple_tracking_message(response.into_inner())
             } else {
                 escape("⚠️ 운송장 정보가 없어요.")

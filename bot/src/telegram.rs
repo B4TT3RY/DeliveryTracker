@@ -1,6 +1,6 @@
 use bot::tracker::{
-    tracking_response::Status, SupportCouriersResponse, TrackingDetail, TrackingInfo,
-    TrackingResponse,
+    search_response::Status, SupportCouriersResponse, TrackingDetail, TrackingInfo,
+    SearchResponse,
 };
 use chrono::TimeZone;
 use chrono_tz::Asia::Seoul;
@@ -79,7 +79,7 @@ fn create_detail_message(detail: &TrackingDetail) -> String {
     }
 }
 
-pub fn create_simple_tracking_message(response: TrackingResponse) -> String {
+pub fn create_simple_tracking_message(response: SearchResponse) -> String {
     match response.status() {
         Status::Ok => {
             let info = response.tracking_info.unwrap();

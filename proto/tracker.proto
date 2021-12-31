@@ -3,16 +3,16 @@ syntax = "proto3";
 package tracker;
 
 service Tracker {
-    rpc Track(TrackingRequest) returns (TrackingResponse);
+    rpc Search(SearchRequest) returns (SearchResponse);
     rpc GetSupportCouriers(SupportCouriersRequest) returns (SupportCouriersResponse);
 }
 
-message TrackingRequest {
+message SearchRequest {
     string courier_id = 1;
     string tracking_number = 2;
 }
 
-message TrackingResponse {
+message SearchResponse {
     enum Status {
         OK = 0;
         REQUEST_FAILED = 1;
