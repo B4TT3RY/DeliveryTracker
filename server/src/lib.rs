@@ -37,6 +37,7 @@ impl Tracker for DeliveryTracker {
             "kr.kyoungdong" => Kyoungdong::track(tracking_number).await,
             "kr.logen" => Logen::track(tracking_number).await,
             "kr.lotte" => Lotte::track(tracking_number).await,
+            "us.fedex" => Fedex::track(tracking_number).await,
             "us.warpex" => Warpex::track(tracking_number).await,
             _ => {
                 return Err(Status::invalid_argument("Not supported courier"));
