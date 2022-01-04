@@ -1,5 +1,5 @@
 use async_trait::async_trait;
-use chrono::TimeZone;
+use chrono::{TimeZone, DateTime};
 use chrono_tz::Asia::Seoul;
 use serde_json::{Value, json};
 
@@ -57,7 +57,7 @@ impl Courier for Fedex {
             ("action", "trackpackages"),
             ("format", "json"),
             ("data", &json_data.to_string()),
-            ("format", "ko_KR"),
+            ("locale", "ko_KR"),
             ("version", "1"),
         ];
 
@@ -79,23 +79,27 @@ impl Courier for Fedex {
 
         let package_info = &json["packageList"][0];
 
-        for scan in package_info["scanEventList"].as_array().unwrap() {
+        for scan in package_info["scanEventList"].as_array().unwrap() {            
             let datetime =
-                Seoul.datetime_from_str(&format!(
+                DateTime::parse_from_str(&format!(
                     "{} {} {}",
                     scan["date"].as_str().unwrap(),
                     scan["time"].as_str().unwrap(),
                     scan["gmtOffset"].as_str().unwrap(),
                 ), "%Y-%m-%d %H:%M:%S %:z")?;
 
+            let datetime = Seoul.from_utc_datetime(&datetime.naive_utc());
+
             tracks.push(tracker::TrackingDetail {
                 time: datetime.format("%Y-%m-%d %H:%M:%S").to_string(),
                 message: scan["status"].as_str().and_then(|s| Some(s.to_string())),
                 status: None,
-                location: Some(scan["scanLocation"].as_str().unwrap_or("FedEx").to_string()),
+                location: Some(scan["scanLocation"].as_str().unwrap().to_string()),
                 live_tracking_url: None,
             });
         }
+
+        tracks.reverse();
 
         Ok(tracker::TrackingInfo {
             id: Self::id().to_string(),
@@ -108,13 +112,13 @@ impl Courier for Fedex {
                 package_info["shipperCity"].as_str().unwrap(),
                 package_info["shipperStateCD"].as_str().unwrap(),
                 package_info["shipperCntryCD"].as_str().unwrap(),
-            )),
+            ).replace("  ", " ")),
             receiver: Some(format!(
                 "{}, {} {}",
                 package_info["recipientCity"].as_str().unwrap(),
                 package_info["recipientStateCD"].as_str().unwrap(),
                 package_info["recipientCntryCD"].as_str().unwrap(),
-            )),
+            ).replace("  ", " ")),
             product: None,
             tracks,
         })
