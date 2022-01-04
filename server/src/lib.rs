@@ -153,6 +153,12 @@ impl Tracker for DeliveryTracker {
             });
         }
 
+        if FedEx::validate(&tracking_number) {
+            couriers.push(tracker::SupportCouriersDetail {
+                id: FedEx::id().to_string(),
+                name: FedEx::name().to_string(),
+            });
+        }
         if Warpex::validate(&tracking_number) {
             couriers.push(tracker::SupportCouriersDetail {
                 id: Warpex::id().to_string(),
@@ -161,5 +167,17 @@ impl Tracker for DeliveryTracker {
         }
 
         Ok(Response::new(tracker::SupportCouriersResponse { couriers }))
+    }
+
+    async fn add_track(&self,request:tonic::Request<tracker::AddTrackRequest>,)->Result<tonic::Response<tracker::AddTrackResponse>,tonic::Status> {
+        todo!()
+    }
+
+    async fn remove_track(&self,request:tonic::Request<tracker::RemoveTrackRequest>,)->Result<tonic::Response<tracker::RemoveTrackResponse>,tonic::Status> {
+        todo!()
+    }
+
+    async fn tracking_list(&self,request:tonic::Request<tracker::TrackingListRequest>,)->Result<tonic::Response<tracker::TrackingListResponse>,tonic::Status> {
+        todo!()
     }
 }

@@ -5,11 +5,10 @@ package tracker;
 service Tracker {
     rpc Search(SearchRequest) returns (SearchResponse);
     rpc GetSupportCouriers(SupportCouriersRequest) returns (SupportCouriersResponse);
-}
 
-message SearchRequest {
-    string courier_id = 1;
-    string tracking_number = 2;
+    rpc AddTrack(AddTrackRequest) returns (AddTrackResponse);
+    rpc RemoveTrack(RemoveTrackRequest) returns (RemoveTrackResponse);
+    rpc TrackingList(TrackingListRequest) returns (TrackingListResponse);
 }
 
 enum StatusKind {
@@ -17,6 +16,13 @@ enum StatusKind {
     REQUEST_FAILED = 1;
     WRONG_TRACKING_NUMBER = 2;
     NOT_EXISTS_TRACKING_NUMBER = 3;
+    TRACKING_ALREADY_EXISTS = 4;
+    TRACKING_NOT_EXISTS = 5;
+}
+
+message SearchRequest {
+    string courier_id = 1;
+    string tracking_number = 2;
 }
 
 message SearchResponse {
@@ -56,4 +62,33 @@ message SupportCouriersResponse {
 message SupportCouriersDetail {
     string id = 1;
     string name = 2;
+}
+
+message AddTrackRequest {
+    string user_id = 1;
+    string courier_id = 2;
+    string tracking_number = 3;
+}
+
+message AddTrackResponse {
+    StatusKind status = 1;
+    optional SearchResponse response = 2;
+}
+
+message RemoveTrackRequest {
+    string user_id = 1;
+    string courier_id = 2;
+    string tracking_number = 3;
+}
+
+message RemoveTrackResponse {
+    StatusKind status = 1;
+}
+
+message TrackingListRequest {
+    string user_id = 1;
+}
+
+message TrackingListResponse {
+    repeated TrackingInfo tracks = 1;
 }
