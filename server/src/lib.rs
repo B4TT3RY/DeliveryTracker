@@ -153,10 +153,10 @@ impl Tracker for DeliveryTracker {
             });
         }
 
-        if FedEx::validate(&tracking_number) {
+        if Fedex::validate(&tracking_number) {
             couriers.push(tracker::SupportCouriersDetail {
-                id: FedEx::id().to_string(),
-                name: FedEx::name().to_string(),
+                id: Fedex::id().to_string(),
+                name: Fedex::name().to_string(),
             });
         }
         if Warpex::validate(&tracking_number) {
