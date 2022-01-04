@@ -136,7 +136,7 @@ pub async fn handle_dialogue(api: &Api, stage: DialogueStage, answer: DialogueAn
                 (
                     create_simple_tracking_message(&response),
                     if let Some(info) = response.tracking_info {
-                        Some(create_search_result_keyboard(info.url))
+                        Some(create_search_result_keyboard(info.url, !info.is_delivered, info.tracking_number))
                     } else {
                         None
                     },

@@ -112,11 +112,26 @@ pub fn create_simple_tracking_message(response: &SearchResponse) -> String {
     }
 }
 
-pub fn create_search_result_keyboard(url: String) -> InlineKeyboardMarkup {
-    let rows = vec![vec![InlineKeyboardButton {
+pub fn create_search_result_keyboard(url: String, can_track: bool, tracking_number: String) -> InlineKeyboardMarkup {
+    let mut rows = Vec::new();
+
+    let mut row = Vec::new();
+    row.push(InlineKeyboardButton {
+        text: "📄 모든 처리 정보 표시".to_string(),
+        kind: InlineKeyboardButtonKind::Callback { callback_data: format!("show_all:{}", tracking_number) },
+    });
+    if can_track {
+        row.push(InlineKeyboardButton {
+            text: "🔍 운송장 추적".to_string(),
+            kind: InlineKeyboardButtonKind::Callback { callback_data: format!("track:{}", tracking_number) },
+        });
+    }
+    rows.push(row);
+
+    rows.push(vec![InlineKeyboardButton {
         text: "🔗 홈페이지에서 보기".to_string(),
         kind: InlineKeyboardButtonKind::Url { url },
-    }]];
+    }]);
 
     InlineKeyboardMarkup {
         inline_keyboard: rows,
