@@ -170,15 +170,24 @@ impl Tracker for DeliveryTracker {
         Ok(Response::new(tracker::SupportCouriersResponse { couriers }))
     }
 
-    async fn add_track(&self,request:tonic::Request<tracker::AddTrackRequest>,)->Result<tonic::Response<tracker::AddTrackResponse>,tonic::Status> {
+    async fn add_track(
+        &self,
+        request: tonic::Request<tracker::AddTrackRequest>,
+    ) -> Result<tonic::Response<tracker::AddTrackResponse>, tonic::Status> {
         todo!()
     }
 
-    async fn remove_track(&self,request:tonic::Request<tracker::RemoveTrackRequest>,)->Result<tonic::Response<tracker::RemoveTrackResponse>,tonic::Status> {
+    async fn remove_track(
+        &self,
+        request: tonic::Request<tracker::RemoveTrackRequest>,
+    ) -> Result<tonic::Response<tracker::RemoveTrackResponse>, tonic::Status> {
         todo!()
     }
 
-    async fn tracking_list(&self,request:tonic::Request<tracker::TrackingListRequest>,)->Result<tonic::Response<tracker::TrackingListResponse>,tonic::Status> {
+    async fn tracking_list(
+        &self,
+        request: tonic::Request<tracker::TrackingListRequest>,
+    ) -> Result<tonic::Response<tracker::TrackingListResponse>, tonic::Status> {
         todo!()
     }
 }

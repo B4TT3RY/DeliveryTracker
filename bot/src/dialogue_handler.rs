@@ -1,6 +1,6 @@
 use std::env;
 
-use bot::tracker::{tracker_client::TrackerClient, SupportCouriersRequest, SearchRequest};
+use bot::tracker::{tracker_client::TrackerClient, SearchRequest, SupportCouriersRequest};
 use telbot_hyper::{
     types::{
         markup::ParseMode,
@@ -14,7 +14,10 @@ use crate::{
         Dialogue, DialogueAnswerKind, DialogueStage, ReceivedTrackingNumberState,
         SelectedCourierState, TypeKind,
     },
-    telegram::{create_courier_keyboard, create_simple_tracking_message, escape, create_search_result_keyboard},
+    telegram::{
+        create_courier_keyboard, create_search_result_keyboard, create_simple_tracking_message,
+        escape,
+    },
 };
 
 struct S(DialogueStage, DialogueAnswerKind);
@@ -136,7 +139,7 @@ pub async fn handle_dialogue(api: &Api, stage: DialogueStage, answer: DialogueAn
                         Some(create_search_result_keyboard(info.url))
                     } else {
                         None
-                    }
+                    },
                 )
             } else {
                 (escape("⚠️ 운송장 정보가 없어요."), None)

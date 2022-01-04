@@ -1,7 +1,7 @@
 use async_trait::async_trait;
-use chrono::{TimeZone, DateTime};
+use chrono::{DateTime, TimeZone};
 use chrono_tz::Asia::Seoul;
-use serde_json::{Value, json};
+use serde_json::{json, Value};
 
 use crate::{
     structs::{Courier, TrackingError},
@@ -79,14 +79,16 @@ impl Courier for Fedex {
 
         let package_info = &json["packageList"][0];
 
-        for scan in package_info["scanEventList"].as_array().unwrap() {            
-            let datetime =
-                DateTime::parse_from_str(&format!(
+        for scan in package_info["scanEventList"].as_array().unwrap() {
+            let datetime = DateTime::parse_from_str(
+                &format!(
                     "{} {} {}",
                     scan["date"].as_str().unwrap(),
                     scan["time"].as_str().unwrap(),
                     scan["gmtOffset"].as_str().unwrap(),
-                ), "%Y-%m-%d %H:%M:%S %:z")?;
+                ),
+                "%Y-%m-%d %H:%M:%S %:z",
+            )?;
 
             let datetime = Seoul.from_utc_datetime(&datetime.naive_utc());
 

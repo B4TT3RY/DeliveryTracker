@@ -1,6 +1,5 @@
 use bot::tracker::{
-    StatusKind, SupportCouriersResponse, TrackingDetail, TrackingInfo,
-    SearchResponse,
+    SearchResponse, StatusKind, SupportCouriersResponse, TrackingDetail, TrackingInfo,
 };
 use chrono::TimeZone;
 use chrono_tz::Asia::Seoul;
@@ -114,14 +113,10 @@ pub fn create_simple_tracking_message(response: &SearchResponse) -> String {
 }
 
 pub fn create_search_result_keyboard(url: String) -> InlineKeyboardMarkup {
-    let rows = vec![
-        vec![
-            InlineKeyboardButton {
-                text: "🔗 홈페이지에서 보기".to_string(),
-                kind: InlineKeyboardButtonKind::Url { url }
-            }
-        ],
-    ];
+    let rows = vec![vec![InlineKeyboardButton {
+        text: "🔗 홈페이지에서 보기".to_string(),
+        kind: InlineKeyboardButtonKind::Url { url },
+    }]];
 
     InlineKeyboardMarkup {
         inline_keyboard: rows,
