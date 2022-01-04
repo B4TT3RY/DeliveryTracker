@@ -1,7 +1,7 @@
 use async_trait::async_trait;
 use chrono::TimeZone;
 use chrono_tz::Asia::Seoul;
-use serde_json::Value;
+use serde_json::{Value, json};
 
 use crate::{
     structs::{Courier, TrackingError},
@@ -33,10 +33,30 @@ impl Courier for Fedex {
 
         let url = "https://www.fedex.com/trackingCal/track";
 
+        let json_data = json!({
+            "TrackPackagesRequest": {
+                "appDeviceType": "DESKTOP",
+                "appType": "WTRK",
+                "processingParameters": {},
+                "uniqueKey": "",
+                "supportCurrentLocation": true,
+                "supportHTML": true,
+                "trackingInfoList": [
+                    {
+                        "trackNumberInfo": {
+                            "trackingNumber": tracking_number,
+                            "trackingQualifier": null,
+                            "trackingCarrier": null
+                        }
+                    }
+                ]
+            }
+        });
+
         let params = [
             ("action", "trackpackages"),
             ("format", "json"),
-            ("data", ""),
+            ("data", &json_data.to_string()),
             ("format", "ko_KR"),
             ("version", "1"),
         ];
