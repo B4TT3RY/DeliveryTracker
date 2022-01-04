@@ -108,6 +108,8 @@ pub fn create_simple_tracking_message(response: SearchResponse) -> String {
         StatusKind::RequestFailed => String::new(),
         StatusKind::WrongTrackingNumber => String::new(),
         StatusKind::NotExistsTrackingNumber => String::new(),
+        StatusKind::TrackingAlreadyExists => todo!(),
+        StatusKind::TrackingNotExists => todo!(),
     }
 }
 
