@@ -14,7 +14,7 @@ use crate::{
         Dialogue, DialogueAnswerKind, DialogueStage, ReceivedTrackingNumberState,
         SelectedCourierState, TypeKind,
     },
-    telegram::{create_courier_keyboard, create_simple_tracking_message, escape},
+    telegram::{create_courier_keyboard, create_simple_tracking_message, escape, create_search_result_keyboard},
 };
 
 struct S(DialogueStage, DialogueAnswerKind);
@@ -128,14 +128,23 @@ pub async fn handle_dialogue(api: &Api, stage: DialogueStage, answer: DialogueAn
                 courier_id: query,
             });
 
-            let text = if let Ok(response) = client.search(request).await {
-                create_simple_tracking_message(response.into_inner())
+            let (text, keyboard) = if let Ok(response) = client.search(request).await {
+                let response = response.into_inner();
+                (
+                    create_simple_tracking_message(&response),
+                    if let Some(info) = response.tracking_info {
+                        Some(create_search_result_keyboard(info.url))
+                    } else {
+                        None
+                    }
+                )
             } else {
-                escape("⚠️ 운송장 정보가 없어요.")
+                (escape("⚠️ 운송장 정보가 없어요."), None)
             };
 
-            let edit_message_text = EditMessageText::new(state.user_id, state.message_id, text)
+            let mut edit_message_text = EditMessageText::new(state.user_id, state.message_id, text)
                 .with_parse_mode(ParseMode::MarkdownV2);
+            edit_message_text.reply_markup = keyboard;
 
             api.send_json(&edit_message_text).await.unwrap();
 

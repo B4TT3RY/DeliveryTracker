@@ -79,10 +79,10 @@ fn create_detail_message(detail: &TrackingDetail) -> String {
     }
 }
 
-pub fn create_simple_tracking_message(response: SearchResponse) -> String {
+pub fn create_simple_tracking_message(response: &SearchResponse) -> String {
     match response.status() {
         StatusKind::Ok => {
-            let info = response.tracking_info.unwrap();
+            let info = response.tracking_info.as_ref().unwrap();
             let header = create_info_header_message(&info);
             if info.tracks.len() == 0 {
                 return header;
@@ -110,6 +110,21 @@ pub fn create_simple_tracking_message(response: SearchResponse) -> String {
         StatusKind::NotExistsTrackingNumber => String::new(),
         StatusKind::TrackingAlreadyExists => todo!(),
         StatusKind::TrackingNotExists => todo!(),
+    }
+}
+
+pub fn create_search_result_keyboard(url: String) -> InlineKeyboardMarkup {
+    let rows = vec![
+        vec![
+            InlineKeyboardButton {
+                text: "🔗 홈페이지에서 보기".to_string(),
+                kind: InlineKeyboardButtonKind::Url { url }
+            }
+        ],
+    ];
+
+    InlineKeyboardMarkup {
+        inline_keyboard: rows,
     }
 }
 
